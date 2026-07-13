@@ -408,9 +408,11 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
         '<p class="intro-desc">' + data.desc + '</p>' +
         '<ul class="intro-highlights">' + data.highlights.map(function(h){return '<li>'+h+'</li>';}).join('') + '</ul>' +
         '<div class="intro-tech">' + data.tech.map(function(t){return '<span>'+t+'</span>';}).join('') + '</div>' +
+        '<button type="button" class="intro-back">&larr; Back to Projects</button>' +
       '</div>' +
       '<div class="intro-image-frame"><img src="' + data.images[0] + '"></div>';
     track.appendChild(intro); panels.push(intro);
+    intro.querySelector('.intro-back').addEventListener('click', closeProject);
 
     for(var i = 1; i < data.images.length; i++){
       var story = data.stories[i-1] || { title:'', sub:'' };
@@ -455,7 +457,7 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   document.querySelectorAll('.proj-card[data-project]').forEach(function(card){
     card.addEventListener('click', function(){ openProject(card.dataset.project); });
   });
-  document.getElementById('pdClose').addEventListener('click', closeProject);
+
 
   var trackX = 0, targetX = 0, maxX = 0;
   function updateMax(){ maxX = Math.max(0, track.scrollWidth - window.innerWidth); }
