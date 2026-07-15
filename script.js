@@ -72,85 +72,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
   });
 })();
 
-// Hero 3D particle sphere
-(function(){
-  var container = document.getElementById('hero-3d');
-  var heroSection = document.getElementById('hero');
-  if(!container || typeof THREE === 'undefined') return;
 
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(60, heroSection.clientWidth / heroSection.clientHeight, 0.1, 100);
-  camera.position.z = 5;
-
-  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  container.appendChild(renderer.domElement);
-
-  var count = 2200;
-  var positions = new Float32Array(count * 3);
-  var colors = new Float32Array(count * 3);
-  var colorA = new THREE.Color('#00e5ff');
-  var colorB = new THREE.Color('#7c3aed');
-
-  for (var i = 0; i < count; i++) {
-    var theta = Math.random() * Math.PI * 2;
-    var phi = Math.acos((Math.random() * 2) - 1);
-    var radius = 2.1 + Math.random() * 0.15;
-
-    positions[i*3]   = radius * Math.sin(phi) * Math.cos(theta);
-    positions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta);
-    positions[i*3+2] = radius * Math.cos(phi);
-
-    var mixed = colorA.clone().lerp(colorB, Math.random());
-    colors[i*3]   = mixed.r;
-    colors[i*3+1] = mixed.g;
-    colors[i*3+2] = mixed.b;
-  }
-
-  var geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-  var material = new THREE.PointsMaterial({
-    size: 0.022,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.75,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  });
-
-  var points = new THREE.Points(geometry, material);
-  points.position.x = 1.6;
-  scene.add(points);
-
-  var mouseX = 0, mouseY = 0;
-  window.addEventListener('mousemove', function(e){
-    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-    mouseY = (e.clientY / window.innerHeight) * 2 - 1;
-  });
-
-  var targetRotX = 0, targetRotY = 0;
-  function animate(time){
-    requestAnimationFrame(animate);
-    points.rotation.y += 0.0012;
-    targetRotX += (mouseY * 0.25 - targetRotX) * 0.05;
-    targetRotY += (mouseX * 0.25 - targetRotY) * 0.05;
-    points.rotation.x = targetRotX;
-    points.rotation.z = targetRotY * 0.15;
-    var breathe = 1 + Math.sin(time * 0.0006) * 0.03;
-    points.scale.set(breathe, breathe, breathe);
-    renderer.render(scene, camera);
-  }
-  requestAnimationFrame(animate);
-
-  window.addEventListener('resize', function(){
-    camera.aspect = heroSection.clientWidth / heroSection.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
-  });
-})();
 
 // Hanging thread cards — drag to stretch, springs back on release
 (function(){
@@ -193,10 +115,6 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
   });
 })();
 
-// Hamburger menu
-document.getElementById('hamburger').addEventListener('click',function(){
-  document.getElementById('navLinks').classList.toggle('open');
-});
 
 // Scroll reveals — staggered, eased, replay on scroll-back
 gsap.utils.toArray('.fade-in').forEach(function(el){
@@ -489,4 +407,57 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   }
   requestAnimationFrame(raf);
   window.addEventListener('resize', updateMax);
+})();
+// Lusion-style pill nav — menu flips to close, panel scroll-spies the active section
+(function(){
+  var menuBtn = document.getElementById('menuToggle');
+  var panel = document.getElementById('navPanel');
+  var label = menuBtn.querySelector('.nav-pill-label');
+
+  function closePanel(){
+    panel.classList.remove('open');
+    menuBtn.classList.remove('is-open');
+    label.textContent = 'Menu';
+  }
+  function openPanel(){
+    panel.classList.add('open');
+    menuBtn.classList.add('is-open');
+    label.textContent = 'Close';
+  }
+  menuBtn.addEventListener('click', function(){
+    panel.classList.contains('open') ? closePanel() : openPanel();
+  });
+
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target) && !menuBtn.contains(e.target)){
+      closePanel();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closePanel();
+  });
+
+  // Clicking a link inside the panel closes it (actual scrolling is already handled
+  // by your existing Lenis nav-link handler above)
+  document.querySelectorAll('.nav-panel-list a').forEach(function(a){
+    a.addEventListener('click', function(){ closePanel(); });
+  });
+
+  // Scroll-spy: light up the dot next to whichever section is actually in view
+  var sections = [];
+  document.querySelectorAll('.nav-panel-list a').forEach(function(a){
+    var sec = document.querySelector(a.getAttribute('href'));
+    if(sec) sections.push({ li: a.closest('li'), el: sec });
+  });
+
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if(!match || !entry.isIntersecting) return;
+      sections.forEach(function(s){ s.li.classList.remove('active'); });
+      match.li.classList.add('active');
+    });
+  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+  sections.forEach(function(s){ spy.observe(s.el); });
 })();

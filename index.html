@@ -16,19 +16,26 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#">ASC_PORTFOLIO</a>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#achievements">Achievements</a></li>
-    <li><a href="#certificates">Certificates</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <a class="nav-logo" href="#hero">ASC_PORTFOLIO</a>
+  <div class="nav-pills">
+    <a href="#contact" class="nav-pill nav-pill-cta">Say Hello</a>
+    <button class="nav-pill nav-pill-menu" id="menuToggle" aria-label="Menu">
+      <span class="nav-pill-dot"></span>
+      <span class="nav-pill-label">Menu</span>
+    </button>
+  </div>
+  <div class="nav-panel" id="navPanel">
+    <ul class="nav-panel-list">
+      <li><a href="#hero"><span>Home</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#about"><span>About</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#skills"><span>Skills</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#projects"><span>Projects</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#achievements"><span>Achievements</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#certificates"><span>Certificates</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#experience"><span>Experience</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#contact"><span>Contact</span><span class="nav-panel-dot"></span></a></li>
+    </ul>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -279,7 +286,7 @@
 
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script src="script.js"></script>
 </body>
 </html>
