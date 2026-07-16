@@ -410,6 +410,19 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
       });
     }, 350);
   }
+  function exitToPortfolio(){
+    isChaining = true;
+    track.style.opacity = '0';
+
+    setTimeout(function(){
+      closeProject();
+      var next = document.getElementById('achievements');
+      if(next && window.lenis){
+        lenis.scrollTo(next, { offset: -70 });
+      }
+      setTimeout(function(){ isChaining = false; }, 400);
+    }, 350);
+  }
 
   detailEl.addEventListener('wheel', function(e){
     if(!detailEl.classList.contains('open') || isChaining) return;
@@ -420,7 +433,8 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
     if(next > maxX){
       var idx = projectOrder.indexOf(currentProjectId);
       if(idx < projectOrder.length - 1){ chainToProject(projectOrder[idx + 1], next - maxX, 1); return; }
-      targetX = maxX; return;
+      exitToPortfolio();
+      return;
     }
     if(next < 0){
       var idx2 = projectOrder.indexOf(currentProjectId);
