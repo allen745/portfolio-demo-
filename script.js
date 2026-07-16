@@ -461,3 +461,121 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
 
   sections.forEach(function(s){ spy.observe(s.el); });
 })();
+
+// Flowing line — sweeps in, loops around the About photo, tapers off within the About section only
+(function(){
+  var aboutSection = document.getElementById('about');
+  var media = document.querySelector('.about-media');
+  if(!aboutSection || !media) return;
+
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(svgNS, 'svg');
+  svg.style.position = 'absolute';
+  svg.style.top = '0';
+  svg.style.left = '0';
+  svg.style.zIndex = '2';
+  svg.style.pointerEvents = 'none';
+  document.body.appendChild(svg);
+
+  var defs = document.createElementNS(svgNS, 'defs');
+  var grad = document.createElementNS(svgNS, 'linearGradient');
+  grad.setAttribute('id', 'flowGrad'); grad.setAttribute('x1','0'); grad.setAttribute('y1','0'); grad.setAttribute('x2','1'); grad.setAttribute('y2','1');
+  [['0%','#00e5ff'],['45%','#5b8dff'],['100%','#7c3aed']].forEach(function(s){
+    var stop = document.createElementNS(svgNS, 'stop');
+    stop.setAttribute('offset', s[0]); stop.setAttribute('stop-color', s[1]);
+    grad.appendChild(stop);
+  });
+  defs.appendChild(grad); svg.appendChild(defs);
+
+  var path = document.createElementNS(svgNS, 'path');
+  path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'url(#flowGrad)'); path.setAttribute('stroke-width', '14'); path.setAttribute('stroke-linecap', 'round');
+  svg.appendChild(path);
+
+  var dot = document.createElementNS(svgNS, 'circle');
+  dot.setAttribute('r', '8'); dot.setAttribute('fill', '#00e5ff');
+  dot.style.filter = 'drop-shadow(0 0 10px rgba(0,229,255,0.9)) drop-shadow(0 0 22px rgba(124,58,237,0.7))';
+  svg.appendChild(dot);
+
+  function smoothThrough(pts){
+    var d = '';
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = pts[i - 1] || pts[i];
+      var p1 = pts[i];
+      var p2 = pts[i + 1];
+      var p3 = pts[i + 2] || p2;
+      var c1x = p1.x + (p2.x - p0.x) / 6;
+      var c1y = p1.y + (p2.y - p0.y) / 6;
+      var c2x = p2.x - (p3.x - p1.x) / 6;
+      var c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ' C ' + c1x + ',' + c1y + ' ' + c2x + ',' + c2y + ' ' + p2.x + ',' + p2.y;
+    }
+    return d;
+  }
+
+  var pathLength = 0;
+
+  function rebuild(){
+    var scrollY = window.scrollY || window.pageYOffset;
+    var aRect = aboutSection.getBoundingClientRect();
+    var mRect = media.getBoundingClientRect();
+
+    var docHeight = document.body.scrollHeight;
+    var width = window.innerWidth;
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', docHeight);
+    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + docHeight);
+
+    var bx = mRect.left, by = mRect.top + scrollY;
+    var bw = mRect.width, bh = mRect.height;
+    var cx = bx + bw * 0.5, cy = by + bh * 0.42;
+    var r = bw * 0.68;
+
+    var entry = [
+      { x: -40, y: by - bh * 0.5 },
+      { x: bx - bw * 0.2, y: by - bh * 0.1 },
+      { x: bx + bw * 0.1, y: by + bh * 0.02 }
+    ];
+    var d = 'M ' + entry[0].x + ',' + entry[0].y + smoothThrough(entry);
+    d += ' A ' + r + ',' + r + ' 0 1,1 ' + (cx - r) + ',' + cy;
+    var endX = bx + bw + 50, endY = by + bh * 0.6;
+    d += ' A ' + r + ',' + r + ' 0 1,1 ' + endX + ',' + endY;
+
+    var aboutBottom = aRect.bottom + scrollY;
+    var tailEndY = Math.min(aboutBottom - 60, endY + (aboutBottom - endY) * 0.7);
+    var tail = [
+      { x: endX, y: endY },
+      { x: width * 0.7, y: endY + (tailEndY - endY) * 0.5 },
+      { x: width * 0.42, y: tailEndY }
+    ];
+    d += smoothThrough(tail);
+
+    path.setAttribute('d', d);
+    pathLength = path.getTotalLength();
+    path.style.strokeDasharray = pathLength;
+    path.style.strokeDashoffset = pathLength;
+    update();
+  }
+
+  function update(){
+    var scrollY = window.scrollY || window.pageYOffset;
+    var aRect = aboutSection.getBoundingClientRect();
+    var startY = aRect.top + scrollY - window.innerHeight * 0.5;
+    var endY = aRect.bottom + scrollY;
+    var range = Math.max(1, endY - startY);
+    var progress = Math.max(0, Math.min(1, (scrollY - startY) / range));
+
+    path.style.strokeDashoffset = pathLength * (1 - progress);
+    if (pathLength > 0) {
+      var pt = path.getPointAtLength(pathLength * progress);
+      dot.setAttribute('cx', pt.x);
+      dot.setAttribute('cy', pt.y);
+    }
+  }
+
+  function raf(){ update(); requestAnimationFrame(raf); }
+
+  window.addEventListener('load', rebuild);
+  window.addEventListener('resize', rebuild);
+  requestAnimationFrame(raf);
+  setTimeout(rebuild, 100);
+})();
