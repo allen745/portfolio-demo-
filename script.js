@@ -318,13 +318,17 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
     var data = projects[id];
     if(!data) return;
     currentProjectId = id;
+    isChaining = false;
     buildTrack(data);
 
     // Always start a freshly opened project at the beginning of its track —
     // otherwise a leftover scroll position from a previous visit pushes the
     // newly built panels outside the visible (overflow: hidden) viewport.
+    // Also restore opacity: exitToPortfolio fades the track out and previously
+    // left it at 0, so reopening showed only the theme background.
     trackX = 0; targetX = 0;
     track.style.transform = 'translateX(0px)';
+    track.style.opacity = '1';
 
     var th = data.theme;
     detailEl.style.setProperty('--pd-bg', th.bg);
@@ -343,6 +347,9 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
     detailEl.classList.remove('open');
     document.body.style.overflow = '';
     if(window.lenis) lenis.start();
+    // Reset fade state so the next open is never stuck invisible.
+    track.style.opacity = '1';
+    isChaining = false;
   }
 
   document.querySelectorAll('.proj-card[data-project]').forEach(function(card){
