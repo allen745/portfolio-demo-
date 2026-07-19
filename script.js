@@ -202,29 +202,33 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
   var journeyTl = null;
 
   function buildPinnedTimeline(){
-    // Pin the stage with ScrollTrigger (CSS sticky breaks when ancestors
-    // clip overflow — which left cards 02–04 animating off-screen).
+    // CSS sticky stage + scrub tied to the tall runway. Cards must change
+    // WHILE the sticky viewport is on screen — not after the section leaves.
+    var seg = 1 / steps.length;
     var tl = gsap.timeline({
       scrollTrigger: {
-        trigger: stage,
+        trigger: pinWrap,
         start: 'top top',
-        end: function(){ return '+=' + Math.round(window.innerHeight * 3.2); },
-        pin: true,
-        scrub: 1,
-        anticipatePin: 1,
+        end: 'bottom bottom',
+        scrub: 0.45,
         invalidateOnRefresh: true,
         onUpdate: function(self){
-          var idx = Math.min(steps.length - 1, Math.floor(self.progress / 0.22));
+          var idx = Math.min(
+            steps.length - 1,
+            Math.floor(self.progress * steps.length)
+          );
+          // Keep the last card active through the final stretch
+          if(self.progress >= 0.99) idx = steps.length - 1;
           setStepIndex(idx);
         }
       }
     });
 
     if(orbA){
-      tl.fromTo(orbA, { x: -40, y: 20, opacity: 0.35 }, { x: 30, y: -50, opacity: 0.7, duration: 1, ease: 'none' }, 0);
+      tl.fromTo(orbA, { x: -30, y: 16, opacity: 0.4 }, { x: 24, y: -36, opacity: 0.7, duration: 1, ease: 'none' }, 0);
     }
     if(orbB){
-      tl.fromTo(orbB, { x: 30, y: -20, opacity: 0.25 }, { x: -40, y: 40, opacity: 0.55, duration: 1, ease: 'none' }, 0);
+      tl.fromTo(orbB, { x: 24, y: -12, opacity: 0.3 }, { x: -28, y: 28, opacity: 0.55, duration: 1, ease: 'none' }, 0);
     }
     if(spineLine){
       tl.fromTo(spineLine, { height: '0%' }, { height: '100%', duration: 1, ease: 'none' }, 0);
@@ -236,39 +240,46 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     steps.forEach(function(step, i){
       var thread = step.querySelector('.thread');
       var card = step.querySelector('.hang-card');
-      // One card at a time in the pinned viewport — enter, hold, exit.
-      var enter = i * 0.22;
-      var exit = enter + 0.22;
+      var enterAt = i * seg;
+      var exitAt = (i + 1) * seg;
+      var enterDur = Math.min(0.1, seg * 0.35);
+      var exitDur = Math.min(0.08, seg * 0.28);
 
-      tl.fromTo(step,
-        { opacity: 0, y: 64, scale: 0.96 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.12, ease: 'power3.out' },
-        enter
-      );
-
-      if(thread){
-        tl.fromTo(thread,
-          { height: 0 },
-          { height: 72, duration: 0.1, ease: 'power2.out' },
-          enter
+      if(i === 0){
+        // Already visible on arrival — hold, then hand off
+        tl.set(step, { opacity: 1, y: 0, scale: 1 }, 0);
+        if(thread) tl.set(thread, { height: 72 }, 0);
+        if(card) tl.set(card, { y: 0, rotate: 0, opacity: 1 }, 0);
+      } else {
+        tl.fromTo(step,
+          { opacity: 0, y: 56, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: enterDur, ease: 'power3.out' },
+          enterAt
         );
-      }
-      if(card){
-        tl.fromTo(card,
-          { y: -24, rotate: -4, opacity: 0.25 },
-          { y: 0, rotate: 0, opacity: 1, duration: 0.12, ease: 'power3.out' },
-          enter + 0.02
-        );
+        if(thread){
+          tl.fromTo(thread,
+            { height: 0 },
+            { height: 72, duration: enterDur * 0.85, ease: 'power2.out' },
+            enterAt
+          );
+        }
+        if(card){
+          tl.fromTo(card,
+            { y: -20, rotate: -4, opacity: 0.2 },
+            { y: 0, rotate: 0, opacity: 1, duration: enterDur, ease: 'power3.out' },
+            enterAt + 0.01
+          );
+        }
       }
 
-      // Keep card readable through its slot, then hand off to the next
       if(i < steps.length - 1){
         tl.to(step, {
-          opacity: 0, y: -36, scale: 0.97, duration: 0.1, ease: 'power2.in'
-        }, exit);
+          opacity: 0, y: -40, scale: 0.97,
+          duration: exitDur, ease: 'power2.in'
+        }, exitAt - exitDur);
       } else {
-        // Final card stays through the end of the pin
-        tl.to(step, { opacity: 1, duration: 0.2, ease: 'none' }, 0.8);
+        // Hold the final card through the end of the sticky runway
+        tl.to(step, { opacity: 1, y: 0, scale: 1, duration: seg * 0.5, ease: 'none' }, enterAt + enterDur);
       }
     });
 
@@ -312,23 +323,28 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 
   function killJourney(){
     if(journeyTl){
-      journeyTl.scrollTrigger && journeyTl.scrollTrigger.kill();
+      if(journeyTl.scrollTrigger) journeyTl.scrollTrigger.kill();
       journeyTl.kill();
       journeyTl = null;
     }
     journeyTriggers.forEach(function(st){ if(st && st.kill) st.kill(); });
     journeyTriggers = [];
-    // Clear pin-spacer side effects / inline styles from a previous pin
-    gsap.set(stage, { clearProps: 'position,top,left,width,height,maxWidth,margin,padding,transform,zIndex' });
   }
 
   function resetVisualState(){
-    steps.forEach(function(step){
+    steps.forEach(function(step, i){
       var thread = step.querySelector('.thread');
       var card = step.querySelector('.hang-card');
-      gsap.set(step, { opacity: 0, y: 70, rotateX: 10, transformPerspective: 900, x: 0 });
-      if(thread) gsap.set(thread, { height: 0 });
-      if(card) gsap.set(card, { y: -28, rotate: -5, opacity: 0.2 });
+      if(i === 0){
+        // First card is ready the moment the sticky stage lands
+        gsap.set(step, { opacity: 1, y: 0, scale: 1, x: 0, rotateX: 0 });
+        if(thread) gsap.set(thread, { height: 72 });
+        if(card) gsap.set(card, { y: 0, rotate: 0, opacity: 1 });
+      } else {
+        gsap.set(step, { opacity: 0, y: 56, scale: 0.96, x: 0, rotateX: 0 });
+        if(thread) gsap.set(thread, { height: 0 });
+        if(card) gsap.set(card, { y: -20, rotate: -4, opacity: 0.2 });
+      }
     });
     if(spineLine) gsap.set(spineLine, { height: '0%' });
     if(progressFill) gsap.set(progressFill, { width: '0%' });
