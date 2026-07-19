@@ -18,6 +18,12 @@
 <nav>
   <a class="nav-logo" href="#hero">ASC_PORTFOLIO</a>
   <div class="nav-pills">
+    <button type="button" class="nav-pill nav-pill-sound" id="soundToggle" aria-label="Play background music" aria-pressed="false" title="Interstellar ambient">
+      <span class="sound-eq" aria-hidden="true">
+        <i></i><i></i><i></i><i></i>
+      </span>
+      <span class="nav-pill-label sound-label">Sound</span>
+    </button>
     <a href="#contact" class="nav-pill nav-pill-cta">Say Hello</a>
     <button class="nav-pill nav-pill-menu" id="menuToggle" aria-label="Menu">
       <span class="nav-pill-dot"></span>
@@ -495,9 +501,14 @@
   </div>
 </section>
 
+<audio id="bgMusic" loop preload="auto" playsinline crossorigin="anonymous">
+  <source src="audio/interstellar-ambient.mp3" type="audio/mpeg">
+</audio>
+
 <footer>
   <p>Designed &amp; built by Allen Stivanson Christian &nbsp;&middot;&nbsp; AI &amp; Data Science Engineer &nbsp;&middot;&nbsp; Anand, Gujarat, India</p>
   <p style="margin-top:8px;font-size:0.65rem;">&copy; 2026 Allen Stivanson Christian</p>
+  <p class="music-credit">Ambient score: <em>Starfield Romance</em> by Yoiyami (CC0) &middot; Interstellar-inspired organ bed</p>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
