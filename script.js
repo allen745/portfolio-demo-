@@ -606,8 +606,13 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   setTimeout(rebuild, 100);
 })();
 
-// Achievements — cinematic cosmic backdrop (Interstellar-style black hole + starfield)
-// with scroll-linked parallax, cursor-reactive depth, 3D card tilt, and shooting stars.
+// Achievements — cinematic Tesseract parallax (Interstellar-style).
+// Background: a canvas-rendered 4D hypercube network, pinned to the viewport
+// for the whole scroll duration of the section (position: sticky + negative
+// margin trick) so it stays on screen while the foreground cards scroll past.
+// The scroll position drives the tesseract's rotation directly, with the
+// rotation angle eased/lerped toward its scroll-derived target every frame
+// so it never stutters — it just keeps gliding, even between scroll events.
 (function(){
   var section = document.getElementById('achievements');
   if(!section) return;
@@ -615,124 +620,139 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isCoarse = window.matchMedia('(pointer: coarse)').matches;
 
-  // Build the cosmic backdrop and move the section's existing content into a
-  // wrapper so it always paints above the backdrop.
-  var cosmos = document.createElement('div');
-  cosmos.className = 'ach-cosmos';
-  cosmos.setAttribute('aria-hidden', 'true');
-  cosmos.innerHTML =
-    '<canvas class="ach-starfield"></canvas>' +
-    '<div class="ach-blackhole-scroll">' +
-      '<div class="ach-blackhole">' +
-        '<div class="ach-blackhole-glow"></div>' +
-        '<div class="ach-blackhole-disk ach-disk-1"></div>' +
-        '<div class="ach-blackhole-core"></div>' +
-        '<div class="ach-blackhole-disk ach-disk-2"></div>' +
-      '</div>' +
-    '</div>' +
-    '<div class="ach-vignette"></div>';
+  // Background (pinned matrix) + midground (vignette) layers, then move the
+  // section's existing content into a foreground wrapper that always paints
+  // above both.
+  var stickyBg = document.createElement('div');
+  stickyBg.className = 'ach-sticky-bg';
+  stickyBg.setAttribute('aria-hidden', 'true');
+  stickyBg.innerHTML = '<canvas class="ach-tesseract"></canvas><div class="ach-vignette"></div>';
 
   var content = document.createElement('div');
   content.className = 'ach-content';
   while(section.firstChild){
     content.appendChild(section.firstChild);
   }
-  section.appendChild(cosmos);
+  section.appendChild(stickyBg);
   section.appendChild(content);
 
-  // ---- Starfield ----
-  var canvas = cosmos.querySelector('.ach-starfield');
+  // ---- 4D hypercube geometry ----
+  // 16 vertices at every combination of (±1,±1,±1,±1); an edge connects two
+  // vertices that differ in exactly one coordinate (32 edges total).
+  var vertices4D = [];
+  for(var vi = 0; vi < 16; vi++){
+    vertices4D.push([
+      (vi & 1) ? 1 : -1,
+      (vi & 2) ? 1 : -1,
+      (vi & 4) ? 1 : -1,
+      (vi & 8) ? 1 : -1
+    ]);
+  }
+  var edges = [];
+  for(var a = 0; a < vertices4D.length; a++){
+    for(var b = a + 1; b < vertices4D.length; b++){
+      var diff = 0;
+      for(var k = 0; k < 4; k++){ if(vertices4D[a][k] !== vertices4D[b][k]) diff++; }
+      if(diff === 1) edges.push([a, b]);
+    }
+  }
+
+  function rotate4D(v, i, j, angle){
+    var c = Math.cos(angle), s = Math.sin(angle);
+    var out = v.slice();
+    out[i] = v[i] * c - v[j] * s;
+    out[j] = v[i] * s + v[j] * c;
+    return out;
+  }
+  function project4Dto2D(v, scale, cx, cy){
+    var viewDist = 3.2;
+    var wFactor = viewDist / (viewDist - v[3]);
+    var x3 = v[0] * wFactor, y3 = v[1] * wFactor, z3 = v[2] * wFactor;
+    var zFactor = viewDist / (viewDist - z3 * 0.6);
+    return {
+      x: cx + x3 * zFactor * scale,
+      y: cy - y3 * zFactor * scale,
+      depth: z3
+    };
+  }
+
+  // ---- Canvas setup ----
+  var canvas = stickyBg.querySelector('.ach-tesseract');
   var ctx = canvas.getContext('2d');
-  var stars = [];
-  var starCount = isCoarse ? 60 : 130;
-  var starsRafId = null;
+  var tesseractRafId = null;
   var sectionVisible = false;
+  var LAYER_COUNT = isCoarse ? 2 : 4;
 
-  function resizeStarfield(){
-    canvas.width = section.offsetWidth;
-    canvas.height = section.offsetHeight;
-    seedStars();
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
-  function seedStars(){
-    stars = [];
-    for(var i = 0; i < starCount; i++){
-      var depth = Math.random();
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: 0.4 + depth * 1.4,
-        depth: 0.3 + depth * 0.7,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.15 + depth * 0.35
-      });
-    }
-  }
-  function drawStars(t){
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // ---- Scroll drives the target rotation angle; current angle eases toward
+  // it every frame (a simple lerp/"spring") so the rotation glides smoothly
+  // instead of jumping or stuttering with each scroll tick. ----
+  var targetAngle = 0;
+  var currentAngle = 0;
+  var lastScrollY = window.scrollY || window.pageYOffset;
+  var SCROLL_SENSITIVITY = 0.0026;
+  var EASE = 0.06;
+
+  window.addEventListener('scroll', function(){
+    var y = window.scrollY || window.pageYOffset;
+    targetAngle += (y - lastScrollY) * SCROLL_SENSITIVITY;
+    lastScrollY = y;
+  }, { passive: true });
+
+  function drawTesseract(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for(var i = 0; i < stars.length; i++){
-      var s = stars[i];
-      var twinkle = 0.55 + 0.45 * Math.sin(t * 0.001 * s.speed + s.phase);
-      ctx.globalAlpha = twinkle * s.depth;
-      ctx.fillStyle = '#fff6e8';
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-    if(sectionVisible && !reduceMotion) starsRafId = requestAnimationFrame(drawStars);
-  }
+    currentAngle += (targetAngle - currentAngle) * EASE;
 
-  resizeStarfield();
-  window.addEventListener('resize', resizeStarfield);
+    var cx = canvas.width / 2, cy = canvas.height / 2;
+    var baseSize = Math.min(canvas.width, canvas.height) * 0.32;
+
+    for(var layer = 0; layer < LAYER_COUNT; layer++){
+      var scale = baseSize * (1 + layer * 0.34);
+      var opacity = 0.32 - layer * 0.055;
+      var phase = layer * 0.5;
+      var pts = new Array(vertices4D.length);
+      for(var vIdx = 0; vIdx < vertices4D.length; vIdx++){
+        var r = rotate4D(vertices4D[vIdx], 0, 3, currentAngle + phase);
+        r = rotate4D(r, 1, 2, currentAngle * 0.64 + phase);
+        pts[vIdx] = project4Dto2D(r, scale, cx, cy);
+      }
+      ctx.lineWidth = 1;
+      for(var eIdx = 0; eIdx < edges.length; eIdx++){
+        var p1 = pts[edges[eIdx][0]], p2 = pts[edges[eIdx][1]];
+        var edgeDepth = (p1.depth + p2.depth) / 2;
+        var depthBoost = 1 + edgeDepth * 0.18;
+        ctx.strokeStyle = 'rgba(240,184,110,' + Math.max(0.04, opacity * depthBoost) + ')';
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+    }
+
+    if(sectionVisible && !reduceMotion) tesseractRafId = requestAnimationFrame(drawTesseract);
+  }
 
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       sectionVisible = entry.isIntersecting;
-      if(sectionVisible && !starsRafId && !reduceMotion){
-        starsRafId = requestAnimationFrame(drawStars);
-      } else if(!sectionVisible && starsRafId){
-        cancelAnimationFrame(starsRafId);
-        starsRafId = null;
+      if(sectionVisible && !tesseractRafId && !reduceMotion){
+        tesseractRafId = requestAnimationFrame(drawTesseract);
+      } else if(!sectionVisible && tesseractRafId){
+        cancelAnimationFrame(tesseractRafId);
+        tesseractRafId = null;
       }
     });
-  }, { threshold: 0.05 });
+  }, { threshold: 0.02 });
   io.observe(section);
-  if(reduceMotion) drawStars(0);
+  if(reduceMotion) drawTesseract();
 
-  // ---- Scroll-linked cinematic parallax ----
-  var blackholeScroll = cosmos.querySelector('.ach-blackhole-scroll');
-  var blackhole = cosmos.querySelector('.ach-blackhole');
-  if(!reduceMotion && window.gsap && window.ScrollTrigger){
-    gsap.fromTo(blackholeScroll,
-      { yPercent: -14, scale: 0.92 },
-      {
-        yPercent: 10, scale: 1.05, ease: 'none',
-        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
-      }
-    );
-    gsap.fromTo(canvas,
-      { yPercent: -6 },
-      {
-        yPercent: 6, ease: 'none',
-        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
-      }
-    );
-  }
-
-  // ---- Cursor-reactive depth (desktop only, separate transform layer from the scroll parallax) ----
-  if(!isCoarse && !reduceMotion){
-    section.addEventListener('mousemove', function(e){
-      var rect = section.getBoundingClientRect();
-      var px = (e.clientX - rect.left) / rect.width - 0.5;
-      var py = (e.clientY - rect.top) / rect.height - 0.5;
-      blackhole.style.transform = 'translate(' + (px * -26) + 'px,' + (py * -18) + 'px)';
-    });
-    section.addEventListener('mouseleave', function(){
-      blackhole.style.transform = 'translate(0,0)';
-    });
-  }
-
-  // ---- 3D tilt on the patent highlight + phase cards ----
+  // ---- 3D tilt on the patent highlight + phase cards (foreground polish) ----
   if(!isCoarse && !reduceMotion){
     var tiltEls = content.querySelectorAll('.phase-card, .patent-highlight');
     tiltEls.forEach(function(el){
@@ -748,25 +768,5 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
         el.style.transform = '';
       });
     });
-  }
-
-  // ---- Occasional shooting stars ----
-  function spawnShootingStar(){
-    if(!sectionVisible) return;
-    var star = document.createElement('div');
-    star.className = 'ach-shooting-star';
-    star.style.top = (8 + Math.random() * 42) + '%';
-    star.style.left = (Math.random() * 55) + '%';
-    star.style.setProperty('--ach-shoot-rot', (10 + Math.random() * 12) + 'deg');
-    cosmos.appendChild(star);
-    setTimeout(function(){ star.remove(); }, 1700);
-  }
-  if(!reduceMotion){
-    (function loopShoot(){
-      setTimeout(function(){
-        spawnShootingStar();
-        loopShoot();
-      }, 3500 + Math.random() * 4000);
-    })();
   }
 })();
