@@ -319,6 +319,12 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
     currentProjectId = id;
     buildTrack(data);
 
+    // Always start a freshly opened project at the beginning of its track —
+    // otherwise a leftover scroll position from a previous visit pushes the
+    // newly built panels outside the visible (overflow: hidden) viewport.
+    trackX = 0; targetX = 0;
+    track.style.transform = 'translateX(0px)';
+
     var th = data.theme;
     detailEl.style.setProperty('--pd-bg', th.bg);
     detailEl.style.setProperty('--pd-panel', th.panel);
