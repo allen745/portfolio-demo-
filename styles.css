@@ -792,5 +792,7 @@ nav > * { pointer-events: auto; }
 
 @media (max-width: 600px) {
   .nav-pill-cta { display: none; }
+  .nav-pill-sound { min-width: 0; padding: 12px 14px; }
+  .nav-pill-sound .sound-label { display: none; }
   .nav-panel { right: 3%; top: 74px; }
 }
