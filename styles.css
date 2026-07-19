@@ -218,37 +218,103 @@
 
   /* project cards use the same reliable fade-in as the rest of the site (see .fade-in below) */
 
-  /* ACHIEVEMENTS + CERTIFICATES — unified phase cards */
-  #achievements { background: #E9E6DE; color: #232323; }
-  #achievements .section-tag { color: #9c3a30; }
-  .patent-highlight { background: linear-gradient(135deg, rgba(10,138,99,0.08), rgba(0,145,168,0.06)); border: 1px solid rgba(10,138,99,0.3); border-radius: 12px; padding: 32px; margin-bottom: 48px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
-  .patent-badge-big { font-size: 3rem; flex-shrink: 0; }
-  .patent-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #0a8a63; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
-  .patent-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; line-height: 1.2; color: #17181c; }
-  .patent-meta { font-size: 0.85rem; color: #565c66; }
+  /* ACHIEVEMENTS + CERTIFICATES — cinematic cosmic backdrop, Interstellar-style black hole */
+  #achievements { position: relative; overflow: hidden; background: linear-gradient(180deg, #050308 0%, #0a0710 40%, #120c14 100%); color: #f2ece1; }
+  #achievements .section-tag { color: #f0b86e; }
+  #achievements h2 { color: #f7f1e6; text-shadow: 0 0 40px rgba(255,180,90,0.18); }
+
+  .ach-cosmos { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .ach-starfield { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .ach-blackhole-scroll { position: absolute; top: -12%; left: 50%; transform: translateX(-50%); width: min(1100px, 150vw); height: min(1100px, 150vw); will-change: transform; }
+  .ach-blackhole { position: absolute; inset: 0; will-change: transform; }
+  .ach-blackhole-glow {
+    position: absolute; inset: -8%; border-radius: 50%;
+    background: radial-gradient(circle at 50% 44%, rgba(255,205,140,0.38) 0%, rgba(255,150,60,0.18) 32%, rgba(120,55,20,0.07) 55%, transparent 76%);
+    filter: blur(26px);
+    animation: achGlowPulse 8s ease-in-out infinite;
+  }
+  .ach-blackhole-disk {
+    position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%) rotate(-10deg);
+    width: 88%; height: 24%; border-radius: 50%;
+    background: conic-gradient(from 90deg,
+      rgba(255,250,240,0.95), rgba(255,205,120,0.9) 10%, rgba(255,150,60,0.55) 24%,
+      rgba(70,35,14,0) 40%, rgba(70,35,14,0) 60%,
+      rgba(255,150,60,0.55) 76%, rgba(255,205,120,0.9) 90%, rgba(255,250,240,0.95) 100%);
+    filter: blur(7px);
+    box-shadow: 0 0 70px 12px rgba(255,170,90,0.4);
+    animation: achDiskSpin 46s linear infinite;
+  }
+  .ach-disk-2 {
+    width: 58%; height: 13%; top: 44%; z-index: 2;
+    filter: blur(3px); opacity: 0.9; animation-duration: 30s; animation-direction: reverse;
+  }
+  .ach-blackhole-core {
+    position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%);
+    width: 46%; height: 46%; border-radius: 50%; z-index: 1;
+    background: radial-gradient(circle at 42% 38%, #0c0805 0%, #000 55%, #000 100%);
+    box-shadow: 0 0 100px 24px rgba(0,0,0,0.85);
+  }
+  .ach-vignette { position: absolute; inset: 0; z-index: 1; background: radial-gradient(ellipse at 50% 28%, transparent 38%, rgba(3,2,6,0.6) 88%); }
+  @keyframes achGlowPulse { 0%, 100% { opacity: 0.85; transform: scale(1); } 50% { opacity: 1; transform: scale(1.04); } }
+  @keyframes achDiskSpin { to { transform: translate(-50%, -50%) rotate(350deg); } }
+
+  .ach-shooting-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; opacity: 0; box-shadow: 0 0 6px 1px rgba(255,255,255,0.85); animation: achShoot 1.6s ease-in forwards; }
+  .ach-shooting-star::before { content: ''; position: absolute; top: 50%; right: 100%; width: 90px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75)); transform: translateY(-50%); }
+  @keyframes achShoot {
+    0% { opacity: 0; transform: rotate(var(--ach-shoot-rot, 15deg)) translateX(0); }
+    8% { opacity: 1; }
+    72% { opacity: 0.85; }
+    100% { opacity: 0; transform: rotate(var(--ach-shoot-rot, 15deg)) translateX(360px); }
+  }
+
+  .ach-content { position: relative; z-index: 2; }
+
+  .patent-highlight {
+    background: rgba(255,255,255,0.045); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,205,140,0.28); border-radius: 12px; padding: 32px; margin-bottom: 48px;
+    display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+    box-shadow: 0 20px 60px -30px rgba(0,0,0,0.7), 0 0 40px -10px rgba(255,170,90,0.12);
+    transition: transform 0.5s cubic-bezier(.16,1,.3,1), box-shadow 0.4s ease;
+    will-change: transform;
+  }
+  .patent-badge-big { font-size: 3rem; flex-shrink: 0; filter: drop-shadow(0 0 14px rgba(255,190,110,0.5)); }
+  .patent-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #f0b86e; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .patent-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; line-height: 1.2; color: #f7f1e6; }
+  .patent-meta { font-size: 0.85rem; color: #beb2a0; }
 
   .phase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 28px; perspective: 1400px; }
-  .phase-card { background: #fff; border-radius: 12px; padding: 26px 22px 22px; position: relative; box-shadow: 0 10px 26px -14px rgba(20,15,10,0.18); border: 1px solid rgba(20,15,10,0.06); transition: box-shadow 0.3s, transform 0.3s; }
-  .phase-card:hover { box-shadow: 0 18px 36px -14px rgba(20,15,10,0.25); transform: translateY(-4px); }
-  .phase-num { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; color: #0091a8; margin-bottom: 14px; }
+  .phase-card {
+    background: rgba(255,255,255,0.045); backdrop-filter: blur(10px);
+    border-radius: 12px; padding: 26px 22px 22px; position: relative;
+    box-shadow: 0 10px 30px -16px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.09);
+    transition: box-shadow 0.4s ease, transform 0.5s cubic-bezier(.16,1,.3,1), border-color 0.3s;
+    will-change: transform;
+  }
+  .phase-card:hover { box-shadow: 0 22px 46px -18px rgba(0,0,0,0.7), 0 0 34px -6px rgba(255,170,90,0.18); border-color: rgba(255,205,140,0.3); transform: translateY(-4px); }
+  .phase-num { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; color: #f0b86e; margin-bottom: 14px; }
   .phase-icon-wrap { position: relative; width: 52px; height: 52px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; }
-  .phase-icon-wrap::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, #0091a8, #6d28d9, #0a8a63, #a15c00, #9c3a30, #0091a8); animation: ringSpin 5s linear infinite; }
-  .phase-icon-wrap::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: #fff; }
+  .phase-icon-wrap::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, #ffb35e, #6d28d9, #0a8a63, #f0b86e, #9c3a30, #ffb35e); animation: ringSpin 5s linear infinite; }
+  .phase-icon-wrap::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: #150f0d; }
   .phase-icon { position: relative; z-index: 1; font-size: 1.3rem; }
   @keyframes ringSpin { to { transform: rotate(360deg); } }
-  .phase-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.35; color: #17181c; }
-  .phase-meta { font-size: 0.72rem; color: #0091a8; font-family: 'Space Mono', monospace; margin-bottom: 8px; }
-  .phase-desc { font-size: 0.8rem; color: #565c66; line-height: 1.5; }
-  .phase-link { display: inline-block; margin-top: 12px; font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #565c66; border: 1px solid rgba(20,15,10,0.15); padding: 3px 11px; border-radius: 4px; text-decoration: none; }
+  .phase-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.35; color: #f7f1e6; }
+  .phase-meta { font-size: 0.72rem; color: #f0b86e; font-family: 'Space Mono', monospace; margin-bottom: 8px; }
+  .phase-desc { font-size: 0.8rem; color: #beb2a0; line-height: 1.5; }
+  .phase-link { display: inline-block; margin-top: 12px; font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #beb2a0; border: 1px solid rgba(255,255,255,0.15); padding: 3px 11px; border-radius: 4px; text-decoration: none; }
   .phase-link.pending { pointer-events: none; opacity: 0.6; }
 
   /* phase cards use the same reliable fade-in as the rest of the site (see .fade-in below) */
   @media (prefers-reduced-motion: reduce) {
-    .phase-icon-wrap::before { animation: none; }
+    .phase-icon-wrap::before, .ach-blackhole-disk, .ach-blackhole-glow { animation: none; }
+    .ach-shooting-star { display: none; }
+  }
+  @media (max-width: 640px) {
+    .ach-blackhole-scroll { top: -8%; }
   }
 
   /* CERTIFICATE GALLERY */
-  #certificates { background: var(--bg); padding-bottom: 100px; }
+  #certificates { background: none; }
   .cert-carousel-outer { position: relative; padding: 0 70px; }
   .cert-carousel-track { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; padding: 20px 10px 30px; cursor: grab; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .cert-carousel-track::-webkit-scrollbar { display: none; }
