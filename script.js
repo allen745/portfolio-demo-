@@ -143,10 +143,11 @@ var barObs=new IntersectionObserver(function(entries){
 },{threshold:0.3});
 document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);});
 
-// WebGL fluid simulation cursor trail with color inversion — desktop/mouse only,
-// skipped entirely on touch devices. The canvas stays pointer-events:none so page
-// interactions still work; real pointer moves are forwarded to it via synthetic
-// events so the fluid still reacts to the cursor.
+// WebGL liquid cursor trail — a real, colorful fluid simulation that flows and
+// swirls with the pointer (Lusion-style), layered on top of the page without
+// altering the page's own colors. Desktop/mouse only, skipped on touch devices.
+// The canvas stays pointer-events:none so page interactions still work; real
+// pointer moves are forwarded to it via synthetic events so the fluid reacts.
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
   if(typeof WebGLFluid !== 'function') return;
@@ -174,17 +175,19 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
     AUTO: false,
     SIM_RESOLUTION: 128,
     DYE_RESOLUTION: 1024,
-    DENSITY_DISSIPATION: 3.4,
-    VELOCITY_DISSIPATION: 2.2,
+    DENSITY_DISSIPATION: 2.6,
+    VELOCITY_DISSIPATION: 1.6,
     PRESSURE: 0.8,
     PRESSURE_ITERATIONS: 20,
-    CURL: 20,
-    SPLAT_RADIUS: 0.16,
-    SPLAT_FORCE: 4000,
-    SPLAT_COLOR: { r: 1, g: 1, b: 1 },
-    COLORFUL: false,
-    SHADING: false,
-    BLOOM: false,
+    CURL: 26,
+    SPLAT_RADIUS: 0.22,
+    SPLAT_FORCE: 4800,
+    COLORFUL: true,
+    COLOR_UPDATE_SPEED: 6,
+    SHADING: true,
+    BLOOM: true,
+    BLOOM_INTENSITY: 0.45,
+    BLOOM_THRESHOLD: 0.45,
     SUNRAYS: false,
     TRANSPARENT: true,
     BACK_COLOR: { r: 0, g: 0, b: 0 }
