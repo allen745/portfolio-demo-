@@ -1175,3 +1175,149 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   // After wiring everything, refresh ScrollTrigger so Lenis + new triggers stay in sync
   ScrollTrigger.refresh();
 })();
+// Interstellar-themed ambient background music
+// Track: Starfield Romance (Yoiyami, CC0) + soft generative organ bed
+(function(){
+  var btn = document.getElementById('soundToggle');
+  var audio = document.getElementById('bgMusic');
+  if(!btn || !audio) return;
+
+  var label = btn.querySelector('.sound-label');
+  var STORAGE_KEY = 'asc-sound-on';
+  var TARGET_VOL = 0.32;
+  var playing = false;
+  var fading = null;
+  var ctx = null;
+  var masterGain = null;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setUi(on){
+    playing = on;
+    btn.classList.toggle('is-playing', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? 'Mute background music' : 'Play background music');
+    if(label) label.textContent = on ? 'Sound On' : 'Sound';
+  }
+
+  function fadeAudioTo(target, ms){
+    if(fading) cancelAnimationFrame(fading);
+    var start = audio.volume;
+    var t0 = performance.now();
+    function step(now){
+      var p = Math.min(1, (now - t0) / ms);
+      var eased = p * (2 - p);
+      audio.volume = start + (target - start) * eased;
+      if(p < 1) fading = requestAnimationFrame(step);
+      else {
+        fading = null;
+        audio.volume = target;
+        if(target === 0) audio.pause();
+      }
+    }
+    fading = requestAnimationFrame(step);
+  }
+
+  function ensureOrgan(){
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    if(!ctx) ctx = new AC();
+    if(ctx.state === 'suspended') ctx.resume();
+    if(masterGain) return;
+
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 0;
+    masterGain.connect(ctx.destination);
+
+    // Quiet pipe-organ style fifths/octaves — Interstellar atmosphere, original bed
+    var freqs = [55, 82.5, 110, 165, 220];
+    freqs.forEach(function(freq, i){
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      var filter = ctx.createBiquadFilter();
+      var lfo = ctx.createOscillator();
+      var lfoGain = ctx.createGain();
+      osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+      filter.type = 'lowpass';
+      filter.frequency.value = 420 + i * 40;
+      filter.Q.value = 0.7;
+      gain.gain.value = 0.045 / (i + 1);
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.05 + i * 0.01;
+      lfoGain.gain.value = 30 + i * 8;
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      lfo.start();
+    });
+  }
+
+  function fadeOrgan(to, seconds){
+    if(!masterGain || !ctx) return;
+    var now = ctx.currentTime;
+    masterGain.gain.cancelScheduledValues(now);
+    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+    masterGain.gain.linearRampToValueAtTime(to, now + seconds);
+  }
+
+  function startSound(){
+    ensureOrgan();
+    audio.volume = 0;
+    var playPromise = audio.play();
+    function go(){
+      fadeAudioTo(TARGET_VOL, reduceMotion ? 200 : 1400);
+      fadeOrgan(0.11, reduceMotion ? 0.3 : 1.6);
+      setUi(true);
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch(e){}
+    }
+    if(playPromise && playPromise.then){
+      playPromise.then(go).catch(function(){
+        fadeOrgan(0.16, 1.2);
+        setUi(true);
+        try { localStorage.setItem(STORAGE_KEY, '1'); } catch(e){}
+      });
+    } else {
+      go();
+    }
+  }
+
+  function stopSound(){
+    fadeAudioTo(0, reduceMotion ? 150 : 700);
+    fadeOrgan(0, reduceMotion ? 0.2 : 0.8);
+    setUi(false);
+    try { localStorage.setItem(STORAGE_KEY, '0'); } catch(e){}
+  }
+
+  btn.addEventListener('click', function(){
+    if(playing) stopSound();
+    else startSound();
+  });
+
+  var preferOn = false;
+  try { preferOn = localStorage.getItem(STORAGE_KEY) === '1'; } catch(e){}
+
+  if(preferOn){
+    var unlock = function(){
+      startSound();
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+  }
+
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){
+      if(playing){
+        audio.pause();
+        fadeOrgan(0, 0.2);
+      }
+    } else if(playing){
+      audio.play().catch(function(){});
+      fadeOrgan(0.11, 0.6);
+    }
+  });
+})();
