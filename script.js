@@ -754,7 +754,7 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
 
   // ---- 3D tilt on the patent highlight + phase cards (foreground polish) ----
   if(!isCoarse && !reduceMotion){
-    var tiltEls = content.querySelectorAll('.phase-card, .patent-highlight');
+    var tiltEls = content.querySelectorAll('.phase-card');
     tiltEls.forEach(function(el){
       el.addEventListener('mousemove', function(e){
         var rect = el.getBoundingClientRect();
