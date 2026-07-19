@@ -23,6 +23,7 @@ lenis.stop(); // lock scroll until intro finishes
     onComplete: function(){
       pre.remove();
       lenis.start();
+      ScrollTrigger.refresh();
     }
   });
 
@@ -80,7 +81,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     var thread = wrap.querySelector('.thread');
     var card = wrap.querySelector('.hang-card');
     if(!thread || !card) return;
-    var baseHeight = 64;
+    var baseHeight = 72;
     var dragging = false, startX = 0, startY = 0;
 
     function applyDrag(dx, dy){
@@ -97,7 +98,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     }
     card.addEventListener('pointerdown', function(e){
       // Prefer the revealed rest length after the journey scrub lands
-      baseHeight = Math.max(56, parseFloat(thread.style.height) || thread.offsetHeight || 64);
+      baseHeight = Math.max(56, parseFloat(thread.style.height) || thread.offsetHeight || 72);
       dragging = true; startX = e.clientX; startY = e.clientY;
       thread.style.transition = 'none'; card.style.transition = 'none';
       card.setPointerCapture(e.pointerId);
@@ -198,62 +199,77 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     });
   }
 
+  var journeyTl = null;
+
   function buildPinnedTimeline(){
+    // Pin the stage with ScrollTrigger (CSS sticky breaks when ancestors
+    // clip overflow — which left cards 02–04 animating off-screen).
     var tl = gsap.timeline({
       scrollTrigger: {
-        trigger: pinWrap,
+        trigger: stage,
         start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1.1,
+        end: function(){ return '+=' + Math.round(window.innerHeight * 3.2); },
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: function(self){
-          var idx = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
+          var idx = Math.min(steps.length - 1, Math.floor(self.progress / 0.22));
           setStepIndex(idx);
         }
       }
     });
 
     if(orbA){
-      tl.fromTo(orbA, { x: -40, y: 20, opacity: 0.35 }, { x: 30, y: -50, opacity: 0.7, ease: 'none' }, 0);
+      tl.fromTo(orbA, { x: -40, y: 20, opacity: 0.35 }, { x: 30, y: -50, opacity: 0.7, duration: 1, ease: 'none' }, 0);
     }
     if(orbB){
-      tl.fromTo(orbB, { x: 30, y: -20, opacity: 0.25 }, { x: -40, y: 40, opacity: 0.55, ease: 'none' }, 0);
+      tl.fromTo(orbB, { x: 30, y: -20, opacity: 0.25 }, { x: -40, y: 40, opacity: 0.55, duration: 1, ease: 'none' }, 0);
     }
     if(spineLine){
-      tl.to(spineLine, { height: '100%', ease: 'none' }, 0);
+      tl.fromTo(spineLine, { height: '0%' }, { height: '100%', duration: 1, ease: 'none' }, 0);
     }
     if(progressFill){
-      tl.to(progressFill, { width: '100%', ease: 'none' }, 0);
+      tl.fromTo(progressFill, { width: '0%' }, { width: '100%', duration: 1, ease: 'none' }, 0);
     }
 
     steps.forEach(function(step, i){
       var thread = step.querySelector('.thread');
       var card = step.querySelector('.hang-card');
-      var start = i / steps.length;
-      var end = (i + 0.85) / steps.length;
+      // One card at a time in the pinned viewport — enter, hold, exit.
+      var enter = i * 0.22;
+      var exit = enter + 0.22;
 
-      tl.to(step, {
-        opacity: 1, y: 0, rotateX: 0, duration: end - start, ease: 'power3.out'
-      }, start);
+      tl.fromTo(step,
+        { opacity: 0, y: 64, scale: 0.96 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.12, ease: 'power3.out' },
+        enter
+      );
 
       if(thread){
-        tl.to(thread, { height: 64, duration: (end - start) * 0.7, ease: 'power2.out' }, start);
+        tl.fromTo(thread,
+          { height: 0 },
+          { height: 72, duration: 0.1, ease: 'power2.out' },
+          enter
+        );
       }
       if(card){
-        tl.to(card, {
-          y: 0, rotate: 0, opacity: 1,
-          duration: (end - start) * 0.75,
-          ease: 'power3.out'
-        }, start + 0.02);
+        tl.fromTo(card,
+          { y: -24, rotate: -4, opacity: 0.25 },
+          { y: 0, rotate: 0, opacity: 1, duration: 0.12, ease: 'power3.out' },
+          enter + 0.02
+        );
       }
 
-      // Soft settle / parallax drift after reveal
-      tl.to(step, {
-        y: i % 2 === 0 ? -12 : 10,
-        x: i % 2 === 0 ? -6 : 8,
-        duration: Math.max(0.12, (1 - end) * 0.55),
-        ease: 'none'
-      }, end);
+      // Keep card readable through its slot, then hand off to the next
+      if(i < steps.length - 1){
+        tl.to(step, {
+          opacity: 0, y: -36, scale: 0.97, duration: 0.1, ease: 'power2.in'
+        }, exit);
+      } else {
+        // Final card stays through the end of the pin
+        tl.to(step, { opacity: 1, duration: 0.2, ease: 'none' }, 0.8);
+      }
     });
 
     return tl;
@@ -295,17 +311,24 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
   }
 
   function killJourney(){
+    if(journeyTl){
+      journeyTl.scrollTrigger && journeyTl.scrollTrigger.kill();
+      journeyTl.kill();
+      journeyTl = null;
+    }
     journeyTriggers.forEach(function(st){ if(st && st.kill) st.kill(); });
     journeyTriggers = [];
+    // Clear pin-spacer side effects / inline styles from a previous pin
+    gsap.set(stage, { clearProps: 'position,top,left,width,height,maxWidth,margin,padding,transform,zIndex' });
   }
 
   function resetVisualState(){
     steps.forEach(function(step){
       var thread = step.querySelector('.thread');
       var card = step.querySelector('.hang-card');
-      gsap.set(step, { opacity: 0, y: 80, rotateX: 12, transformPerspective: 900, x: 0 });
+      gsap.set(step, { opacity: 0, y: 70, rotateX: 10, transformPerspective: 900, x: 0 });
       if(thread) gsap.set(thread, { height: 0 });
-      if(card) gsap.set(card, { y: -36, rotate: -6, opacity: 0.35 });
+      if(card) gsap.set(card, { y: -28, rotate: -5, opacity: 0.2 });
     });
     if(spineLine) gsap.set(spineLine, { height: '0%' });
     if(progressFill) gsap.set(progressFill, { width: '0%' });
@@ -333,14 +356,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     }
 
     if(desktopPin.matches){
-      var tl = buildPinnedTimeline();
-      if(tl.scrollTrigger) journeyTriggers.push(tl.scrollTrigger);
+      journeyTl = buildPinnedTimeline();
     } else {
       buildMobileTimeline();
     }
   }
 
   setup();
+  // Refresh after layout/fonts settle so pin distances stay accurate
+  requestAnimationFrame(function(){ ScrollTrigger.refresh(); });
+  window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
   desktopPin.addEventListener('change', function(){
     setup();
     ScrollTrigger.refresh();
