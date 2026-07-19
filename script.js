@@ -116,15 +116,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 })();
 
 
-// Scroll reveals — staggered, eased, replay on scroll-back
+// Scroll reveals — cinematic rise + soft scale, replay on scroll-back
 gsap.utils.toArray('.fade-in').forEach(function(el){
   gsap.fromTo(el,
-    { opacity: 0, y: 40 },
+    { opacity: 0, y: 56, scale: 0.975 },
     {
-      opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+      opacity: 1, y: 0, scale: 1,
+      duration: 1.15, ease: 'power4.out',
       scrollTrigger: {
         trigger: el,
-        start: 'top 88%',
+        start: 'top 90%',
         toggleActions: 'play none none reverse'
       }
     }
@@ -769,4 +770,125 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
       });
     });
   }
+})();
+
+// Cinematic high-professional transitions between every major section while scrolling.
+// For each section (after the hero's own intro): a glowing seam that draws across the
+// boundary, a veil that lifts as the section arrives / settles back on exit, and a
+// clip-path title reveal on the section header. Content itself keeps using the
+// enhanced .fade-in system above — this layer handles the between-section moment.
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(!window.gsap || !window.ScrollTrigger) return;
+
+  var sectionIds = ['about', 'skills', 'projects', 'achievements', 'experience', 'contact'];
+
+  sectionIds.forEach(function(id){
+    var section = document.getElementById(id);
+    if(!section) return;
+
+    // --- Boundary seam (thin cinematic light across the section top) ---
+    var seam = document.createElement('div');
+    seam.className = 'cinematic-seam';
+    seam.setAttribute('aria-hidden', 'true');
+    seam.innerHTML = '<span class="cinematic-seam-line"></span><span class="cinematic-seam-glow"></span>';
+    // Keep seams above the achievements sticky backdrop by inserting into the
+    // content wrapper when present; otherwise at the top of the section.
+    var seamHost = section.querySelector('.ach-content') || section;
+    seamHost.insertBefore(seam, seamHost.firstChild);
+
+    var seamLine = seam.querySelector('.cinematic-seam-line');
+    var seamGlow = seam.querySelector('.cinematic-seam-glow');
+    gsap.fromTo(seamLine,
+      { scaleX: 0, opacity: 0 },
+      {
+        scaleX: 1, opacity: 1, duration: 1.25, ease: 'power3.out',
+        scrollTrigger: {
+          trigger: section, start: 'top 88%', end: 'top 40%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
+    gsap.fromTo(seamGlow,
+      { opacity: 0, scaleX: 0.5 },
+      {
+        opacity: 1, scaleX: 1, duration: 1.4, ease: 'power2.out',
+        scrollTrigger: {
+          trigger: section, start: 'top 88%', end: 'top 40%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
+
+    // --- Enter/exit veil: lifts as the section arrives, softens again on exit ---
+    // Inserted behind content (sticky bg stays at the back when present).
+    var veil = document.createElement('div');
+    veil.className = 'cinematic-veil';
+    veil.setAttribute('aria-hidden', 'true');
+    var stickyBg = section.querySelector('.ach-sticky-bg');
+    if(stickyBg && stickyBg.nextSibling){
+      section.insertBefore(veil, stickyBg.nextSibling);
+    } else {
+      section.insertBefore(veil, section.firstChild);
+    }
+    // Keep real content above the veil without covering the sticky backdrop
+    Array.prototype.forEach.call(section.children, function(child){
+      if(
+        child === veil ||
+        child.classList.contains('ach-sticky-bg') ||
+        child.classList.contains('cinematic-seam')
+      ) return;
+      if(!child.style.position) child.style.position = 'relative';
+      if(!child.style.zIndex) child.style.zIndex = '2';
+    });
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 0.65
+      }
+    })
+      .fromTo(veil, { opacity: 0.65 }, { opacity: 0, duration: 0.32, ease: 'none' }, 0)
+      .to(veil, { opacity: 0.28, duration: 0.22, ease: 'none' }, 0.78);
+
+    // --- Header tag + title cinematic reveal ---
+    var tag = section.querySelector('.section-tag, .about-eyebrow, .collab-tag');
+    var title = section.querySelector('.section-header h2, .about-heading, .thank-you');
+
+    if(tag){
+      gsap.fromTo(tag,
+        { opacity: 0, x: -28 },
+        {
+          opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: {
+            trigger: tag, start: 'top 90%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    }
+
+    if(title){
+      // Avoid fighting the About column's existing .fade-in on the same node tree
+      // for the heading when it's nested inside a fade-in — still fine to clip-reveal.
+      title.classList.add('cinematic-title-reveal');
+      gsap.fromTo(title,
+        { opacity: 0, y: 48, clipPath: 'inset(110% 0 0 0)' },
+        {
+          opacity: 1, y: 0, clipPath: 'inset(0% 0 0 0)',
+          duration: 1.2, ease: 'power4.out',
+          scrollTrigger: {
+            trigger: title, start: 'top 90%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    }
+
+  });
+
+  // After wiring everything, refresh ScrollTrigger so Lenis + new triggers stay in sync
+  ScrollTrigger.refresh();
 })();

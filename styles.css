@@ -410,6 +410,75 @@
   footer { text-align: center; padding: 32px; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); border-top: 1px solid var(--border); position: relative; z-index: 1; }
   .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .fade-in.visible { opacity: 1; transform: none; }
+
+  /* Cinematic section transitions — seams, veils, title clip reveals */
+  .cinematic-seam {
+    position: absolute; top: 0; left: 0; right: 0; height: 80px;
+    z-index: 6; pointer-events: none; overflow: hidden;
+  }
+  .cinematic-seam-line {
+    position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0,229,255,0.15) 18%,
+      rgba(240,184,110,0.7) 50%,
+      rgba(0,229,255,0.15) 82%,
+      transparent 100%);
+    transform: scaleX(0); transform-origin: center;
+    box-shadow: 0 0 12px rgba(240,184,110,0.35);
+  }
+  .cinematic-seam-glow {
+    position: absolute; top: -30px; left: 15%; right: 15%; height: 60px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(240,184,110,0.18) 0%, rgba(0,229,255,0.06) 40%, transparent 72%);
+    opacity: 0; transform: scaleX(0.6);
+  }
+  #about .cinematic-seam-line,
+  #skills .cinematic-seam-line,
+  #contact .cinematic-seam-line {
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0,145,168,0.2) 18%,
+      rgba(179,38,30,0.55) 50%,
+      rgba(0,145,168,0.2) 82%,
+      transparent 100%);
+    box-shadow: 0 0 12px rgba(179,38,30,0.2);
+  }
+  #about .cinematic-seam-glow,
+  #skills .cinematic-seam-glow,
+  #contact .cinematic-seam-glow {
+    background: radial-gradient(ellipse at 50% 0%, rgba(179,38,30,0.12) 0%, rgba(0,145,168,0.06) 40%, transparent 72%);
+  }
+
+  /* Sits behind section content (z-index 1); content children are bumped to 2 in JS */
+  .cinematic-veil {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(0,0,0,0.5) 0%,
+      rgba(0,0,0,0.14) 26%,
+      transparent 46%,
+      transparent 58%,
+      rgba(0,0,0,0.22) 100%);
+    opacity: 0;
+  }
+  #about .cinematic-veil,
+  #skills .cinematic-veil,
+  #contact .cinematic-veil {
+    background: linear-gradient(180deg,
+      rgba(232,224,210,0.85) 0%,
+      rgba(245,241,234,0.25) 28%,
+      transparent 48%,
+      transparent 60%,
+      rgba(20,15,10,0.1) 100%);
+  }
+
+  .cinematic-title-reveal {
+    display: inline-block;
+    will-change: clip-path, transform, opacity;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cinematic-seam, .cinematic-veil { display: none; }
+  }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: rgba(0,229,255,0.2); border-radius: 3px; }
