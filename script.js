@@ -831,10 +831,13 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
     } else {
       section.insertBefore(veil, section.firstChild);
     }
-    // Keep real content above the veil without covering the sticky backdrop
+    // Keep real content above the veil without covering the sticky backdrop.
+    // Skip #project-detail: it must stay position:fixed (fullscreen overlay).
+    // Forcing relative/z-index here collapses the panel so card clicks look broken.
     Array.prototype.forEach.call(section.children, function(child){
       if(
         child === veil ||
+        child.id === 'project-detail' ||
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('cinematic-seam')
       ) return;
