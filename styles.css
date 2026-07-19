@@ -354,29 +354,6 @@
     .cert-img-wrap { height: 180px; }
   }
 
-/* WebGL liquid cursor trail — real fluid colors layered on top, doesn't invert the page */
-.fluid-cursor-canvas {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  pointer-events: none; z-index: 99998;
-  mix-blend-mode: normal;
-  opacity: 0.88;
-}
-.cursor-dot {
-  position: fixed; top: 0; left: 0; width: 10px; height: 10px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.35) 55%, rgba(255,255,255,0) 100%);
-  box-shadow: 0 0 14px 3px rgba(255,255,255,0.4);
-  pointer-events: none; z-index: 99999;
-  transform: translate(-100px, -100px);
-  transition: width 0.25s cubic-bezier(.34,1.56,.64,1), height 0.25s cubic-bezier(.34,1.56,.64,1);
-  will-change: transform;
-}
-.cursor-dot.is-hover { width: 26px; height: 26px; }
-body.custom-cursor-active, body.custom-cursor-active a, body.custom-cursor-active button {
-  cursor: none;
-}
-@media (pointer: coarse) {
-  .fluid-cursor-canvas, .cursor-dot { display: none !important; }
-}
 .btn, .contact-pill, .about-connect-item { will-change: transform; }
 #hero-3d {
   position: absolute; inset: 0; z-index: 0;
