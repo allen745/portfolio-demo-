@@ -605,3 +605,168 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   requestAnimationFrame(raf);
   setTimeout(rebuild, 100);
 })();
+
+// Achievements — cinematic cosmic backdrop (Interstellar-style black hole + starfield)
+// with scroll-linked parallax, cursor-reactive depth, 3D card tilt, and shooting stars.
+(function(){
+  var section = document.getElementById('achievements');
+  if(!section) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isCoarse = window.matchMedia('(pointer: coarse)').matches;
+
+  // Build the cosmic backdrop and move the section's existing content into a
+  // wrapper so it always paints above the backdrop.
+  var cosmos = document.createElement('div');
+  cosmos.className = 'ach-cosmos';
+  cosmos.setAttribute('aria-hidden', 'true');
+  cosmos.innerHTML =
+    '<canvas class="ach-starfield"></canvas>' +
+    '<div class="ach-blackhole-scroll">' +
+      '<div class="ach-blackhole">' +
+        '<div class="ach-blackhole-glow"></div>' +
+        '<div class="ach-blackhole-disk ach-disk-1"></div>' +
+        '<div class="ach-blackhole-core"></div>' +
+        '<div class="ach-blackhole-disk ach-disk-2"></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="ach-vignette"></div>';
+
+  var content = document.createElement('div');
+  content.className = 'ach-content';
+  while(section.firstChild){
+    content.appendChild(section.firstChild);
+  }
+  section.appendChild(cosmos);
+  section.appendChild(content);
+
+  // ---- Starfield ----
+  var canvas = cosmos.querySelector('.ach-starfield');
+  var ctx = canvas.getContext('2d');
+  var stars = [];
+  var starCount = isCoarse ? 60 : 130;
+  var starsRafId = null;
+  var sectionVisible = false;
+
+  function resizeStarfield(){
+    canvas.width = section.offsetWidth;
+    canvas.height = section.offsetHeight;
+    seedStars();
+  }
+  function seedStars(){
+    stars = [];
+    for(var i = 0; i < starCount; i++){
+      var depth = Math.random();
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: 0.4 + depth * 1.4,
+        depth: 0.3 + depth * 0.7,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.15 + depth * 0.35
+      });
+    }
+  }
+  function drawStars(t){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for(var i = 0; i < stars.length; i++){
+      var s = stars[i];
+      var twinkle = 0.55 + 0.45 * Math.sin(t * 0.001 * s.speed + s.phase);
+      ctx.globalAlpha = twinkle * s.depth;
+      ctx.fillStyle = '#fff6e8';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if(sectionVisible && !reduceMotion) starsRafId = requestAnimationFrame(drawStars);
+  }
+
+  resizeStarfield();
+  window.addEventListener('resize', resizeStarfield);
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      sectionVisible = entry.isIntersecting;
+      if(sectionVisible && !starsRafId && !reduceMotion){
+        starsRafId = requestAnimationFrame(drawStars);
+      } else if(!sectionVisible && starsRafId){
+        cancelAnimationFrame(starsRafId);
+        starsRafId = null;
+      }
+    });
+  }, { threshold: 0.05 });
+  io.observe(section);
+  if(reduceMotion) drawStars(0);
+
+  // ---- Scroll-linked cinematic parallax ----
+  var blackholeScroll = cosmos.querySelector('.ach-blackhole-scroll');
+  var blackhole = cosmos.querySelector('.ach-blackhole');
+  if(!reduceMotion && window.gsap && window.ScrollTrigger){
+    gsap.fromTo(blackholeScroll,
+      { yPercent: -14, scale: 0.92 },
+      {
+        yPercent: 10, scale: 1.05, ease: 'none',
+        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
+      }
+    );
+    gsap.fromTo(canvas,
+      { yPercent: -6 },
+      {
+        yPercent: 6, ease: 'none',
+        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
+      }
+    );
+  }
+
+  // ---- Cursor-reactive depth (desktop only, separate transform layer from the scroll parallax) ----
+  if(!isCoarse && !reduceMotion){
+    section.addEventListener('mousemove', function(e){
+      var rect = section.getBoundingClientRect();
+      var px = (e.clientX - rect.left) / rect.width - 0.5;
+      var py = (e.clientY - rect.top) / rect.height - 0.5;
+      blackhole.style.transform = 'translate(' + (px * -26) + 'px,' + (py * -18) + 'px)';
+    });
+    section.addEventListener('mouseleave', function(){
+      blackhole.style.transform = 'translate(0,0)';
+    });
+  }
+
+  // ---- 3D tilt on the patent highlight + phase cards ----
+  if(!isCoarse && !reduceMotion){
+    var tiltEls = content.querySelectorAll('.phase-card, .patent-highlight');
+    tiltEls.forEach(function(el){
+      el.addEventListener('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        var px = (e.clientX - rect.left) / rect.width - 0.5;
+        var py = (e.clientY - rect.top) / rect.height - 0.5;
+        el.style.transition = 'none';
+        el.style.transform = 'perspective(900px) rotateX(' + (py * -9) + 'deg) rotateY(' + (px * 11) + 'deg) translateY(-6px)';
+      });
+      el.addEventListener('mouseleave', function(){
+        el.style.transition = 'transform 0.5s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s ease, border-color 0.3s';
+        el.style.transform = '';
+      });
+    });
+  }
+
+  // ---- Occasional shooting stars ----
+  function spawnShootingStar(){
+    if(!sectionVisible) return;
+    var star = document.createElement('div');
+    star.className = 'ach-shooting-star';
+    star.style.top = (8 + Math.random() * 42) + '%';
+    star.style.left = (Math.random() * 55) + '%';
+    star.style.setProperty('--ach-shoot-rot', (10 + Math.random() * 12) + 'deg');
+    cosmos.appendChild(star);
+    setTimeout(function(){ star.remove(); }, 1700);
+  }
+  if(!reduceMotion){
+    (function loopShoot(){
+      setTimeout(function(){
+        spawnShootingStar();
+        loopShoot();
+      }, 3500 + Math.random() * 4000);
+    })();
+  }
+})();
