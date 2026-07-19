@@ -386,11 +386,12 @@
   #experience .section-tag,
   #experience .exp-tag { color: var(--exp-warm); }
 
-  .exp-pin-wrap { position: relative; }
+  /* Tall scroll runway + sticky stage (Lenis-friendly; avoids GSAP pin drift) */
+  .exp-pin-wrap { position: relative; height: 320vh; }
   .exp-pin-stage {
-    position: relative; height: 100vh; min-height: 640px;
+    position: sticky; top: 0; height: 100vh; min-height: 0;
     display: flex; align-items: stretch;
-    padding: 96px 5% 48px;
+    padding: 88px 5% 40px;
     overflow: hidden;
   }
   .exp-atmosphere { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
@@ -540,8 +541,9 @@
   .hang-desc { font-size: 0.84rem; color: #565c66; line-height: 1.6; }
 
   @media (max-width: 980px) {
+    .exp-pin-wrap { height: auto; }
     .exp-pin-stage {
-      height: auto; min-height: 0;
+      position: relative; height: auto; min-height: 0;
       padding: 100px 5% 72px; display: block;
       overflow: visible;
     }
@@ -568,7 +570,8 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .exp-scroll-line { animation: none; }
-    .exp-pin-stage { height: auto; overflow: visible; }
+    .exp-pin-wrap { height: auto; }
+    .exp-pin-stage { position: relative; height: auto; overflow: visible; }
   }
 
   /* CONTACT — "Thank You" hero style */
