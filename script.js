@@ -80,7 +80,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     var thread = wrap.querySelector('.thread');
     var card = wrap.querySelector('.hang-card');
     if(!thread || !card) return;
-    var baseHeight = thread.offsetHeight || 90;
+    var baseHeight = 64;
     var dragging = false, startX = 0, startY = 0;
 
     function applyDrag(dx, dy){
@@ -96,6 +96,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
       card.style.transform = 'rotate(0deg)';
     }
     card.addEventListener('pointerdown', function(e){
+      // Prefer the revealed rest length after the journey scrub lands
+      baseHeight = Math.max(56, parseFloat(thread.style.height) || thread.offsetHeight || 64);
       dragging = true; startX = e.clientX; startY = e.clientY;
       thread.style.transition = 'none'; card.style.transition = 'none';
       card.setPointerCapture(e.pointerId);
@@ -112,6 +114,236 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     card.addEventListener('pointerup', endDrag);
     card.addEventListener('pointercancel', endDrag);
     card.addEventListener('lostpointercapture', endDrag);
+  });
+})();
+
+// Experience & Education — Lusion-style pinned scroll storytelling
+(function(){
+  if(!window.gsap || !window.ScrollTrigger) return;
+  var section = document.getElementById('experience');
+  if(!section) return;
+
+  var pinWrap = section.querySelector('.exp-pin-wrap');
+  var stage = section.querySelector('.exp-pin-stage');
+  var steps = Array.prototype.slice.call(section.querySelectorAll('.exp-step'));
+  var chapterNum = document.getElementById('expChapterNum');
+  var chapterName = document.getElementById('expChapterName');
+  var chapterCopy = document.getElementById('expChapterCopy');
+  var progressFill = document.getElementById('expProgressFill');
+  var progressCurrent = document.getElementById('expProgressCurrent');
+  var spineLine = document.getElementById('expSpineLine');
+  var orbA = section.querySelector('.exp-orb-a');
+  var orbB = section.querySelector('.exp-orb-b');
+
+  if(!pinWrap || !stage || !steps.length) return;
+
+  var chapters = [
+    {
+      num: '01',
+      name: 'Work Experience',
+      copy: 'Roles, training, and the work that shaped how I build.'
+    },
+    {
+      num: '02',
+      name: 'Education',
+      copy: 'The academic path behind the systems, models, and products.'
+    }
+  ];
+  var activeChapter = -1;
+  var activeStep = -1;
+  var chapterTween = null;
+  var journeyTriggers = [];
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var desktopPin = window.matchMedia('(min-width: 981px)');
+
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+
+  function setChapter(idx, immediate){
+    if(idx === activeChapter || !chapters[idx]) return;
+    activeChapter = idx;
+    var data = chapters[idx];
+    if(chapterTween){ chapterTween.kill(); chapterTween = null; }
+    if(immediate || reduceMotion){
+      gsap.set([chapterNum, chapterName, chapterCopy], { clearProps: 'opacity,transform,clipPath' });
+      chapterNum.textContent = data.num;
+      chapterName.textContent = data.name;
+      chapterCopy.textContent = data.copy;
+      return;
+    }
+    chapterTween = gsap.timeline({
+      onComplete: function(){ chapterTween = null; }
+    })
+      .to([chapterNum, chapterName, chapterCopy], {
+        opacity: 0, y: 18, duration: 0.28, ease: 'power2.in', stagger: 0.03
+      })
+      .add(function(){
+        chapterNum.textContent = data.num;
+        chapterName.textContent = data.name;
+        chapterCopy.textContent = data.copy;
+      })
+      .fromTo([chapterNum, chapterName, chapterCopy],
+        { opacity: 0, y: -22, clipPath: 'inset(100% 0 0 0)' },
+        { opacity: 1, y: 0, clipPath: 'inset(0% 0 0 0)', duration: 0.55, ease: 'power3.out', stagger: 0.05 }
+      );
+  }
+
+  function setStepIndex(idx){
+    if(idx === activeStep) return;
+    activeStep = idx;
+    if(progressCurrent) progressCurrent.textContent = pad(Math.max(1, idx + 1));
+    var chapterIdx = parseInt(steps[Math.max(0, idx)].dataset.chapter, 10) || 0;
+    setChapter(chapterIdx, false);
+    steps.forEach(function(step, i){
+      step.classList.toggle('is-active', i === idx);
+    });
+  }
+
+  function buildPinnedTimeline(){
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: pinWrap,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.1,
+        invalidateOnRefresh: true,
+        onUpdate: function(self){
+          var idx = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
+          setStepIndex(idx);
+        }
+      }
+    });
+
+    if(orbA){
+      tl.fromTo(orbA, { x: -40, y: 20, opacity: 0.35 }, { x: 30, y: -50, opacity: 0.7, ease: 'none' }, 0);
+    }
+    if(orbB){
+      tl.fromTo(orbB, { x: 30, y: -20, opacity: 0.25 }, { x: -40, y: 40, opacity: 0.55, ease: 'none' }, 0);
+    }
+    if(spineLine){
+      tl.to(spineLine, { height: '100%', ease: 'none' }, 0);
+    }
+    if(progressFill){
+      tl.to(progressFill, { width: '100%', ease: 'none' }, 0);
+    }
+
+    steps.forEach(function(step, i){
+      var thread = step.querySelector('.thread');
+      var card = step.querySelector('.hang-card');
+      var start = i / steps.length;
+      var end = (i + 0.85) / steps.length;
+
+      tl.to(step, {
+        opacity: 1, y: 0, rotateX: 0, duration: end - start, ease: 'power3.out'
+      }, start);
+
+      if(thread){
+        tl.to(thread, { height: 64, duration: (end - start) * 0.7, ease: 'power2.out' }, start);
+      }
+      if(card){
+        tl.to(card, {
+          y: 0, rotate: 0, opacity: 1,
+          duration: (end - start) * 0.75,
+          ease: 'power3.out'
+        }, start + 0.02);
+      }
+
+      // Soft settle / parallax drift after reveal
+      tl.to(step, {
+        y: i % 2 === 0 ? -12 : 10,
+        x: i % 2 === 0 ? -6 : 8,
+        duration: Math.max(0.12, (1 - end) * 0.55),
+        ease: 'none'
+      }, end);
+    });
+
+    return tl;
+  }
+
+  function buildMobileTimeline(){
+    steps.forEach(function(step, i){
+      var thread = step.querySelector('.thread');
+      var card = step.querySelector('.hang-card');
+      var tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: step,
+          start: 'top 88%',
+          end: 'top 45%',
+          scrub: 0.8,
+          onEnter: function(){ setStepIndex(i); },
+          onEnterBack: function(){ setStepIndex(i); }
+        }
+      })
+        .to(step, { opacity: 1, y: 0, rotateX: 0, ease: 'power3.out' }, 0)
+        .to(thread, { height: 72, ease: 'power2.out' }, 0)
+        .to(card, { y: 0, rotate: 0, opacity: 1, ease: 'power3.out' }, 0.05);
+      if(tl.scrollTrigger) journeyTriggers.push(tl.scrollTrigger);
+    });
+
+    if(progressFill){
+      var progressTween = gsap.to(progressFill, {
+        width: '100%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: pinWrap,
+          start: 'top 70%',
+          end: 'bottom 40%',
+          scrub: true
+        }
+      });
+      if(progressTween.scrollTrigger) journeyTriggers.push(progressTween.scrollTrigger);
+    }
+  }
+
+  function killJourney(){
+    journeyTriggers.forEach(function(st){ if(st && st.kill) st.kill(); });
+    journeyTriggers = [];
+  }
+
+  function resetVisualState(){
+    steps.forEach(function(step){
+      var thread = step.querySelector('.thread');
+      var card = step.querySelector('.hang-card');
+      gsap.set(step, { opacity: 0, y: 80, rotateX: 12, transformPerspective: 900, x: 0 });
+      if(thread) gsap.set(thread, { height: 0 });
+      if(card) gsap.set(card, { y: -36, rotate: -6, opacity: 0.35 });
+    });
+    if(spineLine) gsap.set(spineLine, { height: '0%' });
+    if(progressFill) gsap.set(progressFill, { width: '0%' });
+    activeChapter = -1;
+    activeStep = -1;
+    setChapter(0, true);
+    setStepIndex(0);
+  }
+
+  function setup(){
+    killJourney();
+    resetVisualState();
+
+    if(reduceMotion){
+      steps.forEach(function(step){
+        var thread = step.querySelector('.thread');
+        var card = step.querySelector('.hang-card');
+        gsap.set(step, { opacity: 1, y: 0, rotateX: 0, x: 0 });
+        if(thread) gsap.set(thread, { height: 72 });
+        if(card) gsap.set(card, { y: 0, rotate: 0, opacity: 1 });
+      });
+      if(spineLine) gsap.set(spineLine, { height: '100%' });
+      if(progressFill) gsap.set(progressFill, { width: '100%' });
+      return;
+    }
+
+    if(desktopPin.matches){
+      var tl = buildPinnedTimeline();
+      if(tl.scrollTrigger) journeyTriggers.push(tl.scrollTrigger);
+    } else {
+      buildMobileTimeline();
+    }
+  }
+
+  setup();
+  desktopPin.addEventListener('change', function(){
+    setup();
+    ScrollTrigger.refresh();
   });
 })();
 
@@ -865,7 +1097,7 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
 
     // --- Header tag + title cinematic reveal ---
     var tag = section.querySelector('.section-tag, .about-eyebrow, .collab-tag');
-    var title = section.querySelector('.section-header h2, .about-heading, .thank-you');
+    var title = section.querySelector('.section-header h2, .about-heading, .thank-you, .exp-title');
 
     if(tag){
       gsap.fromTo(tag,
