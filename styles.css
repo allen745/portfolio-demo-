@@ -354,21 +354,26 @@
     .cert-img-wrap { height: 180px; }
   }
 
-/* Fluid liquid cursor (Lusion-style touch) — desktop/mouse only */
-.cursor-blob {
-  position: fixed; top: 0; left: 0; width: 32px; height: 32px; border-radius: 50%;
-  pointer-events: none; z-index: 99999;
-  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.92) 0%, rgba(150,205,255,0.55) 38%, rgba(179,38,30,0.28) 74%, rgba(179,38,30,0) 100%);
-  filter: blur(2.5px);
-  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+/* WebGL fluid cursor trail with color inversion — desktop/mouse only */
+.fluid-cursor-canvas {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 99998;
+  mix-blend-mode: difference;
+}
+.cursor-dot {
+  position: fixed; top: 0; left: 0; width: 10px; height: 10px; border-radius: 50%;
+  background: #fff; pointer-events: none; z-index: 99999;
+  mix-blend-mode: difference;
+  transform: translate(-100px, -100px);
+  transition: width 0.25s cubic-bezier(.34,1.56,.64,1), height 0.25s cubic-bezier(.34,1.56,.64,1);
   will-change: transform;
 }
-.cursor-blob.is-hover { width: 60px; height: 60px; }
+.cursor-dot.is-hover { width: 26px; height: 26px; }
 body.custom-cursor-active, body.custom-cursor-active a, body.custom-cursor-active button {
   cursor: none;
 }
 @media (pointer: coarse) {
-  .cursor-blob { display: none !important; }
+  .fluid-cursor-canvas, .cursor-dot { display: none !important; }
 }
 .btn, .contact-pill, .about-connect-item { will-change: transform; }
 #hero-3d {

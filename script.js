@@ -143,39 +143,69 @@ var barObs=new IntersectionObserver(function(entries){
 },{threshold:0.3});
 document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);});
 
-// Fluid liquid cursor — desktop/mouse only, skipped entirely on touch devices
+// WebGL fluid simulation cursor trail with color inversion — desktop/mouse only,
+// skipped entirely on touch devices. The canvas stays pointer-events:none so page
+// interactions still work; real pointer moves are forwarded to it via synthetic
+// events so the fluid still reacts to the cursor.
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
+  if(typeof WebGLFluid !== 'function') return;
 
-  var blob = document.createElement('div'); blob.className = 'cursor-blob';
-  document.body.appendChild(blob);
   document.body.classList.add('custom-cursor-active');
 
-  var mouseX = -100, mouseY = -100, x = -100, y = -100;
-  var started = false;
+  var canvas = document.createElement('canvas');
+  canvas.className = 'fluid-cursor-canvas';
+  document.body.appendChild(canvas);
 
-  window.addEventListener('mousemove', function(e){
-    mouseX = e.clientX; mouseY = e.clientY;
-    if(!started){ x = mouseX; y = mouseY; started = true; }
+  var dot = document.createElement('div');
+  dot.className = 'cursor-dot';
+  document.body.appendChild(dot);
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  WebGLFluid(canvas, {
+    TRIGGER: 'hover',
+    IMMEDIATE: false,
+    AUTO: false,
+    SIM_RESOLUTION: 128,
+    DYE_RESOLUTION: 1024,
+    DENSITY_DISSIPATION: 3.4,
+    VELOCITY_DISSIPATION: 2.2,
+    PRESSURE: 0.8,
+    PRESSURE_ITERATIONS: 20,
+    CURL: 20,
+    SPLAT_RADIUS: 0.16,
+    SPLAT_FORCE: 4000,
+    SPLAT_COLOR: { r: 1, g: 1, b: 1 },
+    COLORFUL: false,
+    SHADING: false,
+    BLOOM: false,
+    SUNRAYS: false,
+    TRANSPARENT: true,
+    BACK_COLOR: { r: 0, g: 0, b: 0 }
   });
 
-  function loop(){
-    var prevX = x, prevY = y;
-    x += (mouseX - x) * 0.18;
-    y += (mouseY - y) * 0.18;
-    var vx = x - prevX, vy = y - prevY;
-    var speed = Math.sqrt(vx*vx + vy*vy);
-    var angle = Math.atan2(vy, vx) * 180 / Math.PI;
-    var stretch = Math.min(speed * 0.06, 0.9);
-    blob.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-50%) rotate(' + angle + 'deg) scale(' + (1 + stretch) + ',' + (1 - stretch*0.35) + ')';
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
+  window.addEventListener('mousemove', function(e){
+    dot.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px) translate(-50%,-50%)';
+    canvas.dispatchEvent(new MouseEvent('mousemove', {
+      clientX: e.clientX, clientY: e.clientY, bubbles: false
+    }));
+  });
+  window.addEventListener('mousedown', function(e){
+    canvas.dispatchEvent(new MouseEvent('mousedown', {
+      clientX: e.clientX, clientY: e.clientY, bubbles: false
+    }));
+  });
 
   var interactiveSelector = 'a, button, .btn, .proj-card, .pin-card, .phase-card, .contact-pill, .hang-card, .about-connect-item, .badge-card';
   document.querySelectorAll(interactiveSelector).forEach(function(el){
-    el.addEventListener('mouseenter', function(){ blob.classList.add('is-hover'); });
-    el.addEventListener('mouseleave', function(){ blob.classList.remove('is-hover'); });
+    el.addEventListener('mouseenter', function(){ dot.classList.add('is-hover'); });
+    el.addEventListener('mouseleave', function(){ dot.classList.remove('is-hover'); });
   });
 })();
 
