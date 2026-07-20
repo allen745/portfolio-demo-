@@ -44,9 +44,33 @@
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- HERO — extreme cinematic opening -->
 <section id="hero">
-  <div id="hero-3d"></div>
+  <div class="hero-stage" aria-hidden="true">
+    <video
+      class="hero-video"
+      id="heroCinematicVideo"
+      poster="videos/hero-poster.jpg"
+      muted
+      loop
+      playsinline
+      autoplay
+      preload="auto"
+    >
+      <source src="videos/hero-cinematic.mp4" type="video/mp4">
+    </video>
+    <div class="hero-video-fallback"></div>
+    <div class="hero-grade"></div>
+    <div class="hero-bloom"></div>
+    <div class="hero-streak hero-streak-a"></div>
+    <div class="hero-streak hero-streak-b"></div>
+    <div class="hero-dust" id="heroDust"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-vignette"></div>
+    <div class="hero-letterbox"><span></span><span></span></div>
+    <div class="hero-frame-lines"></div>
+  </div>
+
   <div class="hero-lightburst"></div>
   <div class="hero-crosshairs">
     <div class="crosshair"></div>
@@ -57,6 +81,7 @@
   </div>
 
   <div class="hero-banner">
+    <div class="hb-house">ASC STUDIOS &middot; OPENING TITLE</div>
     <div class="hb-eyebrow"><span class="hb-bold">AI &amp; Data</span> <span class="hb-muted">Science</span></div>
     <div class="hb-word">
       <span class="hb-letter">P</span><span class="hb-letter">o</span><span class="hb-letter">r</span><span class="hb-letter">t</span><span class="hb-letter">f</span><span class="hb-orb"></span><span class="hb-letter">l</span><span class="hb-letter">i</span><span class="hb-letter">o</span>
