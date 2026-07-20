@@ -772,122 +772,223 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   sections.forEach(function(s){ spy.observe(s.el); });
 })();
 
-// Flowing line — sweeps in, loops around the About photo, tapers off within the About section only
+// About — cinematic editorial reveal + refined signature path (no body-level SVG)
 (function(){
-  var aboutSection = document.getElementById('about');
-  var media = document.querySelector('.about-media');
-  if(!aboutSection || !media) return;
+  var section = document.getElementById('about');
+  if(!section) return;
 
-  var svgNS = 'http://www.w3.org/2000/svg';
-  var svg = document.createElementNS(svgNS, 'svg');
-  svg.style.position = 'absolute';
-  svg.style.top = '0';
-  svg.style.left = '0';
-  svg.style.zIndex = '2';
-  svg.style.pointerEvents = 'none';
-  document.body.appendChild(svg);
+  var path = document.getElementById('aboutPath');
+  var dot = document.getElementById('aboutPathDot');
+  var photoMask = section.querySelector('.about-photo-mask');
+  var photo = section.querySelector('.about-photo');
+  var headingLines = section.querySelectorAll('.about-heading-line');
+  var house = section.querySelector('.about-house-mark');
+  var eyebrow = section.querySelector('.about-eyebrow');
+  var script = section.querySelector('.about-script');
+  var descs = section.querySelectorAll('.about-desc');
+  var stats = section.querySelectorAll('.about-stat-num');
+  var pill = section.querySelector('.about-approach-pill');
+  var connect = section.querySelectorAll('.about-connect-item');
+  var corners = section.querySelectorAll('.about-frame-corner');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var defs = document.createElementNS(svgNS, 'defs');
-  var grad = document.createElementNS(svgNS, 'linearGradient');
-  grad.setAttribute('id', 'flowGrad'); grad.setAttribute('x1','0'); grad.setAttribute('y1','0'); grad.setAttribute('x2','1'); grad.setAttribute('y2','1');
-  [['0%','#00e5ff'],['45%','#5b8dff'],['100%','#7c3aed']].forEach(function(s){
-    var stop = document.createElementNS(svgNS, 'stop');
-    stop.setAttribute('offset', s[0]); stop.setAttribute('stop-color', s[1]);
-    grad.appendChild(stop);
+  // Prepare signature path length for draw-on
+  var pathLen = 0;
+  if(path){
+    pathLen = path.getTotalLength();
+    path.style.strokeDasharray = String(pathLen);
+    path.style.strokeDashoffset = String(pathLen);
+  }
+  if(dot && path){
+    var start = path.getPointAtLength(0);
+    dot.setAttribute('cx', start.x);
+    dot.setAttribute('cy', start.y);
+  }
+
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger){
+    if(path) path.style.strokeDashoffset = '0';
+    stats.forEach(function(el){
+      var n = parseInt(el.getAttribute('data-count'), 10) || 0;
+      el.textContent = el.getAttribute('data-count') === '7' ? '7+' : String(n);
+    });
+    return;
+  }
+
+  // Photo mask + scale reveal
+  if(photoMask){
+    gsap.set(photoMask, { clipPath: 'inset(48% 48% 48% 48%)' });
+    gsap.to(photoMask, {
+      clipPath: 'inset(0% 0% 0% 0%)',
+      duration: 1.35, ease: 'power4.out',
+      scrollTrigger: { trigger: photoMask, start: 'top 80%', toggleActions: 'play none none reverse' }
+    });
+  }
+  if(photo){
+    gsap.fromTo(photo,
+      { scale: 1.22, filter: 'contrast(1.1) brightness(0.85)' },
+      {
+        scale: 1.08, filter: 'contrast(1.04) saturate(0.96) brightness(1)',
+        duration: 1.6, ease: 'power3.out',
+        scrollTrigger: { trigger: photo, start: 'top 80%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(corners.length){
+    gsap.fromTo(corners,
+      { opacity: 0, scale: 0.6 },
+      {
+        opacity: 1, scale: 1, duration: 0.7, stagger: 0.06, ease: 'power3.out',
+        scrollTrigger: { trigger: section.querySelector('.about-frame'), start: 'top 82%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
+  if(house){
+    gsap.fromTo(house,
+      { opacity: 0, y: 16 },
+      {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(eyebrow){
+    gsap.fromTo(eyebrow,
+      { opacity: 0, x: -24 },
+      {
+        opacity: 1, x: 0, duration: 0.75, ease: 'power3.out',
+        scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
+  headingLines.forEach(function(line){
+    var text = line.textContent;
+    line.innerHTML = '<span class="about-heading-inner">' + text + '</span>';
+    var inner = line.querySelector('.about-heading-inner');
+    gsap.fromTo(inner,
+      { yPercent: 110 },
+      {
+        yPercent: 0, duration: 1.05, ease: 'power4.out',
+        scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
+    );
   });
-  defs.appendChild(grad); svg.appendChild(defs);
 
-  var path = document.createElementNS(svgNS, 'path');
-  path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'url(#flowGrad)'); path.setAttribute('stroke-width', '14'); path.setAttribute('stroke-linecap', 'round');
-  svg.appendChild(path);
+  if(script){
+    gsap.fromTo(script,
+      { opacity: 0, y: 18 },
+      {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: script, start: 'top 90%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(descs.length){
+    gsap.fromTo(descs,
+      { opacity: 0, y: 22 },
+      {
+        opacity: 1, y: 0, duration: 0.85, stagger: 0.12, ease: 'power3.out',
+        scrollTrigger: { trigger: descs[0], start: 'top 90%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
 
-  var dot = document.createElementNS(svgNS, 'circle');
-  dot.setAttribute('r', '8'); dot.setAttribute('fill', '#00e5ff');
-  dot.style.filter = 'drop-shadow(0 0 10px rgba(0,229,255,0.9)) drop-shadow(0 0 22px rgba(124,58,237,0.7))';
-  svg.appendChild(dot);
+  // Signature path draw + trailing focus dot
+  if(path){
+    var draw = { v: 0 };
+    gsap.to(draw, {
+      v: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section.querySelector('.about-media'),
+        start: 'top 75%',
+        end: 'bottom 45%',
+        scrub: 0.65,
+        onUpdate: function(){
+          path.style.strokeDashoffset = String(pathLen * (1 - draw.v));
+          if(dot){
+            var pt = path.getPointAtLength(pathLen * draw.v);
+            dot.setAttribute('cx', pt.x);
+            dot.setAttribute('cy', pt.y);
+          }
+        }
+      }
+    });
+  }
 
-  function smoothThrough(pts){
-    var d = '';
-    for (var i = 0; i < pts.length - 1; i++) {
-      var p0 = pts[i - 1] || pts[i];
-      var p1 = pts[i];
-      var p2 = pts[i + 1];
-      var p3 = pts[i + 2] || p2;
-      var c1x = p1.x + (p2.x - p0.x) / 6;
-      var c1y = p1.y + (p2.y - p0.y) / 6;
-      var c2x = p2.x - (p3.x - p1.x) / 6;
-      var c2y = p2.y - (p3.y - p1.y) / 6;
-      d += ' C ' + c1x + ',' + c1y + ' ' + c2x + ',' + c2y + ' ' + p2.x + ',' + p2.y;
+  // Count-up stats
+  stats.forEach(function(el){
+    var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+    var isPlus = el.getAttribute('data-count') === '7';
+    var obj = { val: 0 };
+    gsap.to(obj, {
+      val: target,
+      duration: 1.35,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 90%',
+        toggleActions: 'play none none reverse'
+      },
+      onUpdate: function(){
+        var n = Math.round(obj.val);
+        el.textContent = isPlus ? (n + '+') : String(n);
+      }
+    });
+  });
+
+  if(pill){
+    gsap.fromTo(pill,
+      { opacity: 0, y: 18 },
+      {
+        opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
+        scrollTrigger: { trigger: pill, start: 'top 92%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(connect.length){
+    gsap.fromTo(connect,
+      { opacity: 0, y: 14 },
+      {
+        opacity: 1, y: 0, duration: 0.55, stagger: 0.06, ease: 'power3.out',
+        scrollTrigger: { trigger: connect[0], start: 'top 94%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
+  // Soft parallax on photo while the section is in view
+  if(photo){
+    gsap.to(photo, {
+      yPercent: 6,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+  }
+})();
+
+// Skills corkboard thread — elegant draw-on
+(function(){
+  if(!window.gsap || !window.ScrollTrigger) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var path = document.querySelector('.corkboard-path');
+  var cork = document.querySelector('.corkboard');
+  if(!path || !cork) return;
+  gsap.to(path, {
+    strokeDashoffset: 0,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: cork,
+      start: 'top 75%',
+      end: 'bottom 55%',
+      scrub: 0.7
     }
-    return d;
-  }
-
-  var pathLength = 0;
-
-  function rebuild(){
-    var scrollY = window.scrollY || window.pageYOffset;
-    var aRect = aboutSection.getBoundingClientRect();
-    var mRect = media.getBoundingClientRect();
-
-    var docHeight = document.body.scrollHeight;
-    var width = window.innerWidth;
-    svg.setAttribute('width', width);
-    svg.setAttribute('height', docHeight);
-    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + docHeight);
-
-    var bx = mRect.left, by = mRect.top + scrollY;
-    var bw = mRect.width, bh = mRect.height;
-    var cx = bx + bw * 0.5, cy = by + bh * 0.42;
-    var r = bw * 0.68;
-
-    var entry = [
-      { x: -40, y: by - bh * 0.5 },
-      { x: bx - bw * 0.2, y: by - bh * 0.1 },
-      { x: bx + bw * 0.1, y: by + bh * 0.02 }
-    ];
-    var d = 'M ' + entry[0].x + ',' + entry[0].y + smoothThrough(entry);
-    d += ' A ' + r + ',' + r + ' 0 1,1 ' + (cx - r) + ',' + cy;
-    var endX = bx + bw + 50, endY = by + bh * 0.6;
-    d += ' A ' + r + ',' + r + ' 0 1,1 ' + endX + ',' + endY;
-
-    var aboutBottom = aRect.bottom + scrollY;
-    var tailEndY = Math.min(aboutBottom - 60, endY + (aboutBottom - endY) * 0.7);
-    var tail = [
-      { x: endX, y: endY },
-      { x: width * 0.7, y: endY + (tailEndY - endY) * 0.5 },
-      { x: width * 0.42, y: tailEndY }
-    ];
-    d += smoothThrough(tail);
-
-    path.setAttribute('d', d);
-    pathLength = path.getTotalLength();
-    path.style.strokeDasharray = pathLength;
-    path.style.strokeDashoffset = pathLength;
-    update();
-  }
-
-  function update(){
-    var scrollY = window.scrollY || window.pageYOffset;
-    var aRect = aboutSection.getBoundingClientRect();
-    var startY = aRect.top + scrollY - window.innerHeight * 0.5;
-    var endY = aRect.bottom + scrollY;
-    var range = Math.max(1, endY - startY);
-    var progress = Math.max(0, Math.min(1, (scrollY - startY) / range));
-
-    path.style.strokeDashoffset = pathLength * (1 - progress);
-    if (pathLength > 0) {
-      var pt = path.getPointAtLength(pathLength * progress);
-      dot.setAttribute('cx', pt.x);
-      dot.setAttribute('cy', pt.y);
-    }
-  }
-
-  function raf(){ update(); requestAnimationFrame(raf); }
-
-  window.addEventListener('load', rebuild);
-  window.addEventListener('resize', rebuild);
-  requestAnimationFrame(raf);
-  setTimeout(rebuild, 100);
+  });
 })();
 
 // Achievements — cinematic Tesseract parallax (Interstellar-style).
@@ -1123,6 +1224,8 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
         child.id === 'project-detail' ||
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('ty-stage') ||
+        child.classList.contains('about-atmosphere') ||
+        child.classList.contains('hero-stage') ||
         child.classList.contains('cinematic-seam')
       ) return;
       if(!child.style.position) child.style.position = 'relative';
@@ -1142,7 +1245,7 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
 
     // --- Header tag + title cinematic reveal ---
     var tag = section.querySelector('.section-tag, .about-eyebrow, .collab-tag');
-    var title = section.querySelector('.section-header h2, .about-heading, .thank-you, .exp-title');
+    var title = section.querySelector('.section-header h2, .thank-you, .exp-title');
 
     if(tag){
       gsap.fromTo(tag,

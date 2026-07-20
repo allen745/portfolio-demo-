@@ -92,41 +92,99 @@
 </section>
 
 <section id="about">
-  <div class="about-grid">
-    <div class="about-media fade-in">
-      <img src="profile.png" alt="Allen Christian" class="about-photo">
-    </div>
-    <div class="fade-in">
-      <div class="about-eyebrow">// 00 &mdash; About</div>
-      <h2 class="about-heading">Built to Ship,<br>Not Just to Show</h2>
-      <p class="about-script">Hi there, I'm Allen!</p>
-      <p class="about-desc">I'm a B.Tech AI &amp; Data Science student at ADIT, CVM University, and the Founder &amp; CEO of Vertex &mdash; a career intelligence platform I'm building solo for Microsoft's Imagine Cup 2027. I hold a Government of India design patent for a piezoelectric energy-harvesting device, my first experience turning a raw idea into a registered invention.</p>
-      <p class="about-desc">That same drive to ship carries into my software work: I've built and deployed production AI tools, trained machine learning models across multiple domains, and I'm now building CA.OS, a SaaS platform for India's Chartered Accountants. Long-term, I'm working toward a role as a Machine Learning Engineer at Microsoft.</p>
+  <div class="about-atmosphere" aria-hidden="true">
+    <span class="about-orb about-orb-a"></span>
+    <span class="about-orb about-orb-b"></span>
+    <span class="about-grid-fade"></span>
+  </div>
 
-      <div class="about-stats">
-        <div>
-          <div class="about-stat-num">1</div>
-          <div class="about-stat-label">Patent Granted</div>
+  <div class="about-shell">
+    <div class="about-house-mark">
+      <span class="about-house-line"></span>
+      <span class="about-house-label">ASC // PROFILE</span>
+      <span class="about-house-line"></span>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-media">
+        <div class="about-frame">
+          <span class="about-frame-corner c-tl"></span>
+          <span class="about-frame-corner c-tr"></span>
+          <span class="about-frame-corner c-bl"></span>
+          <span class="about-frame-corner c-br"></span>
+          <div class="about-photo-mask">
+            <img src="profile.png" alt="Allen Christian" class="about-photo">
+          </div>
+          <div class="about-frame-caption">ALLEN CHRISTIAN &middot; AI &amp; DATA</div>
         </div>
-        <div>
-          <div class="about-stat-num">6</div>
-          <div class="about-stat-label">Production Projects</div>
-        </div>
-        <div>
-          <div class="about-stat-num">7+</div>
-          <div class="about-stat-label">Certifications</div>
-        </div>
+        <svg class="about-signature-path" id="aboutSignature" viewBox="0 0 400 520" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="aboutPathGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#0b7f8f"/>
+              <stop offset="55%" stop-color="#c45a3a"/>
+              <stop offset="100%" stop-color="#0b7f8f"/>
+            </linearGradient>
+            <filter id="aboutPathGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.2" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <path id="aboutPath"
+            d="M 36 70
+               C 20 160, 28 250, 70 320
+               C 120 410, 210 470, 300 455
+               C 370 442, 390 380, 360 320
+               C 320 240, 250 210, 200 180
+               C 140 145, 110 100, 130 55
+               C 155 8, 240 18, 280 55
+               C 330 105, 310 170, 250 195"
+            stroke="url(#aboutPathGrad)"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            filter="url(#aboutPathGlow)"
+          />
+          <circle id="aboutPathDot" r="3.5" fill="#0b7f8f" opacity="0.9"/>
+        </svg>
       </div>
 
-      <a href="#projects" class="about-approach-pill"><span class="about-approach-dot"></span>My Projects</a>
+      <div class="about-copy">
+        <div class="about-eyebrow">// 00 &mdash; About</div>
+        <h2 class="about-heading">
+          <span class="about-heading-line">Built to Ship,</span>
+          <span class="about-heading-line">Not Just to Show</span>
+        </h2>
+        <p class="about-script">Hi there, I'm Allen!</p>
+        <p class="about-desc">I'm a B.Tech AI &amp; Data Science student at ADIT, CVM University, and the Founder &amp; CEO of Vertex &mdash; a career intelligence platform I'm building solo for Microsoft's Imagine Cup 2027. I hold a Government of India design patent for a piezoelectric energy-harvesting device, my first experience turning a raw idea into a registered invention.</p>
+        <p class="about-desc">That same drive to ship carries into my software work: I've built and deployed production AI tools, trained machine learning models across multiple domains, and I'm now building CA.OS, a SaaS platform for India's Chartered Accountants. Long-term, I'm working toward a role as a Machine Learning Engineer at Microsoft.</p>
 
-      <div class="about-connect-label">Let's Connect</div>
-      <div class="about-connect-row">
-        <a class="about-connect-item" href="mailto:allenschristian07@gmail.com">📧 Email</a>
-        <a class="about-connect-item" href="tel:+916355941155">📞 Call</a>
-        <a class="about-connect-item" href="https://www.linkedin.com/in/allen-christian-708545409/" target="_blank">💼 LinkedIn</a>
-        <a class="about-connect-item" href="https://github.com/allen745" target="_blank">🐙 GitHub</a>
-        <a class="about-connect-item" href="https://www.instagram.com/msd7_allen1405" target="_blank">📸 Instagram</a>
+        <div class="about-stats">
+          <div class="about-stat">
+            <div class="about-stat-num" data-count="1">0</div>
+            <div class="about-stat-label">Patent Granted</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num" data-count="6">0</div>
+            <div class="about-stat-label">Production Projects</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num" data-count="7">0</div>
+            <div class="about-stat-label">Certifications</div>
+          </div>
+        </div>
+
+        <a href="#projects" class="about-approach-pill"><span class="about-approach-dot"></span>My Projects</a>
+
+        <div class="about-connect-label">Let's Connect</div>
+        <div class="about-connect-row">
+          <a class="about-connect-item" href="mailto:allenschristian07@gmail.com"><span class="about-connect-ico">@</span>Email</a>
+          <a class="about-connect-item" href="tel:+916355941155"><span class="about-connect-ico">#</span>Call</a>
+          <a class="about-connect-item" href="https://www.linkedin.com/in/allen-christian-708545409/" target="_blank"><span class="about-connect-ico">in</span>LinkedIn</a>
+          <a class="about-connect-item" href="https://github.com/allen745" target="_blank"><span class="about-connect-ico">gh</span>GitHub</a>
+          <a class="about-connect-item" href="https://www.instagram.com/msd7_allen1405" target="_blank"><span class="about-connect-ico">ig</span>Instagram</a>
+        </div>
       </div>
     </div>
   </div>
@@ -139,10 +197,23 @@
     <h2>What I Work With</h2>
   </div>
 <div class="corkboard">
-    <svg class="corkboard-thread" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <polyline points="12.5,17 37.5,33 62.5,19 87.5,34 12.5,68 37.5,84 62.5,70 87.5,85" fill="none" stroke="#b3261e" stroke-width="0.35" stroke-linejoin="round" stroke-linecap="round" opacity="0.55" />
-      <circle cx="12.5" cy="17" r="0.7" fill="#b3261e" opacity="0.6" /><circle cx="37.5" cy="33" r="0.7" fill="#b3261e" opacity="0.6" /><circle cx="62.5" cy="19" r="0.7" fill="#b3261e" opacity="0.6" /><circle cx="87.5" cy="34" r="0.7" fill="#b3261e" opacity="0.6" />
-      <circle cx="12.5" cy="68" r="0.7" fill="#b3261e" opacity="0.6" /><circle cx="37.5" cy="84" r="0.7" fill="#b3261e" opacity="0.6" /><circle cx="62.5" cy="70" r="0.7" fill="#b3261e" opacity="0.6" /><circle cx="87.5" cy="85" r="0.7" fill="#b3261e" opacity="0.6" />
+    <svg class="corkboard-thread" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="corkGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#9c3a30" stop-opacity="0.15"/>
+          <stop offset="50%" stop-color="#9c3a30" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#9c3a30" stop-opacity="0.15"/>
+        </linearGradient>
+      </defs>
+      <path class="corkboard-path" d="M12.5,17 C28,28 34,30 37.5,33 C48,24 55,20 62.5,19 C74,28 80,32 87.5,34
+        M12.5,68 C28,79 34,81 37.5,84 C48,75 55,71 62.5,70 C74,79 80,83 87.5,85"
+        fill="none" stroke="url(#corkGrad)" stroke-width="0.28" stroke-linecap="round"/>
+      <g fill="#9c3a30" opacity="0.55">
+        <circle cx="12.5" cy="17" r="0.55"/><circle cx="37.5" cy="33" r="0.55"/>
+        <circle cx="62.5" cy="19" r="0.55"/><circle cx="87.5" cy="34" r="0.55"/>
+        <circle cx="12.5" cy="68" r="0.55"/><circle cx="37.5" cy="84" r="0.55"/>
+        <circle cx="62.5" cy="70" r="0.55"/><circle cx="87.5" cy="85" r="0.55"/>
+      </g>
     </svg>
     <div class="skills-grid">
       <div class="pin-card fade-in"><div class="skill-icon">🐍</div><div class="skill-title">Python &amp; Data Libraries</div><div class="skill-tags"><span class="tag">Python</span><span class="tag">NumPy</span><span class="tag">Pandas</span><span class="tag">Scikit-learn</span></div></div>
