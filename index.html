@@ -95,6 +95,23 @@
 </section>
 
 <section id="about">
+  <div class="about-stage" aria-hidden="true">
+    <video
+      class="about-video"
+      id="aboutBgVideo"
+      poster="videos/astronaut-poster.jpg"
+      muted
+      loop
+      playsinline
+      preload="metadata"
+    >
+      <source src="videos/astronaut-cinematic.mp4" type="video/mp4">
+    </video>
+    <div class="about-video-fallback"></div>
+    <div class="about-video-wash"></div>
+    <div class="about-video-grain"></div>
+  </div>
+
   <div class="about-atmosphere" aria-hidden="true">
     <span class="about-orb about-orb-a"></span>
     <span class="about-orb about-orb-b"></span>
@@ -123,9 +140,9 @@
         <svg class="about-signature-path" id="aboutSignature" viewBox="0 0 400 520" fill="none" aria-hidden="true">
           <defs>
             <linearGradient id="aboutPathGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#0b7f8f"/>
-              <stop offset="55%" stop-color="#c45a3a"/>
-              <stop offset="100%" stop-color="#0b7f8f"/>
+              <stop offset="0%" stop-color="#7ec8d4"/>
+              <stop offset="55%" stop-color="#e8a078"/>
+              <stop offset="100%" stop-color="#7ec8d4"/>
             </linearGradient>
             <filter id="aboutPathGlow" x="-40%" y="-40%" width="180%" height="180%">
               <feGaussianBlur stdDeviation="2.2" result="b"/>
@@ -149,7 +166,7 @@
             stroke-linecap="round"
             filter="url(#aboutPathGlow)"
           />
-          <circle id="aboutPathDot" r="3.5" fill="#0b7f8f" opacity="0.9"/>
+          <circle id="aboutPathDot" r="3.5" fill="#7ec8d4" opacity="0.9"/>
         </svg>
       </div>
 
@@ -160,8 +177,8 @@
           <span class="about-heading-line">Not Just to Show</span>
         </h2>
         <p class="about-script">Hi there, I'm Allen!</p>
-        <p class="about-desc">I'm a B.Tech AI &amp; Data Science student at ADIT, CVM University, and the Founder &amp; CEO of Vertex &mdash; a career intelligence platform I'm building solo for Microsoft's Imagine Cup 2027. I hold a Government of India design patent for a piezoelectric energy-harvesting device, my first experience turning a raw idea into a registered invention.</p>
-        <p class="about-desc">That same drive to ship carries into my software work: I've built and deployed production AI tools, trained machine learning models across multiple domains, and I'm now building CA.OS, a SaaS platform for India's Chartered Accountants. Long-term, I'm working toward a role as a Machine Learning Engineer at Microsoft.</p>
+        <p class="about-desc">I'm a B.Tech AI &amp; Data Science student at ADIT, CVM University. I hold a Government of India design patent for a piezoelectric energy-harvesting device &mdash; my first real proof that a raw idea can become something registered, tangible, and lasting.</p>
+        <p class="about-desc">That same instinct drives my software work. I've built and shipped production AI tools, trained machine learning models across multiple domains, and I'm currently building CA.OS, a SaaS platform for India's Chartered Accountants. Long-term, I'm aiming for a role as a Machine Learning Engineer at Microsoft.</p>
 
         <div class="about-stats">
           <div class="about-stat">

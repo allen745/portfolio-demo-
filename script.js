@@ -778,7 +778,35 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var pill = section.querySelector('.about-approach-pill');
   var connect = section.querySelectorAll('.about-connect-item');
   var corners = section.querySelectorAll('.about-frame-corner');
+  var video = document.getElementById('aboutBgVideo');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function playAboutVideo(){
+    if(!video || reduceMotion) return;
+    video.muted = true;
+    var p = video.play();
+    if(p && p.then){
+      p.then(function(){ video.classList.add('is-ready'); }).catch(function(){});
+    } else {
+      video.classList.add('is-ready');
+    }
+  }
+  if(video){
+    video.addEventListener('loadeddata', function(){
+      if(!video.paused) video.classList.add('is-ready');
+    });
+    if('IntersectionObserver' in window){
+      var vio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting) playAboutVideo();
+          else if(!video.paused) video.pause();
+        });
+      }, { threshold: 0.12 });
+      vio.observe(section);
+    } else {
+      playAboutVideo();
+    }
+  }
 
   // Prepare signature path length for draw-on
   var pathLen = 0;
@@ -800,6 +828,21 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       el.textContent = el.getAttribute('data-count') === '7' ? '7+' : String(n);
     });
     return;
+  }
+
+  // Soft parallax on the about video plate
+  if(video){
+    gsap.to(video, {
+      scale: 1.16,
+      yPercent: 6,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 0.85
+      }
+    });
   }
 
   // Photo mask + scale reveal
@@ -1618,6 +1661,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('ty-stage') ||
         child.classList.contains('about-atmosphere') ||
+        child.classList.contains('about-stage') ||
         child.classList.contains('skills-atmosphere') ||
         child.classList.contains('hero-stage') ||
         child.classList.contains('cinematic-seam')
