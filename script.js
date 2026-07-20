@@ -1173,17 +1173,19 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Achievements — ASCII cinematic video field.
-// Samples the Interstellar black-hole plate into a live phosphor ASCII stream,
-// with CRT overlays + terminal log card cinematography over a sticky viewport.
+// Achievements + Experience — shared ASCII cinematic video field.
+// Sticky phosphor ASCII stream lives in #ascii-cinema-zone and continues
+// from Recognition through Experience & Education (background only).
 (function(){
   var section = document.getElementById('achievements');
   if(!section) return;
 
+  var zone = document.getElementById('ascii-cinema-zone') || section;
+  var expSection = document.getElementById('experience');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isCoarse = window.matchMedia('(pointer: coarse)').matches;
 
-  var stickyBg = section.querySelector('.ach-sticky-bg');
+  var stickyBg = zone.querySelector('.ach-sticky-bg') || section.querySelector('.ach-sticky-bg');
   var content = section.querySelector('.ach-content');
 
   // Legacy safety: if markup is missing sticky/content wrappers, build them.
@@ -1201,13 +1203,13 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       '<span class="ach-letterbox top"></span><span class="ach-letterbox bottom"></span></div>' +
       '<div class="ach-telemetry"><span class="ach-tele-l">ASCII FEED // BH-01</span>' +
       '<span class="ach-tele-c">REC ● LIVE</span><span class="ach-tele-r">FPS 24 · SIGNAL LOCK</span></div>';
-    section.insertBefore(stickyBg, section.firstChild);
+    zone.insertBefore(stickyBg, zone.firstChild);
   }
   if(!content){
     content = document.createElement('div');
     content.className = 'ach-content';
-    while(section.children.length > 1){
-      content.appendChild(section.children[1]);
+    while(section.firstChild){
+      content.appendChild(section.firstChild);
     }
     section.appendChild(content);
   }
@@ -1223,6 +1225,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var hud = content.querySelector('.ach-hud');
   var hudCorners = content.querySelectorAll('.ach-hud-corner');
   var cards = content.querySelectorAll('.phase-card');
+  var teleL = stickyBg.querySelector('.ach-tele-l');
   var teleR = stickyBg.querySelector('.ach-tele-r');
 
   // Offscreen sampler — low-res luminance map for ASCII glyphs
@@ -1232,7 +1235,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var COLS = isCoarse ? 72 : 110;
   var ROWS = isCoarse ? 40 : 62;
   var rafId = null;
-  var sectionVisible = false;
+  var zoneVisible = false;
   var frameCount = 0;
   var lastFpsT = performance.now();
   var fps = 24;
@@ -1240,6 +1243,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var scrollBoost = 0;
   var targetBoost = 0;
   var time = 0;
+  var inExperience = false;
 
   // Procedural fallback scene (when video not ready / reduced motion still frame)
   function drawProcedural(w, h, t){
@@ -1403,28 +1407,41 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       if(teleR) teleR.textContent = 'FPS ' + fps + ' · SIGNAL LOCK';
     }
 
-    if(sectionVisible && !reduceMotion) rafId = requestAnimationFrame(tick);
+    if(zoneVisible && !reduceMotion) rafId = requestAnimationFrame(tick);
   }
 
   function drawStill(){
     renderAscii();
   }
 
+  function updateTelemetryLabel(){
+    if(!teleL) return;
+    teleL.textContent = inExperience ? 'ASCII FEED // JOURNEY-04' : 'ASCII FEED // BH-01';
+  }
+
   window.addEventListener('scroll', function(){
-    var rect = section.getBoundingClientRect();
-    var total = Math.max(1, section.offsetHeight - window.innerHeight);
+    var rect = zone.getBoundingClientRect();
+    var total = Math.max(1, zone.offsetHeight - window.innerHeight);
     var progress = Math.min(1, Math.max(0, -rect.top / total));
     targetBoost = progress * 0.85;
     if(Math.random() < 0.04) glitchUntil = performance.now() + 180;
     if(plate){
       plate.style.transform = 'scale(' + (1.08 + progress * 0.08) + ') translateY(' + (progress * -2) + '%)';
     }
+    if(expSection){
+      var er = expSection.getBoundingClientRect();
+      var nowInExp = er.top < window.innerHeight * 0.55 && er.bottom > window.innerHeight * 0.25;
+      if(nowInExp !== inExperience){
+        inExperience = nowInExp;
+        updateTelemetryLabel();
+      }
+    }
   }, { passive: true });
 
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
-      sectionVisible = entry.isIntersecting;
-      if(sectionVisible){
+      zoneVisible = entry.isIntersecting;
+      if(zoneVisible){
         ensureVideo();
         if(reduceMotion){
           drawStill();
@@ -1436,8 +1453,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         if(video && !video.paused) video.pause();
       }
     });
-  }, { threshold: 0.02 });
-  io.observe(section);
+  }, { threshold: 0.01 });
+  io.observe(zone);
 
   if(reduceMotion) drawStill();
 
