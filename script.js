@@ -1702,12 +1702,15 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   function fadeAudioTo(target, ms){
     if(fading) cancelAnimationFrame(fading);
-    var start = audio.volume;
+    target = Math.max(0, Math.min(1, Number(target) || 0));
+    var start = Math.max(0, Math.min(1, Number(audio.volume) || 0));
     var t0 = performance.now();
     function step(now){
-      var p = Math.min(1, (now - t0) / ms);
+      var p = Math.min(1, (now - t0) / Math.max(1, ms));
       var eased = p * (2 - p);
-      audio.volume = start + (target - start) * eased;
+      var next = start + (target - start) * eased;
+      // Clamp — floating-point easing can drift slightly outside [0, 1]
+      audio.volume = Math.max(0, Math.min(1, next));
       if(p < 1) fading = requestAnimationFrame(step);
       else {
         fading = null;
