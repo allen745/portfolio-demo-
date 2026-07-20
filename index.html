@@ -376,35 +376,66 @@
   </div>
 </section>
 
-<!-- ACHIEVEMENTS -->
+<!-- ACHIEVEMENTS — ASCII cinematic recognition field -->
 <section id="achievements">
-  <div class="ach-house-mark">
-    <span class="ach-house-line"></span>
-    <span class="ach-house-label">ASC // MISSION LOG</span>
-    <span class="ach-house-line"></span>
+  <div class="ach-sticky-bg" aria-hidden="true">
+    <video
+      class="ach-src-video"
+      id="achAsciiVideo"
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="videos/hero-poster.jpg"
+    >
+      <source src="videos/hero-cinematic.mp4" type="video/mp4">
+    </video>
+    <div class="ach-video-plate"></div>
+    <canvas class="ach-ascii" id="achAsciiCanvas"></canvas>
+    <div class="ach-crt">
+      <span class="ach-scanlines"></span>
+      <span class="ach-phosphor"></span>
+      <span class="ach-vignette"></span>
+      <span class="ach-chromatic"></span>
+      <span class="ach-letterbox top"></span>
+      <span class="ach-letterbox bottom"></span>
+    </div>
+    <div class="ach-telemetry">
+      <span class="ach-tele-l">ASCII FEED // BH-01</span>
+      <span class="ach-tele-c">REC ● LIVE</span>
+      <span class="ach-tele-r">FPS 24 · SIGNAL LOCK</span>
+    </div>
   </div>
 
-  <div class="ach-header">
-    <div class="ach-eyebrow">// 03 &mdash; Recognition</div>
-    <h2 class="ach-heading">
-      <span class="ach-heading-line">Recognition</span>
-      <span class="ach-heading-line ach-heading-accent">Across Dimensions</span>
-    </h2>
-    <p class="ach-lede">Patents, competitions, and credentials &mdash; logged like coordinates in a deeper field.</p>
-  </div>
+  <div class="ach-content">
+    <div class="ach-house-mark">
+      <span class="ach-house-line"></span>
+      <span class="ach-house-label">ASC // ASCII CINEMA</span>
+      <span class="ach-house-line"></span>
+    </div>
 
-  <div class="ach-hud" aria-hidden="true">
-    <span class="ach-hud-corner c-tl"></span>
-    <span class="ach-hud-corner c-tr"></span>
-    <span class="ach-hud-corner c-bl"></span>
-    <span class="ach-hud-corner c-br"></span>
-    <span class="ach-hud-readout">TESSERACT FIELD &middot; ACTIVE</span>
-  </div>
+    <div class="ach-header">
+      <div class="ach-eyebrow">// 03 &mdash; Recognition</div>
+      <h2 class="ach-heading">
+        <span class="ach-heading-line">Recognition</span>
+        <span class="ach-heading-line ach-heading-accent">Decoded in Signal</span>
+      </h2>
+      <p class="ach-lede">Patents, competitions, and credentials streaming through a live ASCII cinema field.</p>
+    </div>
 
-  <div id="certificates"></div>
-  <div class="phase-grid">
+    <div class="ach-hud" aria-hidden="true">
+      <span class="ach-hud-corner c-tl"></span>
+      <span class="ach-hud-corner c-tr"></span>
+      <span class="ach-hud-corner c-bl"></span>
+      <span class="ach-hud-corner c-br"></span>
+      <span class="ach-hud-readout">GLYPH STREAM &middot; ACTIVE</span>
+    </div>
+
+    <div id="certificates"></div>
+    <div class="phase-grid">
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Government of India</span><span class="phase-id">450815-001</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 00</span><span class="phase-id">450815-001</span></div>
+      <div class="phase-card-top"><span class="phase-org">Government of India</span></div>
       <h3 class="phase-title">Spring-Loaded Piezoelectric Generating Striker Device</h3>
       <p class="phase-desc">Officially registered design patent for a spring-loaded piezoelectric energy-harvesting striker device, Class 13-01.</p>
       <div class="phase-divider"></div>
@@ -416,7 +447,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Microsoft</span><span class="phase-id">PHASE 01</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 01</span><span class="phase-id">PHASE 01</span></div>
+      <div class="phase-card-top"><span class="phase-org">Microsoft</span></div>
       <h3 class="phase-title">Microsoft Agents League 2026</h3>
       <p class="phase-desc">Submitted DevMind AI Agent to the Reasoning Agents track.</p>
       <div class="phase-divider"></div>
@@ -428,7 +460,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">TCS</span><span class="phase-id">PHASE 02</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 02</span><span class="phase-id">PHASE 02</span></div>
+      <div class="phase-card-top"><span class="phase-org">TCS</span></div>
       <h3 class="phase-title">TCS Rural IT Quiz 2024</h3>
       <p class="phase-desc">National level quiz by TCS &amp; Dept. of Electronics &amp; IT, Karnataka.</p>
       <div class="phase-divider"></div>
@@ -440,7 +473,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">CVM University</span><span class="phase-id">PHASE 03</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 03</span><span class="phase-id">PHASE 03</span></div>
+      <div class="phase-card-top"><span class="phase-org">CVM University</span></div>
       <h3 class="phase-title">CVM University Hackathon 2026</h3>
       <p class="phase-desc">Competed at the CVM University Hackathon 2026 at AD Patel Institute of Technology.</p>
       <div class="phase-divider"></div>
@@ -452,7 +486,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Techfest AIKYAM</span><span class="phase-id">PHASE 04</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 04</span><span class="phase-id">PHASE 04</span></div>
+      <div class="phase-card-top"><span class="phase-org">Techfest AIKYAM</span></div>
       <h3 class="phase-title">SPEC Innovation Award</h3>
       <p class="phase-desc">Recognised at National Level Techfest AIKYAM 1.0.</p>
       <div class="phase-divider"></div>
@@ -464,7 +499,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">OWASP VIT Bhopal</span><span class="phase-id">PHASE 05</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 05</span><span class="phase-id">PHASE 05</span></div>
+      <div class="phase-card-top"><span class="phase-org">OWASP VIT Bhopal</span></div>
       <h3 class="phase-title">HackZero'26 — CTF Competition</h3>
       <p class="phase-desc">Competed in the HackZero'26 Capture the Flag competition.</p>
       <div class="phase-divider"></div>
@@ -476,7 +512,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Charotar Education Society</span><span class="phase-id">PHASE 06</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 06</span><span class="phase-id">PHASE 06</span></div>
+      <div class="phase-card-top"><span class="phase-org">Charotar Education Society</span></div>
       <h3 class="phase-title">Chatkaro 2024 — 2nd Position</h3>
       <p class="phase-desc">2nd position in Model Presentation, Chatkaro 2024.</p>
       <div class="phase-divider"></div>
@@ -488,7 +525,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">InAmigos Foundation</span><span class="phase-id">PHASE 07</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 07</span><span class="phase-id">PHASE 07</span></div>
+      <div class="phase-card-top"><span class="phase-org">InAmigos Foundation</span></div>
       <h3 class="phase-title">Best / Top Intern</h3>
       <p class="phase-desc">Awarded during the AI Web Development internship.</p>
       <div class="phase-divider"></div>
@@ -500,7 +538,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Charotar Education Society</span><span class="phase-id">PHASE 08</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 08</span><span class="phase-id">PHASE 08</span></div>
+      <div class="phase-card-top"><span class="phase-org">Charotar Education Society</span></div>
       <h3 class="phase-title">Chatkaro 2025 — Science Exhibition</h3>
       <p class="phase-desc">Participated in the Chatkaro 2025 Science Exhibition.</p>
       <div class="phase-divider"></div>
@@ -512,7 +551,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Microsoft</span><span class="phase-id">PHASE 09</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 09</span><span class="phase-id">PHASE 09</span></div>
+      <div class="phase-card-top"><span class="phase-org">Microsoft</span></div>
       <h3 class="phase-title">AI Skills Fest 2026</h3>
       <p class="phase-desc">Certificate of completion.</p>
       <div class="phase-divider"></div>
@@ -524,7 +564,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Microsoft</span><span class="phase-id">PHASE 10</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 10</span><span class="phase-id">PHASE 10</span></div>
+      <div class="phase-card-top"><span class="phase-org">Microsoft</span></div>
       <h3 class="phase-title">Copilot in MS Fabric for DW</h3>
       <p class="phase-desc">Certificate of completion.</p>
       <div class="phase-divider"></div>
@@ -536,7 +577,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Microsoft</span><span class="phase-id">PHASE 11</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 11</span><span class="phase-id">PHASE 11</span></div>
+      <div class="phase-card-top"><span class="phase-org">Microsoft</span></div>
       <h3 class="phase-title">Implement a DW with MS Fabric</h3>
       <p class="phase-desc">Certificate of completion.</p>
       <div class="phase-divider"></div>
@@ -548,7 +590,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Microsoft</span><span class="phase-id">PHASE 12</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 12</span><span class="phase-id">PHASE 12</span></div>
+      <div class="phase-card-top"><span class="phase-org">Microsoft</span></div>
       <h3 class="phase-title">Build AI Apps w/ Azure DB (PostgreSQL)</h3>
       <p class="phase-desc">Certificate of completion.</p>
       <div class="phase-divider"></div>
@@ -560,7 +603,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Anthropic</span><span class="phase-id">PHASE 13</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 13</span><span class="phase-id">PHASE 13</span></div>
+      <div class="phase-card-top"><span class="phase-org">Anthropic</span></div>
       <h3 class="phase-title">Claude Code 101</h3>
       <p class="phase-desc">Certificate of completion.</p>
       <div class="phase-divider"></div>
@@ -572,7 +616,8 @@
     </article>
 
     <article class="phase-card">
-      <div class="phase-card-top"><span class="phase-org">Anthropic</span><span class="phase-id">PHASE 14</span></div>
+      <div class="phase-logbar"><span class="phase-log">LOG 14</span><span class="phase-id">PHASE 14</span></div>
+      <div class="phase-card-top"><span class="phase-org">Anthropic</span></div>
       <h3 class="phase-title">Claude 101</h3>
       <p class="phase-desc">Certificate of completion.</p>
       <div class="phase-divider"></div>
@@ -582,6 +627,7 @@
         <div><div class="phase-stat-label">Verified</div><div class="phase-stat-value pending">Pending</div></div>
       </div>
     </article>
+  </div>
   </div>
 </section>
 

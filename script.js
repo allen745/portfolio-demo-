@@ -1173,9 +1173,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Achievements — Nolan / Interstellar cinematic recognition field.
-// Sticky viewport-locked canvas: multi-layer tesseract, dust field, energy pulses,
-// scroll-driven camera push. Foreground: editorial header reveal + depth card fly-ins.
+// Achievements — ASCII cinematic video field.
+// Samples the Interstellar black-hole plate into a live phosphor ASCII stream,
+// with CRT overlays + terminal log card cinematography over a sticky viewport.
 (function(){
   var section = document.getElementById('achievements');
   if(!section) return;
@@ -1183,33 +1183,39 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isCoarse = window.matchMedia('(pointer: coarse)').matches;
 
-  // Background (pinned matrix) + atmosphere layers, then move existing content
-  // into a foreground wrapper that always paints above both.
-  var stickyBg = document.createElement('div');
-  stickyBg.className = 'ach-sticky-bg';
-  stickyBg.setAttribute('aria-hidden', 'true');
-  stickyBg.innerHTML =
-    '<div class="ach-nebula"></div>' +
-    '<canvas class="ach-tesseract"></canvas>' +
-    '<span class="ach-shaft"></span>' +
-    '<span class="ach-shaft s2"></span>' +
-    '<span class="ach-shaft s3"></span>' +
-    '<span class="ach-anamorphic"></span>' +
-    '<span class="ach-anamorphic a2"></span>' +
-    '<div class="ach-horizon"></div>' +
-    '<div class="ach-grain"></div>' +
-    '<div class="ach-vignette"></div>' +
-    '<div class="ach-letterbox top"></div>' +
-    '<div class="ach-letterbox bottom"></div>';
+  var stickyBg = section.querySelector('.ach-sticky-bg');
+  var content = section.querySelector('.ach-content');
 
-  var content = document.createElement('div');
-  content.className = 'ach-content';
-  while(section.firstChild){
-    content.appendChild(section.firstChild);
+  // Legacy safety: if markup is missing sticky/content wrappers, build them.
+  if(!stickyBg){
+    stickyBg = document.createElement('div');
+    stickyBg.className = 'ach-sticky-bg';
+    stickyBg.setAttribute('aria-hidden', 'true');
+    stickyBg.innerHTML =
+      '<video class="ach-src-video" id="achAsciiVideo" muted loop playsinline preload="auto" poster="videos/hero-poster.jpg">' +
+      '<source src="videos/hero-cinematic.mp4" type="video/mp4"></video>' +
+      '<div class="ach-video-plate"></div>' +
+      '<canvas class="ach-ascii" id="achAsciiCanvas"></canvas>' +
+      '<div class="ach-crt"><span class="ach-scanlines"></span><span class="ach-phosphor"></span>' +
+      '<span class="ach-vignette"></span><span class="ach-chromatic"></span>' +
+      '<span class="ach-letterbox top"></span><span class="ach-letterbox bottom"></span></div>' +
+      '<div class="ach-telemetry"><span class="ach-tele-l">ASCII FEED // BH-01</span>' +
+      '<span class="ach-tele-c">REC ● LIVE</span><span class="ach-tele-r">FPS 24 · SIGNAL LOCK</span></div>';
+    section.insertBefore(stickyBg, section.firstChild);
   }
-  section.appendChild(stickyBg);
-  section.appendChild(content);
+  if(!content){
+    content = document.createElement('div');
+    content.className = 'ach-content';
+    while(section.children.length > 1){
+      content.appendChild(section.children[1]);
+    }
+    section.appendChild(content);
+  }
 
+  var video = document.getElementById('achAsciiVideo') || stickyBg.querySelector('.ach-src-video');
+  var canvas = document.getElementById('achAsciiCanvas') || stickyBg.querySelector('.ach-ascii');
+  var plate = stickyBg.querySelector('.ach-video-plate');
+  var ctx = canvas ? canvas.getContext('2d') : null;
   var house = content.querySelector('.ach-house-mark');
   var eyebrow = content.querySelector('.ach-eyebrow');
   var headingLines = content.querySelectorAll('.ach-heading-line');
@@ -1217,239 +1223,238 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var hud = content.querySelector('.ach-hud');
   var hudCorners = content.querySelectorAll('.ach-hud-corner');
   var cards = content.querySelectorAll('.phase-card');
+  var teleR = stickyBg.querySelector('.ach-tele-r');
 
-  // ---- 4D hypercube geometry ----
-  var vertices4D = [];
-  for(var vi = 0; vi < 16; vi++){
-    vertices4D.push([
-      (vi & 1) ? 1 : -1,
-      (vi & 2) ? 1 : -1,
-      (vi & 4) ? 1 : -1,
-      (vi & 8) ? 1 : -1
-    ]);
-  }
-  var edges = [];
-  for(var a = 0; a < vertices4D.length; a++){
-    for(var b = a + 1; b < vertices4D.length; b++){
-      var diff = 0;
-      for(var k = 0; k < 4; k++){ if(vertices4D[a][k] !== vertices4D[b][k]) diff++; }
-      if(diff === 1) edges.push([a, b]);
-    }
-  }
-
-  function rotate4D(v, i, j, angle){
-    var c = Math.cos(angle), s = Math.sin(angle);
-    var out = v.slice();
-    out[i] = v[i] * c - v[j] * s;
-    out[j] = v[i] * s + v[j] * c;
-    return out;
-  }
-  function project4Dto2D(v, scale, cx, cy){
-    var viewDist = 3.05;
-    var wFactor = viewDist / (viewDist - v[3]);
-    var x3 = v[0] * wFactor, y3 = v[1] * wFactor, z3 = v[2] * wFactor;
-    var zFactor = viewDist / (viewDist - z3 * 0.62);
-    return {
-      x: cx + x3 * zFactor * scale,
-      y: cy - y3 * zFactor * scale,
-      depth: z3,
-      bright: wFactor
-    };
-  }
-
-  // ---- Canvas: tesseract + dust + pulses ----
-  var canvas = stickyBg.querySelector('.ach-tesseract');
-  var ctx = canvas.getContext('2d');
-  var tesseractRafId = null;
+  // Offscreen sampler — low-res luminance map for ASCII glyphs
+  var sample = document.createElement('canvas');
+  var sctx = sample.getContext('2d', { willReadFrequently: true });
+  var CHARSET = ' .\'`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
+  var COLS = isCoarse ? 72 : 110;
+  var ROWS = isCoarse ? 40 : 62;
+  var rafId = null;
   var sectionVisible = false;
-  var LAYER_COUNT = isCoarse ? 3 : 5;
-  var DUST_COUNT = isCoarse ? 48 : 110;
-  var dust = [];
-  var cameraPush = 1;
-  var targetPush = 1;
-  var pulseT = 0;
+  var frameCount = 0;
+  var lastFpsT = performance.now();
+  var fps = 24;
+  var glitchUntil = 0;
+  var scrollBoost = 0;
+  var targetBoost = 0;
+  var time = 0;
 
-  function seedDust(){
-    dust = [];
-    for(var i = 0; i < DUST_COUNT; i++){
-      dust.push({
-        x: Math.random(),
-        y: Math.random(),
-        z: Math.random(),
-        s: 0.4 + Math.random() * 1.8,
-        drift: 0.00015 + Math.random() * 0.00045,
-        twinkle: Math.random() * Math.PI * 2
-      });
+  // Procedural fallback scene (when video not ready / reduced motion still frame)
+  function drawProcedural(w, h, t){
+    sctx.fillStyle = '#050208';
+    sctx.fillRect(0, 0, w, h);
+    var cx = w * 0.5, cy = h * 0.48;
+    // Accretion disk rings
+    for(var r = 0; r < 8; r++){
+      var radius = 4 + r * (Math.min(w, h) * 0.055);
+      var a = 0.08 + (1 - r / 8) * 0.35;
+      sctx.strokeStyle = 'rgba(240,184,110,' + a + ')';
+      sctx.lineWidth = 1.2;
+      sctx.beginPath();
+      sctx.ellipse(cx, cy, radius * 1.55, radius * 0.42, Math.sin(t * 0.2) * 0.15, 0, Math.PI * 2);
+      sctx.stroke();
+    }
+    // Photon sphere core
+    var g = sctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w, h) * 0.18);
+    g.addColorStop(0, 'rgba(255,230,180,0.85)');
+    g.addColorStop(0.35, 'rgba(240,140,60,0.35)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    sctx.fillStyle = g;
+    sctx.beginPath();
+    sctx.arc(cx, cy, Math.min(w, h) * 0.18, 0, Math.PI * 2);
+    sctx.fill();
+    // Warp streaks
+    for(var i = 0; i < 28; i++){
+      var ang = t * 0.4 + i * 0.45;
+      var len = 8 + (i % 5) * 6;
+      sctx.strokeStyle = 'rgba(125,226,255,' + (0.08 + (i % 3) * 0.05) + ')';
+      sctx.beginPath();
+      sctx.moveTo(cx + Math.cos(ang) * 6, cy + Math.sin(ang) * 3);
+      sctx.lineTo(cx + Math.cos(ang) * len * 1.4, cy + Math.sin(ang) * len * 0.55);
+      sctx.stroke();
     }
   }
-  seedDust();
 
-  function resizeCanvas(){
+  function resize(){
+    if(!canvas) return;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    sample.width = COLS;
+    sample.height = ROWS;
   }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  resize();
+  window.addEventListener('resize', resize);
 
-  var targetAngle = 0;
-  var currentAngle = 0;
-  var secondaryAngle = 0;
-  var lastScrollY = window.scrollY || window.pageYOffset;
-  var SCROLL_SENSITIVITY = 0.0031;
-  var EASE = 0.055;
+  function ensureVideo(){
+    if(!video || reduceMotion) return;
+    video.muted = true;
+    video.playsInline = true;
+    var p = video.play();
+    if(p && p.catch) p.catch(function(){});
+  }
+
+  function sampleFrame(){
+    var w = sample.width, h = sample.height;
+    if(video && video.readyState >= 2 && !reduceMotion){
+      try {
+        sctx.drawImage(video, 0, 0, w, h);
+      } catch(err){
+        drawProcedural(w, h, time);
+      }
+    } else {
+      drawProcedural(w, h, time);
+    }
+
+    // Scroll-driven digital glitch slices
+    if(scrollBoost > 0.15 || performance.now() < glitchUntil){
+      var slices = 3 + Math.floor(scrollBoost * 6);
+      for(var s = 0; s < slices; s++){
+        var sy = Math.floor(Math.random() * h);
+        var sh = 1 + Math.floor(Math.random() * 3);
+        var dx = Math.floor((Math.random() - 0.5) * 10 * (0.4 + scrollBoost));
+        try {
+          var img = sctx.getImageData(0, sy, w, sh);
+          sctx.putImageData(img, dx, sy);
+        } catch(e){}
+      }
+    }
+  }
+
+  function renderAscii(){
+    if(!ctx || !canvas) return;
+    var cw = canvas.width, ch = canvas.height;
+    ctx.fillStyle = 'rgba(2,1,6,0.38)';
+    ctx.fillRect(0, 0, cw, ch);
+
+    sampleFrame();
+    var data;
+    try {
+      data = sctx.getImageData(0, 0, sample.width, sample.height).data;
+    } catch(e){
+      return;
+    }
+
+    var cellW = cw / COLS;
+    var cellH = ch / ROWS;
+    var fontSize = Math.max(7, Math.min(cellW, cellH) * 1.08);
+    ctx.font = '700 ' + fontSize + 'px "Space Mono", ui-monospace, monospace';
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
+
+    var now = performance.now();
+    var doGlitch = now < glitchUntil || scrollBoost > 0.35;
+    var charLen = CHARSET.length - 1;
+
+    for(var y = 0; y < ROWS; y++){
+      var row = '';
+      var rowLum = 0;
+      for(var x = 0; x < COLS; x++){
+        var idx = (y * COLS + x) * 4;
+        var r = data[idx], g = data[idx + 1], b = data[idx + 2];
+        var lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+        lum = Math.pow(Math.min(1, Math.max(0, lum * 1.15)), 0.85);
+        lum = Math.min(1, Math.max(0, lum + Math.sin(time * 1.8 + x * 0.12 + y * 0.08) * 0.03 * (0.4 + scrollBoost)));
+        var ci = Math.floor(lum * charLen);
+        if(doGlitch && Math.random() < 0.01 + scrollBoost * 0.03){
+          ci = Math.floor(Math.random() * charLen);
+        }
+        row += CHARSET.charAt(ci);
+        rowLum += lum;
+      }
+      var avg = rowLum / COLS;
+      var alpha = 0.25 + avg * 0.8;
+      if(avg > 0.68){
+        ctx.fillStyle = 'rgba(210,245,255,' + alpha + ')';
+      } else if(avg > 0.38){
+        ctx.fillStyle = 'rgba(255,220,160,' + alpha + ')';
+      } else {
+        ctx.fillStyle = 'rgba(240,184,110,' + alpha + ')';
+      }
+      var px = doGlitch && Math.random() < 0.08 ? (Math.random() - 0.5) * cellW * 1.5 : 0;
+      ctx.fillText(row, px, y * cellH);
+
+      // Hot glyph accents on bright rows
+      if(!isCoarse && avg > 0.55){
+        ctx.fillStyle = 'rgba(125,226,255,' + (0.12 + avg * 0.2) + ')';
+        ctx.fillText(row, px + 0.6, y * cellH);
+      }
+    }
+
+    // Occasional full-width ASCII streak (anamorphic signal bar)
+    if(Math.sin(time * 0.7) > 0.96){
+      var barY = (0.35 + Math.sin(time * 1.3) * 0.2) * ch;
+      ctx.fillStyle = 'rgba(125,226,255,0.12)';
+      ctx.fillRect(0, barY, cw, cellH * 1.2);
+    }
+  }
+
+  function tick(ts){
+    time = ts * 0.001;
+    scrollBoost += (targetBoost - scrollBoost) * 0.08;
+    renderAscii();
+
+    frameCount++;
+    if(ts - lastFpsT > 1000){
+      fps = frameCount;
+      frameCount = 0;
+      lastFpsT = ts;
+      if(teleR) teleR.textContent = 'FPS ' + fps + ' · SIGNAL LOCK';
+    }
+
+    if(sectionVisible && !reduceMotion) rafId = requestAnimationFrame(tick);
+  }
+
+  function drawStill(){
+    renderAscii();
+  }
 
   window.addEventListener('scroll', function(){
-    var y = window.scrollY || window.pageYOffset;
-    targetAngle += (y - lastScrollY) * SCROLL_SENSITIVITY;
-    lastScrollY = y;
-
     var rect = section.getBoundingClientRect();
     var total = Math.max(1, section.offsetHeight - window.innerHeight);
     var progress = Math.min(1, Math.max(0, -rect.top / total));
-    targetPush = 0.82 + progress * 0.55;
+    targetBoost = progress * 0.85;
+    if(Math.random() < 0.04) glitchUntil = performance.now() + 180;
+    if(plate){
+      plate.style.transform = 'scale(' + (1.08 + progress * 0.08) + ') translateY(' + (progress * -2) + '%)';
+    }
   }, { passive: true });
-
-  function drawDust(cx, cy, w, h){
-    for(var i = 0; i < dust.length; i++){
-      var d = dust[i];
-      d.y -= d.drift * (0.4 + d.z);
-      if(d.y < -0.02){ d.y = 1.02; d.x = Math.random(); }
-      d.twinkle += 0.02;
-      var px = d.x * w;
-      var py = d.y * h;
-      // slight radial pull toward center (gravity well feel)
-      px += (cx - px) * d.z * 0.04;
-      py += (cy - py) * d.z * 0.04;
-      var alpha = (0.08 + d.z * 0.35) * (0.55 + 0.45 * Math.sin(d.twinkle));
-      ctx.fillStyle = 'rgba(240,184,110,' + alpha + ')';
-      ctx.beginPath();
-      ctx.arc(px, py, d.s * (0.5 + d.z), 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  function drawCoreGlow(cx, cy, size){
-    var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, size * 0.55);
-    g.addColorStop(0, 'rgba(240,184,110,0.16)');
-    g.addColorStop(0.35, 'rgba(180,90,50,0.06)');
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(cx, cy, size * 0.55, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function drawTesseractLayer(angleOffset, scale, opacity, pulsePhase){
-    var cx = canvas.width / 2, cy = canvas.height / 2;
-    var pts = new Array(vertices4D.length);
-    for(var vIdx = 0; vIdx < vertices4D.length; vIdx++){
-      var r = rotate4D(vertices4D[vIdx], 0, 3, currentAngle + angleOffset);
-      r = rotate4D(r, 1, 2, currentAngle * 0.68 + angleOffset * 0.9);
-      r = rotate4D(r, 0, 1, secondaryAngle * 0.35 + angleOffset * 0.2);
-      pts[vIdx] = project4Dto2D(r, scale * cameraPush, cx, cy);
-    }
-
-    // Edges with depth-based glow
-    for(var eIdx = 0; eIdx < edges.length; eIdx++){
-      var p1 = pts[edges[eIdx][0]], p2 = pts[edges[eIdx][1]];
-      var edgeDepth = (p1.depth + p2.depth) / 2;
-      var depthBoost = 1 + edgeDepth * 0.22;
-      var pulse = 0.75 + 0.25 * Math.sin(pulseT * 1.6 + eIdx * 0.35 + pulsePhase);
-      var a = Math.max(0.03, opacity * depthBoost * pulse);
-
-      ctx.strokeStyle = 'rgba(240,184,110,' + a + ')';
-      ctx.lineWidth = (1.1 + Math.max(0, edgeDepth) * 0.35) * (isCoarse ? 0.85 : 1);
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.stroke();
-
-      // traveling energy pulse along a subset of edges
-      if(!isCoarse && eIdx % 4 === 0){
-        var t = (Math.sin(pulseT * 1.2 + eIdx) + 1) * 0.5;
-        var bx = p1.x + (p2.x - p1.x) * t;
-        var by = p1.y + (p2.y - p1.y) * t;
-        ctx.fillStyle = 'rgba(255,220,160,' + (0.35 * a) + ')';
-        ctx.beginPath();
-        ctx.arc(bx, by, 1.6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // Vertex nodes
-    if(!isCoarse){
-      for(var n = 0; n < pts.length; n++){
-        var p = pts[n];
-        var na = Math.max(0.05, opacity * (0.7 + p.bright * 0.25));
-        ctx.fillStyle = 'rgba(255,210,150,' + na + ')';
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.4 + Math.max(0, p.depth) * 0.6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-  }
-
-  function drawTesseract(){
-    var w = canvas.width, h = canvas.height;
-    ctx.clearRect(0, 0, w, h);
-
-    currentAngle += (targetAngle - currentAngle) * EASE;
-    secondaryAngle += 0.0042;
-    cameraPush += (targetPush - cameraPush) * 0.04;
-    pulseT += 0.016;
-
-    var cx = w / 2, cy = h / 2;
-    var baseSize = Math.min(w, h) * 0.3;
-
-    drawDust(cx, cy, w, h);
-    drawCoreGlow(cx, cy, baseSize * cameraPush);
-
-    // Outer ghost lattices (deeper in space)
-    for(var layer = LAYER_COUNT - 1; layer >= 0; layer--){
-      var scale = baseSize * (0.72 + layer * 0.28);
-      var opacity = 0.38 - layer * 0.055;
-      var phase = layer * 0.55;
-      drawTesseractLayer(phase, scale, opacity, layer);
-    }
-
-    // Counter-rotating inner cube (tight, brighter) — the "Cooper station" core
-    drawTesseractLayer(-currentAngle * 1.4, baseSize * 0.42, 0.55, 2.2);
-
-    if(sectionVisible && !reduceMotion) tesseractRafId = requestAnimationFrame(drawTesseract);
-  }
 
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       sectionVisible = entry.isIntersecting;
-      if(sectionVisible && !tesseractRafId && !reduceMotion){
-        tesseractRafId = requestAnimationFrame(drawTesseract);
-      } else if(!sectionVisible && tesseractRafId){
-        cancelAnimationFrame(tesseractRafId);
-        tesseractRafId = null;
+      if(sectionVisible){
+        ensureVideo();
+        if(reduceMotion){
+          drawStill();
+        } else if(!rafId){
+          rafId = requestAnimationFrame(tick);
+        }
+      } else {
+        if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+        if(video && !video.paused) video.pause();
       }
     });
   }, { threshold: 0.02 });
   io.observe(section);
-  if(reduceMotion) drawTesseract();
 
-  // ---- Foreground cinematography (GSAP) ----
+  if(reduceMotion) drawStill();
+
+  // ---- Foreground cinematography ----
   if(!reduceMotion && window.gsap && window.ScrollTrigger){
     if(house){
       gsap.fromTo(house,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' }
-        }
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+          scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' } }
       );
     }
     if(eyebrow){
       gsap.fromTo(eyebrow,
-        { opacity: 0, letterSpacing: '0.4em', y: 12 },
-        {
-          opacity: 1, letterSpacing: '0.18em', y: 0, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' }
-        }
+        { opacity: 0, letterSpacing: '0.42em' },
+        { opacity: 1, letterSpacing: '0.18em', duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' } }
       );
     }
     headingLines.forEach(function(line){
@@ -1458,69 +1463,51 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       var inner = line.querySelector('.ach-heading-inner');
       gsap.fromTo(inner,
         { yPercent: 120 },
-        {
-          yPercent: 0, duration: 1.15, ease: 'power4.out',
-          scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' }
-        }
+        { yPercent: 0, duration: 1.15, ease: 'power4.out',
+          scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' } }
       );
     });
     if(lede){
       gsap.fromTo(lede,
-        { opacity: 0, y: 22 },
-        {
-          opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' }
-        }
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+          scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' } }
       );
     }
     if(hudCorners.length){
       gsap.fromTo(hudCorners,
         { opacity: 0, scale: 0.5 },
-        {
-          opacity: 1, scale: 1, duration: 0.7, stagger: 0.07, ease: 'power3.out',
-          scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' }
-        }
+        { opacity: 1, scale: 1, duration: 0.65, stagger: 0.06, ease: 'power3.out',
+          scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' } }
       );
     }
     if(hud){
       var readout = hud.querySelector('.ach-hud-readout');
       if(readout){
-        gsap.fromTo(readout,
-          { opacity: 0 },
-          {
-            opacity: 1, duration: 1.1, ease: 'power2.out',
-            scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' }
-          }
-        );
+        gsap.fromTo(readout, { opacity: 0 }, {
+          opacity: 1, duration: 1, ease: 'power2.out',
+          scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' }
+        });
       }
     }
 
-    // Cards emerge from deep space — alternate corridors
     cards.forEach(function(card, i){
       var fromLeft = i % 2 === 0;
       gsap.fromTo(card,
         {
           opacity: 0,
-          x: fromLeft ? -80 : 80,
-          y: 60,
-          rotateY: fromLeft ? 18 : -18,
-          rotateX: 8,
-          scale: 0.88,
-          filter: 'blur(8px) brightness(0.7)'
+          x: fromLeft ? -70 : 70,
+          y: 50,
+          rotateX: 10,
+          rotateY: fromLeft ? 14 : -14,
+          filter: 'blur(6px) brightness(0.7)'
         },
         {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          rotateY: 0,
-          rotateX: 0,
-          scale: 1,
+          opacity: 1, x: 0, y: 0, rotateX: 0, rotateY: 0,
           filter: 'blur(0px) brightness(1)',
-          duration: 1.25,
-          ease: 'power4.out',
+          duration: 1.15, ease: 'power4.out',
           scrollTrigger: {
-            trigger: card,
-            start: 'top 88%',
+            trigger: card, start: 'top 88%',
             toggleActions: 'play none none reverse'
           }
         }
@@ -1528,7 +1515,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     });
   }
 
-  // ---- 3D tilt on phase cards (foreground polish) ----
   if(!isCoarse && !reduceMotion){
     cards.forEach(function(el){
       el.addEventListener('mousemove', function(e){
@@ -1536,7 +1522,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         var px = (e.clientX - rect.left) / rect.width - 0.5;
         var py = (e.clientY - rect.top) / rect.height - 0.5;
         el.style.transition = 'none';
-        el.style.transform = 'perspective(1100px) rotateX(' + (py * -10) + 'deg) rotateY(' + (px * 12) + 'deg) translateY(-8px) scale(1.02)';
+        el.style.transform = 'perspective(1100px) rotateX(' + (py * -9) + 'deg) rotateY(' + (px * 11) + 'deg) translateY(-6px)';
       });
       el.addEventListener('mouseleave', function(){
         el.style.transition = 'transform 0.55s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s ease, border-color 0.3s';
