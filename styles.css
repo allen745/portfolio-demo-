@@ -1092,15 +1092,6 @@ nav > * { pointer-events: auto; }
 .nav-pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent2); display: inline-block; transition: background 0.3s ease; }
 .nav-pill-menu.is-open .nav-pill-dot { background: #17181c; }
 
-.music-credit {
-  margin-top: 10px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.04em;
-  color: rgba(100,116,139,0.9);
-}
-.music-credit em { font-style: normal; color: rgba(148,163,184,0.95); }
-
 .nav-panel { position: fixed; top: 76px; right: 4%; width: min(360px, 90vw); background: #f2ede4; border-radius: 22px; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5); overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(-16px) scale(0.97); transform-origin: top right; transition: opacity 0.35s ease, transform 0.4s cubic-bezier(.16,1,.3,1); }
 .nav-panel.open { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
 
