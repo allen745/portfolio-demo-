@@ -1119,6 +1119,7 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
         child === veil ||
         child.id === 'project-detail' ||
         child.classList.contains('ach-sticky-bg') ||
+        child.classList.contains('ty-stage') ||
         child.classList.contains('cinematic-seam')
       ) return;
       if(!child.style.position) child.style.position = 'relative';
@@ -1320,4 +1321,115 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
       fadeOrgan(0.11, 0.6);
     }
   });
+})();
+
+// Thank You end card — cinematic astronaut video + light-level production animation
+(function(){
+  var section = document.getElementById('contact');
+  var video = document.getElementById('tyAstronautVideo');
+  if(!section || !video) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var stage = section.querySelector('.ty-stage');
+  var mark = section.querySelector('.ty-house-mark');
+  var title = section.querySelector('.thank-you');
+  var sub = section.querySelector('.ty-subcopy');
+  var lights = section.querySelectorAll('.ty-light');
+
+  function playVideo(){
+    if(reduceMotion) return;
+    var p = video.play();
+    if(p && p.then){
+      p.then(function(){ video.classList.add('is-ready'); })
+       .catch(function(){ /* keep poster fallback */ });
+    } else {
+      video.classList.add('is-ready');
+    }
+  }
+
+  function pauseVideo(){
+    if(!video.paused) video.pause();
+  }
+
+  // Lazy-play only while the end card is in view
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) playVideo();
+        else pauseVideo();
+      });
+    }, { threshold: 0.2 });
+    io.observe(section);
+  } else {
+    playVideo();
+  }
+
+  video.addEventListener('loadeddata', function(){
+    if(!video.paused) video.classList.add('is-ready');
+  });
+
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+
+  // Soft parallax drift on the video plate while scrolling the end card
+  if(stage){
+    gsap.to(video, {
+      yPercent: 8,
+      scale: 1.14,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 0.7
+      }
+    });
+  }
+
+  // Production-house end-card reveal
+  if(mark){
+    gsap.fromTo(mark,
+      { opacity: 0, y: 18 },
+      {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: mark, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(title){
+    gsap.fromTo(title,
+      { opacity: 0, y: 56, clipPath: 'inset(110% 0 0 0)' },
+      {
+        opacity: 1, y: 0, clipPath: 'inset(0% 0 0 0)',
+        duration: 1.25, ease: 'power4.out',
+        scrollTrigger: { trigger: title, start: 'top 86%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(sub){
+    gsap.fromTo(sub,
+      { opacity: 0, y: 24 },
+      {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.12,
+        scrollTrigger: { trigger: sub, start: 'top 90%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
+  // Light-level intensity rises as the end card centers
+  if(lights.length){
+    gsap.fromTo(lights,
+      { opacity: 0.08 },
+      {
+        opacity: 0.42,
+        ease: 'none',
+        stagger: 0.04,
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 75%',
+          end: 'center center',
+          scrub: 0.8
+        }
+      }
+    );
+  }
 })();
