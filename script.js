@@ -1173,13 +1173,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Achievements — cinematic Tesseract parallax (Interstellar-style).
-// Background: a canvas-rendered 4D hypercube network, pinned to the viewport
-// for the whole scroll duration of the section (position: sticky + negative
-// margin trick) so it stays on screen while the foreground cards scroll past.
-// The scroll position drives the tesseract's rotation directly, with the
-// rotation angle eased/lerped toward its scroll-derived target every frame
-// so it never stutters — it just keeps gliding, even between scroll events.
+// Achievements — Nolan / Interstellar cinematic recognition field.
+// Sticky viewport-locked canvas: multi-layer tesseract, dust field, energy pulses,
+// scroll-driven camera push. Foreground: editorial header reveal + depth card fly-ins.
 (function(){
   var section = document.getElementById('achievements');
   if(!section) return;
@@ -1187,13 +1183,24 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isCoarse = window.matchMedia('(pointer: coarse)').matches;
 
-  // Background (pinned matrix) + midground (vignette) layers, then move the
-  // section's existing content into a foreground wrapper that always paints
-  // above both.
+  // Background (pinned matrix) + atmosphere layers, then move existing content
+  // into a foreground wrapper that always paints above both.
   var stickyBg = document.createElement('div');
   stickyBg.className = 'ach-sticky-bg';
   stickyBg.setAttribute('aria-hidden', 'true');
-  stickyBg.innerHTML = '<canvas class="ach-tesseract"></canvas><div class="ach-vignette"></div>';
+  stickyBg.innerHTML =
+    '<div class="ach-nebula"></div>' +
+    '<canvas class="ach-tesseract"></canvas>' +
+    '<span class="ach-shaft"></span>' +
+    '<span class="ach-shaft s2"></span>' +
+    '<span class="ach-shaft s3"></span>' +
+    '<span class="ach-anamorphic"></span>' +
+    '<span class="ach-anamorphic a2"></span>' +
+    '<div class="ach-horizon"></div>' +
+    '<div class="ach-grain"></div>' +
+    '<div class="ach-vignette"></div>' +
+    '<div class="ach-letterbox top"></div>' +
+    '<div class="ach-letterbox bottom"></div>';
 
   var content = document.createElement('div');
   content.className = 'ach-content';
@@ -1203,9 +1210,15 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   section.appendChild(stickyBg);
   section.appendChild(content);
 
+  var house = content.querySelector('.ach-house-mark');
+  var eyebrow = content.querySelector('.ach-eyebrow');
+  var headingLines = content.querySelectorAll('.ach-heading-line');
+  var lede = content.querySelector('.ach-lede');
+  var hud = content.querySelector('.ach-hud');
+  var hudCorners = content.querySelectorAll('.ach-hud-corner');
+  var cards = content.querySelectorAll('.phase-card');
+
   // ---- 4D hypercube geometry ----
-  // 16 vertices at every combination of (±1,±1,±1,±1); an edge connects two
-  // vertices that differ in exactly one coordinate (32 edges total).
   var vertices4D = [];
   for(var vi = 0; vi < 16; vi++){
     vertices4D.push([
@@ -1232,23 +1245,44 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     return out;
   }
   function project4Dto2D(v, scale, cx, cy){
-    var viewDist = 3.2;
+    var viewDist = 3.05;
     var wFactor = viewDist / (viewDist - v[3]);
     var x3 = v[0] * wFactor, y3 = v[1] * wFactor, z3 = v[2] * wFactor;
-    var zFactor = viewDist / (viewDist - z3 * 0.6);
+    var zFactor = viewDist / (viewDist - z3 * 0.62);
     return {
       x: cx + x3 * zFactor * scale,
       y: cy - y3 * zFactor * scale,
-      depth: z3
+      depth: z3,
+      bright: wFactor
     };
   }
 
-  // ---- Canvas setup ----
+  // ---- Canvas: tesseract + dust + pulses ----
   var canvas = stickyBg.querySelector('.ach-tesseract');
   var ctx = canvas.getContext('2d');
   var tesseractRafId = null;
   var sectionVisible = false;
-  var LAYER_COUNT = isCoarse ? 2 : 4;
+  var LAYER_COUNT = isCoarse ? 3 : 5;
+  var DUST_COUNT = isCoarse ? 48 : 110;
+  var dust = [];
+  var cameraPush = 1;
+  var targetPush = 1;
+  var pulseT = 0;
+
+  function seedDust(){
+    dust = [];
+    for(var i = 0; i < DUST_COUNT; i++){
+      dust.push({
+        x: Math.random(),
+        y: Math.random(),
+        z: Math.random(),
+        s: 0.4 + Math.random() * 1.8,
+        drift: 0.00015 + Math.random() * 0.00045,
+        twinkle: Math.random() * Math.PI * 2
+      });
+    }
+  }
+  seedDust();
 
   function resizeCanvas(){
     canvas.width = window.innerWidth;
@@ -1257,50 +1291,129 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
-  // ---- Scroll drives the target rotation angle; current angle eases toward
-  // it every frame (a simple lerp/"spring") so the rotation glides smoothly
-  // instead of jumping or stuttering with each scroll tick. ----
   var targetAngle = 0;
   var currentAngle = 0;
+  var secondaryAngle = 0;
   var lastScrollY = window.scrollY || window.pageYOffset;
-  var SCROLL_SENSITIVITY = 0.0026;
-  var EASE = 0.06;
+  var SCROLL_SENSITIVITY = 0.0031;
+  var EASE = 0.055;
 
   window.addEventListener('scroll', function(){
     var y = window.scrollY || window.pageYOffset;
     targetAngle += (y - lastScrollY) * SCROLL_SENSITIVITY;
     lastScrollY = y;
+
+    var rect = section.getBoundingClientRect();
+    var total = Math.max(1, section.offsetHeight - window.innerHeight);
+    var progress = Math.min(1, Math.max(0, -rect.top / total));
+    targetPush = 0.82 + progress * 0.55;
   }, { passive: true });
 
-  function drawTesseract(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    currentAngle += (targetAngle - currentAngle) * EASE;
+  function drawDust(cx, cy, w, h){
+    for(var i = 0; i < dust.length; i++){
+      var d = dust[i];
+      d.y -= d.drift * (0.4 + d.z);
+      if(d.y < -0.02){ d.y = 1.02; d.x = Math.random(); }
+      d.twinkle += 0.02;
+      var px = d.x * w;
+      var py = d.y * h;
+      // slight radial pull toward center (gravity well feel)
+      px += (cx - px) * d.z * 0.04;
+      py += (cy - py) * d.z * 0.04;
+      var alpha = (0.08 + d.z * 0.35) * (0.55 + 0.45 * Math.sin(d.twinkle));
+      ctx.fillStyle = 'rgba(240,184,110,' + alpha + ')';
+      ctx.beginPath();
+      ctx.arc(px, py, d.s * (0.5 + d.z), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
 
+  function drawCoreGlow(cx, cy, size){
+    var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, size * 0.55);
+    g.addColorStop(0, 'rgba(240,184,110,0.16)');
+    g.addColorStop(0.35, 'rgba(180,90,50,0.06)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.55, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawTesseractLayer(angleOffset, scale, opacity, pulsePhase){
     var cx = canvas.width / 2, cy = canvas.height / 2;
-    var baseSize = Math.min(canvas.width, canvas.height) * 0.32;
+    var pts = new Array(vertices4D.length);
+    for(var vIdx = 0; vIdx < vertices4D.length; vIdx++){
+      var r = rotate4D(vertices4D[vIdx], 0, 3, currentAngle + angleOffset);
+      r = rotate4D(r, 1, 2, currentAngle * 0.68 + angleOffset * 0.9);
+      r = rotate4D(r, 0, 1, secondaryAngle * 0.35 + angleOffset * 0.2);
+      pts[vIdx] = project4Dto2D(r, scale * cameraPush, cx, cy);
+    }
 
-    for(var layer = 0; layer < LAYER_COUNT; layer++){
-      var scale = baseSize * (1 + layer * 0.34);
-      var opacity = 0.32 - layer * 0.055;
-      var phase = layer * 0.5;
-      var pts = new Array(vertices4D.length);
-      for(var vIdx = 0; vIdx < vertices4D.length; vIdx++){
-        var r = rotate4D(vertices4D[vIdx], 0, 3, currentAngle + phase);
-        r = rotate4D(r, 1, 2, currentAngle * 0.64 + phase);
-        pts[vIdx] = project4Dto2D(r, scale, cx, cy);
-      }
-      ctx.lineWidth = 1;
-      for(var eIdx = 0; eIdx < edges.length; eIdx++){
-        var p1 = pts[edges[eIdx][0]], p2 = pts[edges[eIdx][1]];
-        var edgeDepth = (p1.depth + p2.depth) / 2;
-        var depthBoost = 1 + edgeDepth * 0.18;
-        ctx.strokeStyle = 'rgba(240,184,110,' + Math.max(0.04, opacity * depthBoost) + ')';
+    // Edges with depth-based glow
+    for(var eIdx = 0; eIdx < edges.length; eIdx++){
+      var p1 = pts[edges[eIdx][0]], p2 = pts[edges[eIdx][1]];
+      var edgeDepth = (p1.depth + p2.depth) / 2;
+      var depthBoost = 1 + edgeDepth * 0.22;
+      var pulse = 0.75 + 0.25 * Math.sin(pulseT * 1.6 + eIdx * 0.35 + pulsePhase);
+      var a = Math.max(0.03, opacity * depthBoost * pulse);
+
+      ctx.strokeStyle = 'rgba(240,184,110,' + a + ')';
+      ctx.lineWidth = (1.1 + Math.max(0, edgeDepth) * 0.35) * (isCoarse ? 0.85 : 1);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+
+      // traveling energy pulse along a subset of edges
+      if(!isCoarse && eIdx % 4 === 0){
+        var t = (Math.sin(pulseT * 1.2 + eIdx) + 1) * 0.5;
+        var bx = p1.x + (p2.x - p1.x) * t;
+        var by = p1.y + (p2.y - p1.y) * t;
+        ctx.fillStyle = 'rgba(255,220,160,' + (0.35 * a) + ')';
         ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
+        ctx.arc(bx, by, 1.6, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
+
+    // Vertex nodes
+    if(!isCoarse){
+      for(var n = 0; n < pts.length; n++){
+        var p = pts[n];
+        var na = Math.max(0.05, opacity * (0.7 + p.bright * 0.25));
+        ctx.fillStyle = 'rgba(255,210,150,' + na + ')';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.4 + Math.max(0, p.depth) * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function drawTesseract(){
+    var w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    currentAngle += (targetAngle - currentAngle) * EASE;
+    secondaryAngle += 0.0042;
+    cameraPush += (targetPush - cameraPush) * 0.04;
+    pulseT += 0.016;
+
+    var cx = w / 2, cy = h / 2;
+    var baseSize = Math.min(w, h) * 0.3;
+
+    drawDust(cx, cy, w, h);
+    drawCoreGlow(cx, cy, baseSize * cameraPush);
+
+    // Outer ghost lattices (deeper in space)
+    for(var layer = LAYER_COUNT - 1; layer >= 0; layer--){
+      var scale = baseSize * (0.72 + layer * 0.28);
+      var opacity = 0.38 - layer * 0.055;
+      var phase = layer * 0.55;
+      drawTesseractLayer(phase, scale, opacity, layer);
+    }
+
+    // Counter-rotating inner cube (tight, brighter) — the "Cooper station" core
+    drawTesseractLayer(-currentAngle * 1.4, baseSize * 0.42, 0.55, 2.2);
 
     if(sectionVisible && !reduceMotion) tesseractRafId = requestAnimationFrame(drawTesseract);
   }
@@ -1319,19 +1432,114 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   io.observe(section);
   if(reduceMotion) drawTesseract();
 
-  // ---- 3D tilt on the patent highlight + phase cards (foreground polish) ----
+  // ---- Foreground cinematography (GSAP) ----
+  if(!reduceMotion && window.gsap && window.ScrollTrigger){
+    if(house){
+      gsap.fromTo(house,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' }
+        }
+      );
+    }
+    if(eyebrow){
+      gsap.fromTo(eyebrow,
+        { opacity: 0, letterSpacing: '0.4em', y: 12 },
+        {
+          opacity: 1, letterSpacing: '0.18em', y: 0, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' }
+        }
+      );
+    }
+    headingLines.forEach(function(line){
+      var text = line.textContent;
+      line.innerHTML = '<span class="ach-heading-inner">' + text + '</span>';
+      var inner = line.querySelector('.ach-heading-inner');
+      gsap.fromTo(inner,
+        { yPercent: 120 },
+        {
+          yPercent: 0, duration: 1.15, ease: 'power4.out',
+          scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' }
+        }
+      );
+    });
+    if(lede){
+      gsap.fromTo(lede,
+        { opacity: 0, y: 22 },
+        {
+          opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' }
+        }
+      );
+    }
+    if(hudCorners.length){
+      gsap.fromTo(hudCorners,
+        { opacity: 0, scale: 0.5 },
+        {
+          opacity: 1, scale: 1, duration: 0.7, stagger: 0.07, ease: 'power3.out',
+          scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' }
+        }
+      );
+    }
+    if(hud){
+      var readout = hud.querySelector('.ach-hud-readout');
+      if(readout){
+        gsap.fromTo(readout,
+          { opacity: 0 },
+          {
+            opacity: 1, duration: 1.1, ease: 'power2.out',
+            scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' }
+          }
+        );
+      }
+    }
+
+    // Cards emerge from deep space — alternate corridors
+    cards.forEach(function(card, i){
+      var fromLeft = i % 2 === 0;
+      gsap.fromTo(card,
+        {
+          opacity: 0,
+          x: fromLeft ? -80 : 80,
+          y: 60,
+          rotateY: fromLeft ? 18 : -18,
+          rotateX: 8,
+          scale: 0.88,
+          filter: 'blur(8px) brightness(0.7)'
+        },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          rotateY: 0,
+          rotateX: 0,
+          scale: 1,
+          filter: 'blur(0px) brightness(1)',
+          duration: 1.25,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 88%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    });
+  }
+
+  // ---- 3D tilt on phase cards (foreground polish) ----
   if(!isCoarse && !reduceMotion){
-    var tiltEls = content.querySelectorAll('.phase-card');
-    tiltEls.forEach(function(el){
+    cards.forEach(function(el){
       el.addEventListener('mousemove', function(e){
         var rect = el.getBoundingClientRect();
         var px = (e.clientX - rect.left) / rect.width - 0.5;
         var py = (e.clientY - rect.top) / rect.height - 0.5;
         el.style.transition = 'none';
-        el.style.transform = 'perspective(900px) rotateX(' + (py * -9) + 'deg) rotateY(' + (px * 11) + 'deg) translateY(-6px)';
+        el.style.transform = 'perspective(1100px) rotateX(' + (py * -10) + 'deg) rotateY(' + (px * 12) + 'deg) translateY(-8px) scale(1.02)';
       });
       el.addEventListener('mouseleave', function(){
-        el.style.transition = 'transform 0.5s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s ease, border-color 0.3s';
+        el.style.transition = 'transform 0.55s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s ease, border-color 0.3s';
         el.style.transform = '';
       });
     });
