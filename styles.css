@@ -692,125 +692,121 @@
 
   /* project cards use the same reliable fade-in as the rest of the site (see .fade-in below) */
 
-  /* ACHIEVEMENTS — Nolan / Interstellar cinematic recognition field */
-  /* padding moves from the section onto .ach-content below, so the sticky
-     background canvas can span edge-to-edge instead of being inset by it */
+  /* ACHIEVEMENTS — ASCII cinematic video field */
   #achievements {
-    --ach-ink: #f7f1e6;
-    --ach-muted: #c4b8a6;
+    --ach-ink: #f4efe4;
+    --ach-muted: #b9ad9a;
     --ach-amber: #f0b86e;
-    --ach-deep: #050308;
+    --ach-cyan: #7de2ff;
+    --ach-deep: #020106;
     position: relative;
     padding: 0;
-    background:
-      radial-gradient(ellipse 70% 50% at 50% 40%, rgba(80,40,20,0.22) 0%, transparent 55%),
-      linear-gradient(180deg, #030208 0%, #080510 35%, #100a12 70%, #160e16 100%);
+    background: var(--ach-deep);
     color: var(--ach-ink);
     overflow: clip;
   }
 
-  /* Background layer: pinned to the viewport for the whole scroll duration of the
-     section via the "sticky + negative margin" trick, so the 3D hypercube network
-     stays put while the foreground cards scroll past over it. */
   .ach-sticky-bg {
     position: sticky; top: 0; height: 100vh; margin-bottom: -100vh;
     z-index: 0; overflow: hidden; pointer-events: none;
   }
-  .ach-tesseract { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .ach-nebula {
-    position: absolute; inset: -10%;
+  .ach-src-video {
+    position: absolute; width: 1px; height: 1px; opacity: 0;
+    pointer-events: none; overflow: hidden;
+  }
+  .ach-video-plate {
+    position: absolute; inset: -4%;
     background:
-      radial-gradient(ellipse 45% 40% at 28% 35%, rgba(240,184,110,0.14) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 38% at 72% 62%, rgba(90,140,200,0.1) 0%, transparent 58%),
-      radial-gradient(ellipse 55% 30% at 50% 100%, rgba(180,60,40,0.08) 0%, transparent 50%);
-    animation: achNebulaDrift 22s ease-in-out infinite alternate;
-    will-change: transform, opacity;
-  }
-  @keyframes achNebulaDrift {
-    0% { transform: scale(1) translate(0, 0); opacity: 0.75; }
-    100% { transform: scale(1.12) translate(-2%, 3%); opacity: 1; }
-  }
-  .ach-shaft {
-    position: absolute; top: -20%; left: 50%; width: 2px; height: 140%;
-    transform: translateX(-50%) rotate(12deg);
-    background: linear-gradient(180deg,
-      transparent 0%,
-      rgba(240,184,110,0.0) 18%,
-      rgba(240,184,110,0.18) 48%,
-      rgba(240,184,110,0.0) 78%,
-      transparent 100%);
-    filter: blur(1.5px);
+      radial-gradient(ellipse 55% 45% at 50% 45%, rgba(240,184,110,0.12) 0%, transparent 60%),
+      #020106 url('videos/hero-poster.jpg') center / cover no-repeat;
+    filter: contrast(1.2) saturate(0.7) brightness(0.35);
+    transform: scale(1.08);
     opacity: 0.55;
-    animation: achShaftPulse 7s ease-in-out infinite;
   }
-  .ach-shaft.s2 {
-    transform: translateX(-50%) rotate(-14deg);
-    opacity: 0.35;
-    animation-delay: -2.5s;
+  .ach-ascii {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block; z-index: 1;
+    image-rendering: pixelated;
+    mix-blend-mode: screen;
+    opacity: 0.92;
   }
-  .ach-shaft.s3 {
-    width: 1px;
-    transform: translateX(-50%) rotate(0deg);
-    opacity: 0.25;
-    filter: blur(0.5px);
-    animation-delay: -4s;
+  .ach-crt { position: absolute; inset: 0; z-index: 2; }
+  .ach-scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.18) 0px,
+      rgba(0,0,0,0.18) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    opacity: 0.45;
+    animation: achScanDrift 8s linear infinite;
   }
-  @keyframes achShaftPulse {
-    0%,100% { opacity: 0.25; }
-    50% { opacity: 0.7; }
+  @keyframes achScanDrift {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 48px; }
   }
-  .ach-anamorphic {
-    position: absolute; left: -10%; right: -10%; top: 42%; height: 2px;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(240,184,110,0.0) 20%,
-      rgba(240,184,110,0.35) 50%,
-      rgba(240,184,110,0.0) 80%,
-      transparent 100%);
-    filter: blur(1px);
-    opacity: 0.4;
-    animation: achAnaFlash 9s ease-in-out infinite;
+  .ach-phosphor {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 42%, rgba(240,184,110,0.16) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 35% at 70% 70%, rgba(125,226,255,0.08) 0%, transparent 60%);
+    animation: achPhosphor 5.5s ease-in-out infinite alternate;
   }
-  .ach-anamorphic.a2 {
-    top: 58%; height: 1px; opacity: 0.22; animation-delay: -3.2s;
-  }
-  @keyframes achAnaFlash {
-    0%,70%,100% { opacity: 0.15; transform: scaleX(0.85); }
-    78% { opacity: 0.55; transform: scaleX(1.05); }
-    86% { opacity: 0.2; transform: scaleX(0.9); }
-  }
-  .ach-grain {
-    position: absolute; inset: 0; opacity: 0.18; mix-blend-mode: soft-light;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
-  }
-  .ach-horizon {
-    position: absolute; left: 0; right: 0; bottom: 8%; height: 40%;
-    background: radial-gradient(ellipse 80% 55% at 50% 100%, rgba(240,184,110,0.12) 0%, transparent 70%);
-    opacity: 0.8;
+  @keyframes achPhosphor {
+    0% { opacity: 0.55; }
+    100% { opacity: 1; }
   }
   .ach-vignette {
-    position: absolute; inset: 0; z-index: 1;
+    position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse at 50% 42%, transparent 22%, rgba(3,2,6,0.55) 68%, rgba(3,2,6,0.88) 100%),
-      linear-gradient(180deg, rgba(3,2,6,0.45) 0%, transparent 18%, transparent 82%, rgba(3,2,6,0.55) 100%);
+      radial-gradient(ellipse at 50% 45%, transparent 18%, rgba(2,1,6,0.55) 62%, rgba(2,1,6,0.92) 100%),
+      linear-gradient(180deg, rgba(2,1,6,0.55) 0%, transparent 16%, transparent 84%, rgba(2,1,6,0.65) 100%);
+  }
+  .ach-chromatic {
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg, rgba(125,226,255,0.05), transparent 40%, rgba(240,184,110,0.05));
+    mix-blend-mode: color-dodge;
+    opacity: 0.5;
+    animation: achChroma 7s ease-in-out infinite alternate;
+  }
+  @keyframes achChroma {
+    0% { transform: translateX(-1%); opacity: 0.35; }
+    100% { transform: translateX(1%); opacity: 0.65; }
   }
   .ach-letterbox {
-    position: absolute; left: 0; right: 0; height: 4.5vh; z-index: 2;
-    background: #000; opacity: 0.55;
+    position: absolute; left: 0; right: 0; height: 5vh;
+    background: #000; opacity: 0.7; z-index: 3;
   }
   .ach-letterbox.top { top: 0; }
   .ach-letterbox.bottom { bottom: 0; }
+  .ach-telemetry {
+    position: absolute; left: 4%; right: 4%; top: 7.5vh; z-index: 4;
+    display: flex; justify-content: space-between; gap: 12px;
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(240,184,110,0.65);
+    pointer-events: none;
+  }
+  .ach-tele-c {
+    color: #ff6b6b;
+    animation: achRecBlink 1.4s steps(1) infinite;
+  }
+  @keyframes achRecBlink {
+    0%,49% { opacity: 1; }
+    50%,100% { opacity: 0.25; }
+  }
 
-  /* Foreground layer: certificate/phase cards scroll normally above the pinned matrix */
-  .ach-content { position: relative; z-index: 2; padding: 100px 5% 120px; }
+  .ach-content { position: relative; z-index: 2; padding: 100px 5% 130px; }
 
   .ach-house-mark {
     display: flex; align-items: center; justify-content: center; gap: 14px;
-    margin-bottom: 36px;
+    margin-bottom: 34px;
   }
   .ach-house-line {
     display: block; width: 48px; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(240,184,110,0.75), transparent);
+    background: linear-gradient(90deg, transparent, rgba(240,184,110,0.8), transparent);
   }
   .ach-house-label {
     font-family: 'Space Mono', monospace;
@@ -819,7 +815,8 @@
   }
 
   .ach-header {
-    text-align: center; margin-bottom: 56px; max-width: 780px; margin-left: auto; margin-right: auto;
+    text-align: center; margin-bottom: 48px; max-width: 780px;
+    margin-left: auto; margin-right: auto;
   }
   .ach-eyebrow {
     font-family: 'Space Mono', monospace; font-size: 0.72rem;
@@ -831,23 +828,18 @@
     font-size: clamp(2.4rem, 5vw, 4rem);
     letter-spacing: -0.03em; color: var(--ach-ink);
     margin-bottom: 18px; line-height: 1.05;
-    text-shadow: 0 0 60px rgba(240,184,110,0.22);
+    text-shadow: 0 0 50px rgba(240,184,110,0.28);
   }
   .ach-heading-line { display: block; overflow: hidden; }
   .ach-heading-inner { display: block; will-change: transform; }
-  .ach-heading-accent {
-    color: var(--ach-amber);
-    font-weight: 700;
-  }
+  .ach-heading-accent { color: var(--ach-amber); font-weight: 700; }
   .ach-lede {
     font-size: 1.02rem; line-height: 1.7; color: var(--ach-muted);
-    max-width: 520px; margin: 0 auto;
+    max-width: 540px; margin: 0 auto;
   }
 
   .ach-hud {
-    position: relative;
-    max-width: 1180px; margin: 0 auto 48px;
-    height: 48px;
+    position: relative; max-width: 1180px; margin: 0 auto 52px; height: 52px;
   }
   .ach-hud-corner {
     position: absolute; width: 18px; height: 18px;
@@ -858,104 +850,105 @@
   .ach-hud-corner.c-bl { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
   .ach-hud-corner.c-br { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
   .ach-hud-readout {
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     font-family: 'Space Mono', monospace; font-size: 0.62rem;
-    letter-spacing: 0.2em; color: rgba(240,184,110,0.7);
-    text-transform: uppercase;
+    letter-spacing: 0.2em; color: rgba(240,184,110,0.72); text-transform: uppercase;
   }
 
-  /* Zig-zag certificate cards: alternate left / right as they scroll over the
-     pinned Tesseract matrix, with premium glassmorphic styling. */
   .phase-grid {
-    display: flex; flex-direction: column; gap: clamp(72px, 12vh, 140px);
-    perspective: 1600px; padding: 20px 0 40px; max-width: 1180px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: clamp(64px, 11vh, 130px);
+    perspective: 1600px; padding: 12px 0 40px; max-width: 1180px; margin: 0 auto;
   }
   .phase-card {
     width: min(540px, 92%);
-    background: linear-gradient(165deg, rgba(28,20,16,0.72) 0%, rgba(14,10,12,0.62) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 12px;
-    padding: 28px 30px 24px;
+    background:
+      linear-gradient(165deg, rgba(12,10,16,0.82) 0%, rgba(6,5,10,0.78) 100%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 4px;
+    padding: 22px 26px 22px;
     position: relative;
-    border: 1px solid rgba(240,184,110,0.28);
+    border: 1px solid rgba(240,184,110,0.32);
     box-shadow:
-      0 18px 50px -24px rgba(0,0,0,0.85),
-      0 0 32px -12px rgba(240,184,110,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.05);
-    transition: box-shadow 0.4s ease, border-color 0.3s;
+      0 18px 50px -24px rgba(0,0,0,0.9),
+      0 0 28px -10px rgba(240,184,110,0.22),
+      inset 0 0 0 1px rgba(125,226,255,0.04);
     will-change: transform, opacity;
-    transform-style: preserve-3d;
+    font-variant-ligatures: none;
   }
-  .phase-card::before {
+  .phase-card::after {
     content: '';
-    position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-    background: linear-gradient(135deg, rgba(240,184,110,0.08) 0%, transparent 42%, transparent 100%);
-    opacity: 0.7;
+    position: absolute; inset: 6px;
+    border: 1px solid rgba(240,184,110,0.08);
+    pointer-events: none;
   }
   .phase-card:nth-child(odd)  { align-self: flex-start; }
   .phase-card:nth-child(even) { align-self: flex-end; }
   .phase-card:hover {
-    border-color: rgba(240,184,110,0.55);
+    border-color: rgba(240,184,110,0.6);
     box-shadow:
-      0 28px 60px -22px rgba(0,0,0,0.9),
-      0 0 48px -8px rgba(240,184,110,0.35),
-      inset 0 1px 0 rgba(255,255,255,0.07);
+      0 28px 60px -22px rgba(0,0,0,0.92),
+      0 0 42px -8px rgba(240,184,110,0.38),
+      inset 0 0 0 1px rgba(125,226,255,0.08);
   }
-
-  .phase-card-top {
-    display: flex; justify-content: space-between; align-items: baseline;
-    gap: 16px; margin-bottom: 16px;
+  .phase-logbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(240,184,110,0.22);
   }
-  .phase-org {
-    font-family: 'Space Mono', monospace; font-size: 0.68rem;
-    letter-spacing: 0.16em; text-transform: uppercase; color: #f0b86e;
+  .phase-log {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.18em; color: var(--ach-cyan); text-transform: uppercase;
   }
   .phase-id {
-    font-family: 'Space Mono', monospace; font-size: 0.64rem;
-    letter-spacing: 0.08em; color: rgba(240,184,110,0.7); flex-shrink: 0;
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.1em; color: rgba(240,184,110,0.7);
+  }
+  .phase-card-top { margin-bottom: 10px; }
+  .phase-org {
+    font-family: 'Space Mono', monospace; font-size: 0.68rem;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ach-amber);
   }
   .phase-title {
     font-family: 'Syne', sans-serif; font-weight: 700;
-    font-size: clamp(1.25rem, 2.2vw, 1.7rem); margin-bottom: 12px;
-    line-height: 1.2; color: #f7f1e6; letter-spacing: -0.01em;
+    font-size: clamp(1.2rem, 2.1vw, 1.65rem); margin-bottom: 10px;
+    line-height: 1.2; color: var(--ach-ink); letter-spacing: -0.01em;
   }
   .phase-desc {
-    font-size: 0.9rem; color: #c4b8a6; line-height: 1.65; margin-bottom: 0;
+    font-size: 0.9rem; color: var(--ach-muted); line-height: 1.65;
   }
   .phase-divider {
-    height: 1px; margin: 22px 0 18px;
-    background: linear-gradient(90deg, rgba(240,184,110,0.45), rgba(240,184,110,0.08) 70%, transparent);
+    height: 1px; margin: 18px 0 16px;
+    background: linear-gradient(90deg, rgba(240,184,110,0.45), rgba(125,226,255,0.12) 55%, transparent);
   }
-  .phase-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-  }
+  .phase-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .phase-stat-label {
-    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
     letter-spacing: 0.14em; text-transform: uppercase;
-    color: rgba(240,184,110,0.75); margin-bottom: 6px;
+    color: rgba(240,184,110,0.72); margin-bottom: 6px;
   }
   .phase-stat-value {
     font-family: 'Syne', sans-serif; font-weight: 600;
-    font-size: 0.88rem; color: #f7f1e6; line-height: 1.25;
+    font-size: 0.86rem; color: var(--ach-ink); line-height: 1.25;
   }
   .phase-stat-value.pending { color: rgba(190,178,160,0.7); font-style: italic; font-weight: 500; }
 
   @media (max-width: 760px) {
-    .phase-grid { gap: 36px; padding-top: 20px; }
+    .phase-grid { gap: 34px; }
     .phase-card,
     .phase-card:nth-child(odd),
     .phase-card:nth-child(even) { width: 100%; align-self: stretch; }
-    .phase-card { padding: 22px 20px 20px; }
+    .phase-card { padding: 18px 16px; }
     .phase-stats { gap: 8px; }
-    .phase-stat-value { font-size: 0.8rem; }
+    .phase-stat-value { font-size: 0.78rem; }
     .ach-letterbox { display: none; }
-    .ach-shaft, .ach-anamorphic { opacity: 0.2; }
+    .ach-telemetry { display: none; }
     .ach-hud { display: none; }
+    .ach-scanlines { opacity: 0.25; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .ach-nebula, .ach-shaft, .ach-anamorphic { animation: none; }
+    .ach-scanlines, .ach-phosphor, .ach-chromatic, .ach-tele-c { animation: none; }
+    .ach-ascii { opacity: 0.55; }
   }
 
   /* CERTIFICATE GALLERY */
