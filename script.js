@@ -36,11 +36,14 @@ lenis.stop(); // lock scroll until intro finishes
     }
   });
   tl.to(pre, { yPercent: -100, duration: 0.9, ease: 'power4.inOut' }, '-=0.1');
-  tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.6');
+  tl.fromTo('.hb-house', { opacity: 0, letterSpacing: '0.5em' }, { opacity: 1, letterSpacing: '0.28em', duration: 0.8, ease: 'power3.out' }, '-=0.55');
+  tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55');
   tl.fromTo('.hb-letter', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out', stagger: 0.04 }, '-=0.5');
   tl.fromTo('.hb-orb', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.7)' }, '-=0.6');
   tl.fromTo('.hb-signature', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5');
   tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.3');
+  tl.fromTo('.hero-letterbox span', { scaleY: 1.6 }, { scaleY: 1, duration: 1.1, ease: 'power3.out' }, '-=1.2');
+  tl.fromTo('.hero-video', { scale: 1.28 }, { scale: 1.12, duration: 2.2, ease: 'power2.out' }, '-=1.4');
 })();
 
 // Make nav-links work with Lenis instead of native scroll
@@ -1432,4 +1435,94 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
       }
     );
   }
+})();
+
+// Hero opening — extreme cinematic video plate + dust + parallax
+(function(){
+  var hero = document.getElementById('hero');
+  var video = document.getElementById('heroCinematicVideo');
+  var dust = document.getElementById('heroDust');
+  if(!hero || !video) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function playHero(){
+    if(reduceMotion) return;
+    var p = video.play();
+    if(p && p.then){
+      p.then(function(){ video.classList.add('is-ready'); })
+       .catch(function(){});
+    } else {
+      video.classList.add('is-ready');
+    }
+  }
+
+  video.addEventListener('loadeddata', function(){
+    if(!video.paused) video.classList.add('is-ready');
+  });
+
+  // Start as soon as possible after first gesture/load; also retry after preloader
+  playHero();
+  window.addEventListener('pointerdown', playHero, { once: true });
+  setTimeout(playHero, 1800);
+
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) playHero();
+        else if(!video.paused) video.pause();
+      });
+    }, { threshold: 0.15 });
+    io.observe(hero);
+  }
+
+  if(dust && !reduceMotion){
+    var html = '';
+    for(var i = 0; i < 28; i++){
+      var left = Math.random() * 100;
+      var delay = Math.random() * 8;
+      var dur = 7 + Math.random() * 10;
+      var size = 1 + Math.random() * 2.2;
+      html += '<span style="left:' + left + '%;bottom:-8%;width:' + size + 'px;height:' + size + 'px;animation-duration:' + dur + 's;animation-delay:' + delay + 's;"></span>';
+    }
+    dust.innerHTML = html;
+  }
+
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+
+  // Crazy cinematic push: slow push-in + vertical drift while leaving the opening title
+  gsap.to(video, {
+    scale: 1.28,
+    yPercent: 10,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: hero,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 0.8
+    }
+  });
+
+  gsap.to('.hero-bloom', {
+    opacity: 0.15,
+    scale: 1.35,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: hero,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true
+    }
+  });
+
+  gsap.to('.hero-letterbox span', {
+    scaleY: 1.8,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: hero,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 0.5
+    }
+  });
 })();
