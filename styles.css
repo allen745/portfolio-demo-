@@ -574,26 +574,206 @@
     .exp-pin-stage { position: relative; height: auto; overflow: visible; }
   }
 
-  /* CONTACT — "Thank You" hero style */
-  #contact { background: #E9E6DE; color: #232323; position: relative; overflow: hidden; }
-  #contact::before { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0; background-image: radial-gradient(rgba(20,15,10,0.12) 1.4px, transparent 1.4px); background-size: 26px 26px; }
-  #contact .section-tag { color: #9c3a30; text-align: center; }
-  .contact-header { position: relative; text-align: center; max-width: 720px; margin: 0 auto 10px; }
-  .collab-tag { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: #14181f; margin-bottom: 10px; }
-  .thank-you-row { display: inline-flex; align-items: flex-start; gap: 16px; }
-  .thank-you { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(3rem, 9vw, 6.5rem); color: #14181f; letter-spacing: -0.02em; line-height: 0.95; margin: 0; }
-  .ty-smiley { width: 44px; height: 44px; border: 3px solid #14181f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-top: 10px; flex-shrink: 0; }
-  .contact-deco { position: absolute; z-index: 0; background: #b3261e; opacity: 0.85; }
-  .deco-diamond { width: 26px; height: 26px; top: -6px; right: 8%; transform: rotate(45deg); border-radius: 4px; }
-  .deco-bowtie { width: 34px; height: 22px; bottom: 30px; left: 6%; clip-path: polygon(0 0, 50% 50%, 0 100%, 100% 100%, 50% 50%, 100% 0); }
-  .contact-pills { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px 18px; margin: 40px auto 30px; max-width: 760px; }
-  .contact-pill { display: inline-flex; align-items: center; gap: 10px; background: #fff; border-radius: 30px; padding: 10px 20px; box-shadow: 0 8px 20px -10px rgba(20,15,10,0.18); text-decoration: none; color: #14181f; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; transition: transform 0.25s, box-shadow 0.25s; }
-  .contact-pill:hover { transform: translateY(-4px); box-shadow: 0 14px 28px -12px rgba(20,15,10,0.25); }
-  .contact-pill:nth-child(2n) { margin-top: 16px; }
-  .contact-pill:nth-child(3n) { margin-top: -8px; }
-  .pill-icon-badge { width: 26px; height: 26px; border-radius: 7px; background: #14181f; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+  /* CONTACT / THANK YOU — cinematic astronaut end card */
+  #contact {
+    --ty-ink: #f4efe6;
+    --ty-muted: rgba(244,239,230,0.68);
+    --ty-accent: #f0b86e;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    padding: 0;
+    color: var(--ty-ink);
+    background: #05070c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #contact .section-tag { color: var(--ty-accent); text-align: center; }
 
-  footer { text-align: center; padding: 32px; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); border-top: 1px solid var(--border); position: relative; z-index: 1; }
+  .ty-stage {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none; overflow: hidden;
+  }
+  .ty-video,
+  .ty-video-fallback {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: scale(1.08);
+    filter: saturate(1.05) contrast(1.08) brightness(0.72);
+  }
+  .ty-video-fallback {
+    background:
+      radial-gradient(ellipse 55% 45% at 62% 42%, rgba(240,184,110,0.22) 0%, transparent 58%),
+      linear-gradient(180deg, #070a12 0%, #10182a 48%, #05070c 100%),
+      url('videos/astronaut-poster.jpg') center / cover no-repeat;
+    opacity: 1;
+  }
+  .ty-video.is-ready { z-index: 1; }
+  .ty-video.is-ready + .ty-video-fallback { opacity: 0; transition: opacity 0.8s ease; }
+
+  .ty-light {
+    position: absolute; border-radius: 50%;
+    filter: blur(70px); mix-blend-mode: screen;
+    opacity: 0.35; will-change: transform, opacity;
+  }
+  .ty-light-a {
+    width: min(55vw, 520px); height: min(55vw, 520px);
+    top: -12%; left: -8%;
+    background: rgba(255, 210, 140, 0.45);
+    animation: tyDriftA 14s ease-in-out infinite;
+  }
+  .ty-light-b {
+    width: min(42vw, 420px); height: min(42vw, 420px);
+    right: -10%; bottom: 8%;
+    background: rgba(120, 180, 255, 0.28);
+    animation: tyDriftB 18s ease-in-out infinite;
+  }
+  .ty-light-c {
+    width: min(30vw, 280px); height: min(30vw, 280px);
+    left: 38%; top: 42%;
+    background: rgba(255,255,255,0.16);
+    animation: tyPulse 7s ease-in-out infinite;
+  }
+  @keyframes tyDriftA {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.28; }
+    50% { transform: translate(8%, 12%) scale(1.12); opacity: 0.48; }
+  }
+  @keyframes tyDriftB {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.22; }
+    50% { transform: translate(-10%, -8%) scale(1.18); opacity: 0.4; }
+  }
+  @keyframes tyPulse {
+    0%, 100% { opacity: 0.12; transform: scale(0.9); }
+    50% { opacity: 0.32; transform: scale(1.15); }
+  }
+
+  .ty-grain {
+    position: absolute; inset: 0; z-index: 2; opacity: 0.28; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  }
+  .ty-vignette {
+    position: absolute; inset: 0; z-index: 3;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 42%, transparent 18%, rgba(3,5,10,0.55) 62%, rgba(2,3,6,0.92) 100%),
+      linear-gradient(180deg, rgba(4,6,12,0.55) 0%, transparent 28%, transparent 58%, rgba(4,6,12,0.82) 100%);
+  }
+  .ty-scan {
+    position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0.18;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(255,255,255,0.035) 3px,
+      transparent 4px
+    );
+    mix-blend-mode: soft-light;
+    animation: tyScan 9s linear infinite;
+  }
+  @keyframes tyScan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+  }
+
+  .ty-content {
+    position: relative; z-index: 5;
+    width: min(920px, 92vw);
+    margin: 0 auto;
+    padding: 120px 0 100px;
+    text-align: center;
+  }
+  .ty-endcard { position: relative; max-width: 760px; margin: 0 auto 8px; }
+  .ty-house-mark {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin-bottom: 22px;
+  }
+  .ty-house-line {
+    display: block; width: 42px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(240,184,110,0.85), transparent);
+  }
+  .ty-house-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ty-accent);
+  }
+  .collab-tag {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+    color: var(--ty-muted); margin-bottom: 14px;
+  }
+  .thank-you-row {
+    display: flex; justify-content: center; align-items: flex-start; gap: 16px;
+  }
+  .thank-you {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(3.4rem, 11vw, 7.2rem);
+    color: var(--ty-ink); letter-spacing: -0.03em; line-height: 0.92; margin: 0;
+    text-shadow: 0 10px 40px rgba(0,0,0,0.45);
+  }
+  .ty-subcopy {
+    margin: 22px auto 0; max-width: 42ch;
+    font-size: 1.02rem; line-height: 1.65; color: var(--ty-muted);
+  }
+
+  .contact-pills {
+    position: relative; z-index: 1;
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 14px 16px; margin: 42px auto 28px; max-width: 780px;
+  }
+  .contact-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 30px; padding: 10px 18px;
+    box-shadow: 0 12px 30px -18px rgba(0,0,0,0.55);
+    text-decoration: none; color: var(--ty-ink);
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s, background 0.25s;
+  }
+  .contact-pill:hover {
+    transform: translateY(-4px);
+    border-color: rgba(240,184,110,0.55);
+    background: rgba(240,184,110,0.12);
+    box-shadow: 0 16px 34px -14px rgba(0,0,0,0.6);
+  }
+  .contact-pill:nth-child(2n) { margin-top: 10px; }
+  .contact-pill:nth-child(3n) { margin-top: -6px; }
+  .pill-icon-badge {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: rgba(240,184,110,0.92); color: #14181f;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; flex-shrink: 0;
+  }
+  .ty-cta { position: relative; z-index: 1; text-align: center; }
+  .ty-resume {
+    background: linear-gradient(135deg, #f0b86e, #e8a25c);
+    color: #14181f; border: none;
+    box-shadow: 0 0 0 1px rgba(240,184,110,0.35), 0 18px 40px -18px rgba(240,184,110,0.55);
+  }
+  .ty-resume:hover { filter: brightness(1.05); }
+
+  @media (max-width: 700px) {
+    .ty-content { padding: 110px 0 80px; }
+    .ty-subcopy { font-size: 0.95rem; }
+    .contact-pill:nth-child(2n),
+    .contact-pill:nth-child(3n) { margin-top: 0; }
+    .ty-house-line { width: 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ty-light-a, .ty-light-b, .ty-light-c, .ty-scan { animation: none; }
+    .ty-video { display: none; }
+  }
+
+  footer {
+    text-align: center; padding: 32px;
+    font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    color: var(--muted);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: relative; z-index: 1;
+    background: #05070c;
+  }
   .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .fade-in.visible { opacity: 1; transform: none; }
 
@@ -620,8 +800,7 @@
   }
   #about .cinematic-seam-line,
   #skills .cinematic-seam-line,
-  #experience .cinematic-seam-line,
-  #contact .cinematic-seam-line {
+  #experience .cinematic-seam-line {
     background: linear-gradient(90deg,
       transparent 0%,
       rgba(0,145,168,0.2) 18%,
@@ -630,11 +809,22 @@
       transparent 100%);
     box-shadow: 0 0 12px rgba(179,38,30,0.2);
   }
+  #contact .cinematic-seam-line {
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(240,184,110,0.15) 18%,
+      rgba(240,184,110,0.75) 50%,
+      rgba(120,180,255,0.2) 82%,
+      transparent 100%);
+    box-shadow: 0 0 14px rgba(240,184,110,0.35);
+  }
   #about .cinematic-seam-glow,
   #skills .cinematic-seam-glow,
-  #experience .cinematic-seam-glow,
-  #contact .cinematic-seam-glow {
+  #experience .cinematic-seam-glow {
     background: radial-gradient(ellipse at 50% 0%, rgba(179,38,30,0.12) 0%, rgba(0,145,168,0.06) 40%, transparent 72%);
+  }
+  #contact .cinematic-seam-glow {
+    background: radial-gradient(ellipse at 50% 0%, rgba(240,184,110,0.2) 0%, rgba(120,180,255,0.08) 42%, transparent 72%);
   }
 
   /* Sits behind section content (z-index 1); content children are bumped to 2 in JS */
@@ -650,14 +840,21 @@
   }
   #about .cinematic-veil,
   #skills .cinematic-veil,
-  #experience .cinematic-veil,
-  #contact .cinematic-veil {
+  #experience .cinematic-veil {
     background: linear-gradient(180deg,
       rgba(232,224,210,0.85) 0%,
       rgba(245,241,234,0.25) 28%,
       transparent 48%,
       transparent 60%,
       rgba(20,15,10,0.1) 100%);
+  }
+  #contact .cinematic-veil {
+    background: linear-gradient(180deg,
+      rgba(4,6,12,0.75) 0%,
+      rgba(4,6,12,0.2) 28%,
+      transparent 48%,
+      transparent 62%,
+      rgba(4,6,12,0.55) 100%);
   }
 
   .cinematic-title-reveal {
