@@ -408,18 +408,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   );
 });
 
-// Proficiency bars
-var barObs=new IntersectionObserver(function(entries){
-  entries.forEach(function(entry){
-    if(entry.isIntersecting){
-      entry.target.querySelectorAll('.prof-fill').forEach(function(f){f.style.width=f.dataset.width+'%';});
-    } else {
-      entry.target.querySelectorAll('.prof-fill').forEach(function(f){f.style.width='0%';});
-    }
-  });
-},{threshold:0.3});
-document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);});
-
 // Project case-study system — click a card, scroll horizontally through the story
 (function(){
   const projects = {
@@ -972,23 +960,217 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
   }
 })();
 
-// Skills corkboard thread — elegant draw-on
+// Skills — cinematic corkboard pin-drop + thread draw
 (function(){
-  if(!window.gsap || !window.ScrollTrigger) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var path = document.querySelector('.corkboard-path');
-  var cork = document.querySelector('.corkboard');
-  if(!path || !cork) return;
-  gsap.to(path, {
-    strokeDashoffset: 0,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: cork,
-      start: 'top 75%',
-      end: 'bottom 55%',
-      scrub: 0.7
-    }
+  var section = document.getElementById('skills');
+  if(!section) return;
+
+  var path = document.getElementById('skillsThreadPath') || section.querySelector('.corkboard-path');
+  var dot = document.getElementById('skillsThreadDot');
+  var anchors = section.querySelector('.corkboard-anchors');
+  var cork = section.querySelector('.corkboard');
+  var house = section.querySelector('.skills-house-mark');
+  var eyebrow = section.querySelector('.skills-eyebrow');
+  var headingLines = section.querySelectorAll('.skills-heading-line');
+  var lede = section.querySelector('.skills-lede');
+  var cards = section.querySelectorAll('.pin-card');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var pathLen = 0;
+  if(path){
+    pathLen = path.getTotalLength();
+    path.style.strokeDasharray = String(pathLen);
+    path.style.strokeDashoffset = String(pathLen);
+  }
+  if(dot && path){
+    var start = path.getPointAtLength(0);
+    dot.setAttribute('cx', start.x);
+    dot.setAttribute('cy', start.y);
+  }
+
+  function settlePose(card){
+    var rot = getComputedStyle(card).getPropertyValue('--pin-rot').trim() || '0deg';
+    var y = getComputedStyle(card).getPropertyValue('--pin-y').trim() || '0px';
+    return { rotation: parseFloat(rot) || 0, y: parseFloat(y) || 0 };
+  }
+
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger){
+    if(path) path.style.strokeDashoffset = '0';
+    if(anchors) anchors.style.opacity = '0.5';
+    cards.forEach(function(card){ card.classList.add('is-settled'); });
+    return;
+  }
+
+  if(house){
+    gsap.fromTo(house,
+      { opacity: 0, y: 18 },
+      {
+        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(eyebrow){
+    gsap.fromTo(eyebrow,
+      { opacity: 0, x: -26 },
+      {
+        opacity: 1, x: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
+  headingLines.forEach(function(line){
+    var text = line.textContent;
+    line.innerHTML = '<span class="skills-heading-inner">' + text + '</span>';
+    var inner = line.querySelector('.skills-heading-inner');
+    gsap.fromTo(inner,
+      { yPercent: 115 },
+      {
+        yPercent: 0, duration: 1.1, ease: 'power4.out',
+        scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
+    );
   });
+
+  if(lede){
+    gsap.fromTo(lede,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
+  // Thread draw with trailing focus pin
+  if(path && cork){
+    var draw = { v: 0 };
+    gsap.to(draw, {
+      v: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: cork,
+        start: 'top 78%',
+        end: 'bottom 48%',
+        scrub: 0.7,
+        onUpdate: function(){
+          path.style.strokeDashoffset = String(pathLen * (1 - draw.v));
+          if(dot){
+            var pt = path.getPointAtLength(pathLen * draw.v);
+            dot.setAttribute('cx', pt.x);
+            dot.setAttribute('cy', pt.y);
+          }
+        }
+      }
+    });
+  }
+  if(anchors){
+    gsap.fromTo(anchors,
+      { opacity: 0 },
+      {
+        opacity: 0.5, duration: 1.1, ease: 'power2.out',
+        scrollTrigger: { trigger: cork, start: 'top 72%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
+  // Pin-drop cascade — cards fall in and settle into corkboard tilt
+  cards.forEach(function(card, i){
+    var pose = settlePose(card);
+    var tags = card.querySelectorAll('.tag');
+    var mark = card.querySelector('.skill-mark');
+    var title = card.querySelector('.skill-title');
+    var badge = card.querySelector('.skill-new');
+    var pin = card.querySelector('.pin-head');
+
+    gsap.set(card, {
+      opacity: 0,
+      y: pose.y - 72,
+      rotation: pose.rotation - (i % 2 === 0 ? 8 : -8),
+      scale: 0.92,
+      transformOrigin: '50% 0%'
+    });
+    if(tags.length) gsap.set(tags, { opacity: 0, y: 10 });
+    if(mark) gsap.set(mark, { opacity: 0, y: 12 });
+    if(title) gsap.set(title, { opacity: 0, y: 14 });
+    if(badge) gsap.set(badge, { opacity: 0, scale: 0.7 });
+    if(pin) gsap.set(pin, { scale: 0, opacity: 0 });
+
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 88%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    tl.to(card, {
+      opacity: 1,
+      y: pose.y,
+      rotation: pose.rotation,
+      scale: 1,
+      duration: 1.05,
+      ease: 'power4.out'
+    }, 0);
+
+    if(pin){
+      tl.to(pin, {
+        scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(2.4)'
+      }, 0.18);
+    }
+    if(mark){
+      tl.to(mark, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.28);
+    }
+    if(title){
+      tl.to(title, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.36);
+    }
+    if(badge){
+      tl.to(badge, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(1.8)' }, 0.4);
+    }
+    if(tags.length){
+      tl.to(tags, {
+        opacity: 1, y: 0, duration: 0.45, stagger: 0.04, ease: 'power3.out'
+      }, 0.48);
+    }
+
+    // Soft lift on hover (desktop)
+    card.addEventListener('mouseenter', function(){
+      gsap.to(card, {
+        y: pose.y - 10,
+        scale: 1.03,
+        boxShadow: '0 26px 42px -16px rgba(20,15,10,0.4), 0 2px 6px rgba(20,15,10,0.08)',
+        duration: 0.45,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+    });
+    card.addEventListener('mouseleave', function(){
+      gsap.to(card, {
+        y: pose.y,
+        rotation: pose.rotation,
+        scale: 1,
+        boxShadow: '0 18px 34px -16px rgba(20,15,10,0.32), 0 2px 6px rgba(20,15,10,0.07)',
+        duration: 0.55,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+    });
+  });
+
+  // Subtle board parallax while section is in view
+  if(cork){
+    gsap.to(cork, {
+      y: -18,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+  }
 })();
 
 // Achievements — cinematic Tesseract parallax (Interstellar-style).
@@ -1225,6 +1407,7 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('ty-stage') ||
         child.classList.contains('about-atmosphere') ||
+        child.classList.contains('skills-atmosphere') ||
         child.classList.contains('hero-stage') ||
         child.classList.contains('cinematic-seam')
       ) return;
