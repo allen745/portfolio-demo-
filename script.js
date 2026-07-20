@@ -1989,8 +1989,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   // Crazy cinematic push: slow push-in + vertical drift while leaving the opening title
   gsap.to(video, {
-    scale: 1.28,
-    yPercent: 10,
+    scale: 1.18,
+    yPercent: 6,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
