@@ -760,11 +760,12 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   sections.forEach(function(s){ spy.observe(s.el); });
 })();
 
-// About — cinematic editorial reveal + refined signature path (no body-level SVG)
+// About — dark-light cinematic video plate + editorial reveal
 (function(){
   var section = document.getElementById('about');
   if(!section) return;
 
+  var video = document.getElementById('aboutDarkLightVideo');
   var path = document.getElementById('aboutPath');
   var dot = document.getElementById('aboutPathDot');
   var photoMask = section.querySelector('.about-photo-mask');
@@ -778,7 +779,40 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var pill = section.querySelector('.about-approach-pill');
   var connect = section.querySelectorAll('.about-connect-item');
   var corners = section.querySelectorAll('.about-frame-corner');
+  var lights = section.querySelectorAll('.about-light');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function playAboutVideo(){
+    if(!video || reduceMotion) return;
+    var p = video.play();
+    if(p && p.then){
+      p.then(function(){ video.classList.add('is-ready'); })
+       .catch(function(){ /* keep poster fallback */ });
+    } else {
+      video.classList.add('is-ready');
+    }
+  }
+
+  function pauseAboutVideo(){
+    if(video && !video.paused) video.pause();
+  }
+
+  if(video){
+    if('IntersectionObserver' in window){
+      var aboutVideoIo = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting) playAboutVideo();
+          else pauseAboutVideo();
+        });
+      }, { threshold: 0.18 });
+      aboutVideoIo.observe(section);
+    } else {
+      playAboutVideo();
+    }
+    video.addEventListener('loadeddata', function(){
+      if(!video.paused) video.classList.add('is-ready');
+    });
+  }
 
   // Prepare signature path length for draw-on
   var pathLen = 0;
@@ -800,6 +834,39 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       el.textContent = el.getAttribute('data-count') === '7' ? '7+' : String(n);
     });
     return;
+  }
+
+  // Soft parallax drift on the dark-light plate
+  if(video){
+    gsap.to(video, {
+      yPercent: 7,
+      scale: 1.16,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 0.7
+      }
+    });
+  }
+
+  // Light bloom intensity rises as About centers
+  if(lights.length){
+    gsap.fromTo(lights,
+      { opacity: 0.1 },
+      {
+        opacity: 0.4,
+        ease: 'none',
+        stagger: 0.04,
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 75%',
+          end: 'center center',
+          scrub: 0.6
+        }
+      }
+    );
   }
 
   // Photo mask + scale reveal
@@ -1618,6 +1685,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('ty-stage') ||
         child.classList.contains('about-atmosphere') ||
+        child.classList.contains('about-stage') ||
         child.classList.contains('skills-atmosphere') ||
         child.classList.contains('hero-stage') ||
         child.classList.contains('cinematic-seam')

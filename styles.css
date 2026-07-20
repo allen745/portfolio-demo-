@@ -29,55 +29,101 @@
   .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
   .nav-hamburger span { width: 22px; height: 2px; background: var(--accent); border-radius: 2px; transition: all 0.3s; }
 
-  /* ABOUT — cinematic editorial profile */
+  /* ABOUT — dark-light cinematic editorial profile */
   #about {
-    --about-ink: #16181c;
-    --about-muted: #5a616b;
-    --about-accent: #0b7f8f;
-    --about-warm: #c45a3a;
-    background:
-      radial-gradient(ellipse 55% 45% at 8% 20%, rgba(11,127,143,0.08) 0%, transparent 55%),
-      radial-gradient(ellipse 45% 40% at 92% 78%, rgba(196,90,58,0.07) 0%, transparent 50%),
-      linear-gradient(165deg, #f3efe6 0%, #efe9de 48%, #e8e1d4 100%);
+    --about-ink: #f2efe6;
+    --about-muted: rgba(242,239,230,0.68);
+    --about-accent: #7de2ff;
+    --about-warm: #f0b86e;
+    background: #04060c;
     color: var(--about-ink);
     position: relative;
     overflow: hidden;
     padding: 110px 5% 120px;
   }
-  .about-atmosphere {
-    position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+  .about-stage {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none; overflow: hidden;
   }
-  .about-orb {
-    position: absolute; border-radius: 50%; filter: blur(70px);
-    will-change: transform, opacity;
+  .about-video,
+  .about-video-fallback {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: scale(1.1);
+    filter: saturate(1.15) contrast(1.12) brightness(0.58);
   }
-  .about-orb-a {
-    width: min(42vw, 420px); height: min(42vw, 420px);
-    top: 4%; left: -8%;
-    background: rgba(11,127,143,0.16);
-    animation: aboutOrbA 16s ease-in-out infinite;
+  .about-video-fallback {
+    background:
+      radial-gradient(ellipse 50% 45% at 50% 18%, rgba(125,226,255,0.28) 0%, transparent 58%),
+      linear-gradient(180deg, #050812 0%, #081018 48%, #04060c 100%),
+      url('videos/about-dark-light-poster.jpg') center / cover no-repeat;
+    opacity: 1;
   }
-  .about-orb-b {
-    width: min(36vw, 360px); height: min(36vw, 360px);
-    right: -6%; bottom: 8%;
-    background: rgba(196,90,58,0.12);
-    animation: aboutOrbB 19s ease-in-out infinite;
+  .about-video.is-ready { z-index: 1; }
+  .about-video.is-ready + .about-video-fallback { opacity: 0; transition: opacity 0.9s ease; }
+
+  .about-light {
+    position: absolute; border-radius: 50%;
+    filter: blur(70px); mix-blend-mode: screen;
+    opacity: 0.32; will-change: transform, opacity; z-index: 2;
   }
-  @keyframes aboutOrbA {
-    0%,100% { transform: translate(0,0) scale(1); opacity: 0.55; }
-    50% { transform: translate(8%, 10%) scale(1.12); opacity: 0.9; }
+  .about-light-a {
+    width: min(52vw, 500px); height: min(52vw, 500px);
+    top: -14%; left: 18%;
+    background: rgba(125, 226, 255, 0.42);
+    animation: aboutLightA 15s ease-in-out infinite;
   }
-  @keyframes aboutOrbB {
-    0%,100% { transform: translate(0,0) scale(1); opacity: 0.4; }
-    50% { transform: translate(-10%, -8%) scale(1.15); opacity: 0.75; }
+  .about-light-b {
+    width: min(40vw, 380px); height: min(40vw, 380px);
+    right: -8%; bottom: 6%;
+    background: rgba(240, 184, 110, 0.22);
+    animation: aboutLightB 18s ease-in-out infinite;
   }
-  .about-grid-fade {
-    position: absolute; inset: 0; opacity: 0.35;
-    background-image:
-      linear-gradient(rgba(22,24,28,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(22,24,28,0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 75%);
+  .about-light-c {
+    width: min(28vw, 260px); height: min(28vw, 260px);
+    left: 8%; top: 48%;
+    background: rgba(255,255,255,0.14);
+    animation: aboutLightC 8s ease-in-out infinite;
+  }
+  @keyframes aboutLightA {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.24; }
+    50% { transform: translate(6%, 10%) scale(1.14); opacity: 0.48; }
+  }
+  @keyframes aboutLightB {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.18; }
+    50% { transform: translate(-9%, -7%) scale(1.16); opacity: 0.36; }
+  }
+  @keyframes aboutLightC {
+    0%, 100% { opacity: 0.1; transform: scale(0.92); }
+    50% { opacity: 0.28; transform: scale(1.12); }
+  }
+
+  .about-grain {
+    position: absolute; inset: 0; z-index: 3; opacity: 0.26; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  }
+  .about-vignette {
+    position: absolute; inset: 0; z-index: 4;
+    background:
+      radial-gradient(ellipse 68% 58% at 50% 40%, transparent 12%, rgba(3,5,10,0.55) 58%, rgba(2,3,6,0.94) 100%),
+      linear-gradient(180deg, rgba(4,6,12,0.62) 0%, transparent 26%, transparent 62%, rgba(4,6,12,0.88) 100%);
+  }
+  .about-scan {
+    position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0.14;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(255,255,255,0.035) 3px,
+      transparent 4px
+    );
+    mix-blend-mode: soft-light;
+    animation: aboutScan 10s linear infinite;
+  }
+  @keyframes aboutScan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
   }
 
   .about-shell { position: relative; z-index: 2; max-width: 1160px; margin: 0 auto; }
@@ -87,7 +133,7 @@
   }
   .about-house-line {
     display: block; width: 44px; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(11,127,143,0.7), transparent);
+    background: linear-gradient(90deg, transparent, rgba(125,226,255,0.75), transparent);
   }
   .about-house-label {
     font-family: 'Space Mono', monospace;
@@ -102,10 +148,11 @@
   .about-media { position: relative; width: 100%; max-width: 380px; margin: 0 auto; }
   .about-frame {
     position: relative; padding: 14px;
-    background: rgba(255,255,255,0.45);
-    border: 1px solid rgba(22,24,28,0.08);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(8,12,20,0.42);
+    border: 1px solid rgba(125,226,255,0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 28px 60px -28px rgba(0,0,0,0.7);
   }
   .about-frame-corner {
     position: absolute; width: 18px; height: 18px;
@@ -122,7 +169,7 @@
   .about-photo {
     width: 100%; height: 100%; object-fit: cover; display: block;
     transform: scale(1.08);
-    filter: contrast(1.04) saturate(0.96);
+    filter: contrast(1.06) saturate(0.94) brightness(0.96);
   }
   .about-frame-caption {
     margin-top: 12px;
@@ -138,7 +185,7 @@
   }
   .about-signature-path path {
     stroke-dasharray: 1; stroke-dashoffset: 1;
-    opacity: 0.85;
+    opacity: 0.9;
   }
 
   .about-copy { position: relative; }
@@ -152,6 +199,7 @@
     font-size: clamp(2.3rem, 4.4vw, 3.5rem);
     letter-spacing: -0.03em; color: var(--about-ink);
     margin-bottom: 10px; line-height: 1.05;
+    text-shadow: 0 12px 40px rgba(0,0,0,0.45);
   }
   .about-heading-line {
     display: block; overflow: hidden;
@@ -177,7 +225,7 @@
   }
   .about-stat {
     position: relative; padding-top: 10px;
-    border-top: 1px solid rgba(22,24,28,0.12);
+    border-top: 1px solid rgba(125,226,255,0.22);
   }
   .about-stat-num {
     font-family: 'Syne', sans-serif; font-weight: 800;
@@ -190,19 +238,19 @@
   }
   .about-approach-pill {
     display: inline-flex; align-items: center; gap: 10px;
-    background: #14181f; color: #fff;
+    background: rgba(242,239,230,0.94); color: #0a0e14;
     font-family: 'Space Mono', monospace; font-size: 0.78rem;
     letter-spacing: 0.05em; text-transform: uppercase;
     padding: 14px 26px; border-radius: 30px; text-decoration: none;
     margin-bottom: 36px;
     transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
-    box-shadow: 0 14px 30px -18px rgba(20,15,10,0.55);
+    box-shadow: 0 14px 30px -18px rgba(0,0,0,0.7);
   }
   .about-approach-pill:hover {
     transform: scale(1.04);
-    box-shadow: 0 18px 36px -16px rgba(11,127,143,0.4);
+    box-shadow: 0 18px 36px -16px rgba(125,226,255,0.45);
   }
-  .about-approach-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--about-accent); }
+  .about-approach-dot { width: 7px; height: 7px; border-radius: 50%; background: #0b7f8f; }
   .about-connect-label {
     font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
     letter-spacing: 0.06em; text-transform: uppercase;
@@ -211,20 +259,22 @@
   .about-connect-row { display: flex; flex-wrap: wrap; gap: 10px; }
   .about-connect-item {
     display: inline-flex; align-items: center; gap: 10px;
-    padding: 10px 14px; background: rgba(255,255,255,0.72);
-    border: 1px solid rgba(0,0,0,0.08); border-radius: 30px;
+    padding: 10px 14px; background: rgba(8,12,20,0.55);
+    border: 1px solid rgba(125,226,255,0.2); border-radius: 30px;
     text-decoration: none; color: var(--about-ink);
     font-family: 'Space Mono', monospace; font-size: 0.76rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
   }
   .about-connect-item:hover {
-    border-color: rgba(11,127,143,0.45);
+    border-color: rgba(125,226,255,0.55);
     transform: translateY(-3px);
-    box-shadow: 0 12px 24px -16px rgba(20,15,10,0.3);
+    box-shadow: 0 12px 24px -16px rgba(125,226,255,0.4);
   }
   .about-connect-ico {
     width: 22px; height: 22px; border-radius: 6px;
-    background: #14181f; color: #fff;
+    background: rgba(125,226,255,0.16); color: var(--about-accent);
     display: inline-flex; align-items: center; justify-content: center;
     font-size: 0.62rem; letter-spacing: 0; text-transform: lowercase;
   }
@@ -238,7 +288,8 @@
     .about-signature-path { opacity: 0.55; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .about-orb-a, .about-orb-b { animation: none; }
+    .about-light-a, .about-light-b, .about-light-c, .about-scan { animation: none; }
+    .about-video { display: none; }
   }
 
   /* HERO — extreme cinematic opening title */
