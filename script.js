@@ -1224,6 +1224,8 @@ document.querySelectorAll('.prof-grid').forEach(function(el){barObs.observe(el);
         child.id === 'project-detail' ||
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('ty-stage') ||
+        child.classList.contains('about-atmosphere') ||
+        child.classList.contains('hero-stage') ||
         child.classList.contains('cinematic-seam')
       ) return;
       if(!child.style.position) child.style.position = 'relative';
