@@ -1449,6 +1449,15 @@
     font-size: 0.92rem; line-height: 1.55; color: var(--ty-muted);
     max-width: 34ch; margin: 0;
   }
+  .ty-mail-setup {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(240,184,110,0.28);
+    background: rgba(240,184,110,0.08);
+    font-size: 0.78rem; line-height: 1.5; color: rgba(244,239,230,0.78);
+  }
+  .ty-mail-setup.is-hidden { display: none; }
+  .ty-mail-setup strong { color: var(--ty-accent); font-weight: 600; }
   .ty-mail-honey {
     position: absolute; left: -9999px; width: 1px; height: 1px;
     opacity: 0; pointer-events: none;
@@ -1501,6 +1510,18 @@
   .ty-mail-send:hover { filter: brightness(1.05); }
   .ty-mail-send:disabled {
     opacity: 0.65; cursor: wait; filter: none;
+  }
+  .ty-mail-fallback {
+    width: 100%;
+    justify-content: center;
+    background: transparent;
+    color: var(--ty-ink);
+    border: 1px solid rgba(244,239,230,0.22);
+    font-weight: 600;
+  }
+  .ty-mail-fallback:hover {
+    border-color: rgba(240,184,110,0.5);
+    background: rgba(240,184,110,0.08);
   }
   .ty-mail-status {
     min-height: 1.3em;
