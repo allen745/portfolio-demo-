@@ -408,6 +408,56 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   );
 });
 
+// Projects — cinematic nature-rain background plate
+(function(){
+  var section = document.getElementById('projects');
+  var video = document.getElementById('projectsBgVideo');
+  if(!section || !video) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function playProjectsVideo(){
+    if(reduceMotion) return;
+    video.muted = true;
+    var p = video.play();
+    if(p && p.then){
+      p.then(function(){ video.classList.add('is-ready'); }).catch(function(){});
+    } else {
+      video.classList.add('is-ready');
+    }
+  }
+
+  video.addEventListener('loadeddata', function(){
+    if(!video.paused) video.classList.add('is-ready');
+  });
+
+  if('IntersectionObserver' in window){
+    var vio = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) playProjectsVideo();
+        else if(!video.paused) video.pause();
+      });
+    }, { threshold: 0.1 });
+    vio.observe(section);
+  } else {
+    playProjectsVideo();
+  }
+
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+
+  gsap.to(video, {
+    scale: 1.14,
+    yPercent: 5,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: section,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 0.9
+    }
+  });
+})();
+
 // Project case-study system — click a card, scroll horizontally through the story
 (function(){
   const projects = {
@@ -1662,6 +1712,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         child.classList.contains('ty-stage') ||
         child.classList.contains('about-atmosphere') ||
         child.classList.contains('about-stage') ||
+        child.classList.contains('projects-stage') ||
         child.classList.contains('skills-atmosphere') ||
         child.classList.contains('hero-stage') ||
         child.classList.contains('cinematic-seam')
