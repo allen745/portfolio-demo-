@@ -1786,6 +1786,109 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
+// Thank You — mail form delivers to inbox via FormSubmit
+(function(){
+  var form = document.getElementById('tyMailForm');
+  if(!form) return;
+
+  var submitBtn = document.getElementById('tyMailSubmit');
+  var statusEl = document.getElementById('tyMailStatus');
+  var labelEl = submitBtn ? submitBtn.querySelector('.ty-mail-send-label') : null;
+  var endpoint = form.getAttribute('action') || 'https://formsubmit.co/ajax/allenschristian07@gmail.com';
+  var sending = false;
+
+  function setStatus(msg, kind){
+    if(!statusEl) return;
+    statusEl.textContent = msg || '';
+    statusEl.classList.remove('is-ok', 'is-err');
+    if(kind) statusEl.classList.add(kind);
+  }
+
+  function setBusy(busy){
+    sending = busy;
+    if(submitBtn) submitBtn.disabled = busy;
+    if(labelEl) labelEl.textContent = busy ? 'Sending…' : 'Send Mail';
+  }
+
+  function validEmail(value){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(sending) return;
+
+    var name = (form.querySelector('#tyMailName') || {}).value || '';
+    var email = (form.querySelector('#tyMailEmail') || {}).value || '';
+    var message = (form.querySelector('#tyMailMessage') || {}).value || '';
+    var honey = (form.querySelector('[name="_honey"]') || {}).value || '';
+
+    name = String(name).trim();
+    email = String(email).trim();
+    message = String(message).trim();
+
+    if(honey){
+      setStatus('Thanks — message noted.', 'is-ok');
+      form.reset();
+      return;
+    }
+    if(!name || !email || !message){
+      setStatus('Please fill in name, email, and message.', 'is-err');
+      return;
+    }
+    if(!validEmail(email)){
+      setStatus('Please enter a valid email address.', 'is-err');
+      return;
+    }
+
+    setBusy(true);
+    setStatus('Sending your message…');
+
+    var payload = {
+      name: name,
+      email: email,
+      message: message,
+      _subject: 'Portfolio message from ' + name,
+      _template: 'table',
+      _captcha: 'false',
+      _replyto: email
+    };
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(function(res){
+        return res.json().catch(function(){ return {}; }).then(function(data){
+          return { ok: res.ok, status: res.status, data: data };
+        });
+      })
+      .then(function(result){
+        if(result.ok || (result.data && (result.data.success === 'true' || result.data.success === true))){
+          setStatus('Sent. I will get back to you soon.', 'is-ok');
+          form.reset();
+          return;
+        }
+        var errMsg = (result.data && (result.data.message || result.data.error)) || '';
+        if(String(errMsg).toLowerCase().indexOf('confirm') !== -1 || result.status === 200){
+          setStatus('Check your Gmail once to activate FormSubmit, then try again.', 'is-err');
+        } else {
+          setStatus('Could not send right now. Email me at allenschristian07@gmail.com.', 'is-err');
+        }
+      })
+      .catch(function(){
+        setStatus('Network issue. Email me at allenschristian07@gmail.com.', 'is-err');
+      })
+      .finally(function(){
+        setBusy(false);
+      });
+  });
+})();
+
 // Hero opening — extreme cinematic video plate + dust + parallax
 (function(){
   var hero = document.getElementById('hero');

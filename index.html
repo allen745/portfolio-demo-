@@ -789,6 +789,47 @@
       <a href="tel:+916355941155" class="contact-pill"><span class="pill-icon-badge">☎</span>+91 6355941155</a>
     </div>
 
+    <form
+      class="ty-mail fade-in"
+      id="tyMailForm"
+      action="https://formsubmit.co/ajax/allenschristian07@gmail.com"
+      method="POST"
+      novalidate
+    >
+      <div class="ty-mail-head">
+        <span class="ty-mail-eyebrow">Send a message</span>
+        <p class="ty-mail-lede">Type your note below and hit send &mdash; it lands in my inbox.</p>
+      </div>
+
+      <input type="hidden" name="_subject" value="Portfolio message from Thank You page">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="text" name="_honey" class="ty-mail-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <div class="ty-mail-grid">
+        <label class="ty-mail-field">
+          <span class="ty-mail-label">Your name</span>
+          <input type="text" name="name" id="tyMailName" required autocomplete="name" placeholder="How should I address you?">
+        </label>
+        <label class="ty-mail-field">
+          <span class="ty-mail-label">Your email</span>
+          <input type="email" name="email" id="tyMailEmail" required autocomplete="email" placeholder="you@example.com">
+        </label>
+      </div>
+
+      <label class="ty-mail-field">
+        <span class="ty-mail-label">Message</span>
+        <textarea name="message" id="tyMailMessage" required rows="5" placeholder="What are you building, and how can I help?"></textarea>
+      </label>
+
+      <div class="ty-mail-actions">
+        <button type="submit" class="btn ty-mail-send" id="tyMailSubmit">
+          <span class="ty-mail-send-label">Send Mail</span>
+        </button>
+        <p class="ty-mail-status" id="tyMailStatus" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
     <div class="ty-cta fade-in">
       <a href="ALLEN_CHRISTIAN_RESUMEMAIN.pdf" download class="btn btn-primary ty-resume">&#8595; Download Resume</a>
     </div>
