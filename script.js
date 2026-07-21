@@ -1266,380 +1266,134 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Achievements + Experience — shared ASCII cinematic video field.
-// Sticky phosphor ASCII stream lives in #ascii-cinema-zone and continues
-// from Recognition through Experience & Education (background only).
+// Achievements + Experience — shared minimal cinematic runway.
+// Quiet full-bleed video plate continues from Recognition through Experience.
 (function(){
   var section = document.getElementById('achievements');
   if(!section) return;
 
   var zone = document.getElementById('ascii-cinema-zone') || section;
-  var expSection = document.getElementById('experience');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var isCoarse = window.matchMedia('(pointer: coarse)').matches;
-
   var stickyBg = zone.querySelector('.ach-sticky-bg') || section.querySelector('.ach-sticky-bg');
   var content = section.querySelector('.ach-content');
 
-  // Legacy safety: if markup is missing sticky/content wrappers, build them.
   if(!stickyBg){
     stickyBg = document.createElement('div');
     stickyBg.className = 'ach-sticky-bg';
     stickyBg.setAttribute('aria-hidden', 'true');
     stickyBg.innerHTML =
-      '<video class="ach-src-video" id="achAsciiVideo" muted loop playsinline preload="auto" poster="videos/hero-poster.jpg">' +
+      '<video class="ach-bg-video" id="achBgVideo" muted loop playsinline preload="metadata" poster="videos/hero-poster.jpg">' +
       '<source src="videos/hero-cinematic.mp4" type="video/mp4"></video>' +
-      '<div class="ach-video-plate"></div>' +
-      '<canvas class="ach-ascii" id="achAsciiCanvas"></canvas>' +
-      '<div class="ach-crt"><span class="ach-scanlines"></span><span class="ach-phosphor"></span>' +
-      '<span class="ach-vignette"></span><span class="ach-chromatic"></span>' +
-      '<span class="ach-letterbox top"></span><span class="ach-letterbox bottom"></span></div>' +
-      '<div class="ach-telemetry"><span class="ach-tele-l">ASCII FEED // BH-01</span>' +
-      '<span class="ach-tele-c">REC ● LIVE</span><span class="ach-tele-r">FPS 24 · SIGNAL LOCK</span></div>';
+      '<div class="ach-video-fallback"></div>' +
+      '<div class="ach-video-wash"></div>' +
+      '<div class="ach-video-grain"></div>' +
+      '<div class="ach-video-vignette"></div>';
     zone.insertBefore(stickyBg, zone.firstChild);
   }
   if(!content){
     content = document.createElement('div');
     content.className = 'ach-content';
-    while(section.firstChild){
-      content.appendChild(section.firstChild);
-    }
+    while(section.firstChild) content.appendChild(section.firstChild);
     section.appendChild(content);
   }
 
-  var video = document.getElementById('achAsciiVideo') || stickyBg.querySelector('.ach-src-video');
-  var canvas = document.getElementById('achAsciiCanvas') || stickyBg.querySelector('.ach-ascii');
-  var plate = stickyBg.querySelector('.ach-video-plate');
-  var ctx = canvas ? canvas.getContext('2d') : null;
+  var video = document.getElementById('achBgVideo') || stickyBg.querySelector('.ach-bg-video');
   var house = content.querySelector('.ach-house-mark');
   var eyebrow = content.querySelector('.ach-eyebrow');
   var headingLines = content.querySelectorAll('.ach-heading-line');
   var lede = content.querySelector('.ach-lede');
-  var hud = content.querySelector('.ach-hud');
-  var hudCorners = content.querySelectorAll('.ach-hud-corner');
   var cards = content.querySelectorAll('.phase-card');
-  var teleL = stickyBg.querySelector('.ach-tele-l');
-  var teleR = stickyBg.querySelector('.ach-tele-r');
 
-  // Offscreen sampler — low-res luminance map for ASCII glyphs
-  var sample = document.createElement('canvas');
-  var sctx = sample.getContext('2d', { willReadFrequently: true });
-  var CHARSET = ' .\'`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
-  var COLS = isCoarse ? 72 : 110;
-  var ROWS = isCoarse ? 40 : 62;
-  var rafId = null;
-  var zoneVisible = false;
-  var frameCount = 0;
-  var lastFpsT = performance.now();
-  var fps = 24;
-  var glitchUntil = 0;
-  var scrollBoost = 0;
-  var targetBoost = 0;
-  var time = 0;
-  var inExperience = false;
-
-  // Procedural fallback scene (when video not ready / reduced motion still frame)
-  function drawProcedural(w, h, t){
-    sctx.fillStyle = '#050208';
-    sctx.fillRect(0, 0, w, h);
-    var cx = w * 0.5, cy = h * 0.48;
-    // Accretion disk rings
-    for(var r = 0; r < 8; r++){
-      var radius = 4 + r * (Math.min(w, h) * 0.055);
-      var a = 0.08 + (1 - r / 8) * 0.35;
-      sctx.strokeStyle = 'rgba(240,184,110,' + a + ')';
-      sctx.lineWidth = 1.2;
-      sctx.beginPath();
-      sctx.ellipse(cx, cy, radius * 1.55, radius * 0.42, Math.sin(t * 0.2) * 0.15, 0, Math.PI * 2);
-      sctx.stroke();
-    }
-    // Photon sphere core
-    var g = sctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w, h) * 0.18);
-    g.addColorStop(0, 'rgba(255,230,180,0.85)');
-    g.addColorStop(0.35, 'rgba(240,140,60,0.35)');
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    sctx.fillStyle = g;
-    sctx.beginPath();
-    sctx.arc(cx, cy, Math.min(w, h) * 0.18, 0, Math.PI * 2);
-    sctx.fill();
-    // Warp streaks
-    for(var i = 0; i < 28; i++){
-      var ang = t * 0.4 + i * 0.45;
-      var len = 8 + (i % 5) * 6;
-      sctx.strokeStyle = 'rgba(125,226,255,' + (0.08 + (i % 3) * 0.05) + ')';
-      sctx.beginPath();
-      sctx.moveTo(cx + Math.cos(ang) * 6, cy + Math.sin(ang) * 3);
-      sctx.lineTo(cx + Math.cos(ang) * len * 1.4, cy + Math.sin(ang) * len * 0.55);
-      sctx.stroke();
-    }
-  }
-
-  function resize(){
-    if(!canvas) return;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    sample.width = COLS;
-    sample.height = ROWS;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  function ensureVideo(){
+  function playBg(){
     if(!video || reduceMotion) return;
     video.muted = true;
-    video.playsInline = true;
     var p = video.play();
-    if(p && p.catch) p.catch(function(){});
-  }
-
-  function sampleFrame(){
-    var w = sample.width, h = sample.height;
-    if(video && video.readyState >= 2 && !reduceMotion){
-      try {
-        sctx.drawImage(video, 0, 0, w, h);
-      } catch(err){
-        drawProcedural(w, h, time);
-      }
+    if(p && p.then){
+      p.then(function(){ video.classList.add('is-ready'); }).catch(function(){});
     } else {
-      drawProcedural(w, h, time);
-    }
-
-    // Scroll-driven digital glitch slices
-    if(scrollBoost > 0.15 || performance.now() < glitchUntil){
-      var slices = 3 + Math.floor(scrollBoost * 6);
-      for(var s = 0; s < slices; s++){
-        var sy = Math.floor(Math.random() * h);
-        var sh = 1 + Math.floor(Math.random() * 3);
-        var dx = Math.floor((Math.random() - 0.5) * 10 * (0.4 + scrollBoost));
-        try {
-          var img = sctx.getImageData(0, sy, w, sh);
-          sctx.putImageData(img, dx, sy);
-        } catch(e){}
-      }
+      video.classList.add('is-ready');
     }
   }
 
-  function renderAscii(){
-    if(!ctx || !canvas) return;
-    var cw = canvas.width, ch = canvas.height;
-    ctx.fillStyle = 'rgba(2,1,6,0.38)';
-    ctx.fillRect(0, 0, cw, ch);
-
-    sampleFrame();
-    var data;
-    try {
-      data = sctx.getImageData(0, 0, sample.width, sample.height).data;
-    } catch(e){
-      return;
-    }
-
-    var cellW = cw / COLS;
-    var cellH = ch / ROWS;
-    var fontSize = Math.max(7, Math.min(cellW, cellH) * 1.08);
-    ctx.font = '700 ' + fontSize + 'px "Space Mono", ui-monospace, monospace';
-    ctx.textBaseline = 'top';
-    ctx.textAlign = 'left';
-
-    var now = performance.now();
-    var doGlitch = now < glitchUntil || scrollBoost > 0.35;
-    var charLen = CHARSET.length - 1;
-
-    for(var y = 0; y < ROWS; y++){
-      var row = '';
-      var rowLum = 0;
-      for(var x = 0; x < COLS; x++){
-        var idx = (y * COLS + x) * 4;
-        var r = data[idx], g = data[idx + 1], b = data[idx + 2];
-        var lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-        lum = Math.pow(Math.min(1, Math.max(0, lum * 1.15)), 0.85);
-        lum = Math.min(1, Math.max(0, lum + Math.sin(time * 1.8 + x * 0.12 + y * 0.08) * 0.03 * (0.4 + scrollBoost)));
-        var ci = Math.floor(lum * charLen);
-        if(doGlitch && Math.random() < 0.01 + scrollBoost * 0.03){
-          ci = Math.floor(Math.random() * charLen);
-        }
-        row += CHARSET.charAt(ci);
-        rowLum += lum;
-      }
-      var avg = rowLum / COLS;
-      var alpha = 0.25 + avg * 0.8;
-      if(avg > 0.68){
-        ctx.fillStyle = 'rgba(210,245,255,' + alpha + ')';
-      } else if(avg > 0.38){
-        ctx.fillStyle = 'rgba(255,220,160,' + alpha + ')';
-      } else {
-        ctx.fillStyle = 'rgba(240,184,110,' + alpha + ')';
-      }
-      var px = doGlitch && Math.random() < 0.08 ? (Math.random() - 0.5) * cellW * 1.5 : 0;
-      ctx.fillText(row, px, y * cellH);
-
-      // Hot glyph accents on bright rows
-      if(!isCoarse && avg > 0.55){
-        ctx.fillStyle = 'rgba(125,226,255,' + (0.12 + avg * 0.2) + ')';
-        ctx.fillText(row, px + 0.6, y * cellH);
-      }
-    }
-
-    // Occasional full-width ASCII streak (anamorphic signal bar)
-    if(Math.sin(time * 0.7) > 0.96){
-      var barY = (0.35 + Math.sin(time * 1.3) * 0.2) * ch;
-      ctx.fillStyle = 'rgba(125,226,255,0.12)';
-      ctx.fillRect(0, barY, cw, cellH * 1.2);
-    }
-  }
-
-  function tick(ts){
-    time = ts * 0.001;
-    scrollBoost += (targetBoost - scrollBoost) * 0.08;
-    renderAscii();
-
-    frameCount++;
-    if(ts - lastFpsT > 1000){
-      fps = frameCount;
-      frameCount = 0;
-      lastFpsT = ts;
-      if(teleR) teleR.textContent = 'FPS ' + fps + ' · SIGNAL LOCK';
-    }
-
-    if(zoneVisible && !reduceMotion) rafId = requestAnimationFrame(tick);
-  }
-
-  function drawStill(){
-    renderAscii();
-  }
-
-  function updateTelemetryLabel(){
-    if(!teleL) return;
-    teleL.textContent = inExperience ? 'ASCII FEED // JOURNEY-04' : 'ASCII FEED // BH-01';
-  }
-
-  window.addEventListener('scroll', function(){
-    var rect = zone.getBoundingClientRect();
-    var total = Math.max(1, zone.offsetHeight - window.innerHeight);
-    var progress = Math.min(1, Math.max(0, -rect.top / total));
-    targetBoost = progress * 0.85;
-    if(Math.random() < 0.04) glitchUntil = performance.now() + 180;
-    if(plate){
-      plate.style.transform = 'scale(' + (1.08 + progress * 0.08) + ') translateY(' + (progress * -2) + '%)';
-    }
-    if(expSection){
-      var er = expSection.getBoundingClientRect();
-      var nowInExp = er.top < window.innerHeight * 0.55 && er.bottom > window.innerHeight * 0.25;
-      if(nowInExp !== inExperience){
-        inExperience = nowInExp;
-        updateTelemetryLabel();
-      }
-    }
-  }, { passive: true });
-
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      zoneVisible = entry.isIntersecting;
-      if(zoneVisible){
-        ensureVideo();
-        if(reduceMotion){
-          drawStill();
-        } else if(!rafId){
-          rafId = requestAnimationFrame(tick);
-        }
-      } else {
-        if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
-        if(video && !video.paused) video.pause();
-      }
+  if(video){
+    video.addEventListener('loadeddata', function(){
+      if(!video.paused) video.classList.add('is-ready');
     });
-  }, { threshold: 0.01 });
-  io.observe(zone);
-
-  if(reduceMotion) drawStill();
-
-  // ---- Foreground cinematography ----
-  if(!reduceMotion && window.gsap && window.ScrollTrigger){
-    if(house){
-      gsap.fromTo(house,
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
-          scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' } }
-      );
-    }
-    if(eyebrow){
-      gsap.fromTo(eyebrow,
-        { opacity: 0, letterSpacing: '0.42em' },
-        { opacity: 1, letterSpacing: '0.18em', duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' } }
-      );
-    }
-    headingLines.forEach(function(line){
-      var text = line.textContent;
-      line.innerHTML = '<span class="ach-heading-inner">' + text + '</span>';
-      var inner = line.querySelector('.ach-heading-inner');
-      gsap.fromTo(inner,
-        { yPercent: 120 },
-        { yPercent: 0, duration: 1.15, ease: 'power4.out',
-          scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' } }
-      );
-    });
-    if(lede){
-      gsap.fromTo(lede,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
-          scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' } }
-      );
-    }
-    if(hudCorners.length){
-      gsap.fromTo(hudCorners,
-        { opacity: 0, scale: 0.5 },
-        { opacity: 1, scale: 1, duration: 0.65, stagger: 0.06, ease: 'power3.out',
-          scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' } }
-      );
-    }
-    if(hud){
-      var readout = hud.querySelector('.ach-hud-readout');
-      if(readout){
-        gsap.fromTo(readout, { opacity: 0 }, {
-          opacity: 1, duration: 1, ease: 'power2.out',
-          scrollTrigger: { trigger: hud, start: 'top 90%', toggleActions: 'play none none reverse' }
+    if('IntersectionObserver' in window){
+      var vio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting) playBg();
+          else if(!video.paused) video.pause();
         });
-      }
+      }, { threshold: 0.02 });
+      vio.observe(zone);
+    } else {
+      playBg();
     }
+  }
 
-    cards.forEach(function(card, i){
-      var fromLeft = i % 2 === 0;
-      gsap.fromTo(card,
-        {
-          opacity: 0,
-          x: fromLeft ? -70 : 70,
-          y: 50,
-          rotateX: 10,
-          rotateY: fromLeft ? 14 : -14,
-          filter: 'blur(6px) brightness(0.7)'
-        },
-        {
-          opacity: 1, x: 0, y: 0, rotateX: 0, rotateY: 0,
-          filter: 'blur(0px) brightness(1)',
-          duration: 1.15, ease: 'power4.out',
-          scrollTrigger: {
-            trigger: card, start: 'top 88%',
-            toggleActions: 'play none none reverse'
-          }
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+
+  if(video){
+    gsap.to(video, {
+      scale: 1.12,
+      yPercent: 4,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: zone,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1.1
+      }
+    });
+  }
+
+  if(house){
+    gsap.fromTo(house,
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' } }
+    );
+  }
+  if(eyebrow){
+    gsap.fromTo(eyebrow,
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
+        scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' } }
+    );
+  }
+  headingLines.forEach(function(line){
+    var text = line.textContent;
+    line.innerHTML = '<span class="ach-heading-inner">' + text + '</span>';
+    var inner = line.querySelector('.ach-heading-inner');
+    gsap.fromTo(inner,
+      { yPercent: 110 },
+      { yPercent: 0, duration: 1.05, ease: 'power4.out',
+        scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' } }
+    );
+  });
+  if(lede){
+    gsap.fromTo(lede,
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' } }
+    );
+  }
+
+  cards.forEach(function(card, i){
+    var fromLeft = i % 2 === 0;
+    gsap.fromTo(card,
+      { opacity: 0, y: 36, x: fromLeft ? -28 : 28 },
+      {
+        opacity: 1, y: 0, x: 0,
+        duration: 0.95, ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card, start: 'top 90%',
+          toggleActions: 'play none none reverse'
         }
-      );
-    });
-  }
-
-  if(!isCoarse && !reduceMotion){
-    cards.forEach(function(el){
-      el.addEventListener('mousemove', function(e){
-        var rect = el.getBoundingClientRect();
-        var px = (e.clientX - rect.left) / rect.width - 0.5;
-        var py = (e.clientY - rect.top) / rect.height - 0.5;
-        el.style.transition = 'none';
-        el.style.transform = 'perspective(1100px) rotateX(' + (py * -9) + 'deg) rotateY(' + (px * 11) + 'deg) translateY(-6px)';
-      });
-      el.addEventListener('mouseleave', function(){
-        el.style.transition = 'transform 0.55s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s ease, border-color 0.3s';
-        el.style.transform = '';
-      });
-    });
-  }
+      }
+    );
+  });
 })();
 
 // Cinematic high-professional transitions between every major section while scrolling.

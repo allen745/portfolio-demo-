@@ -13,3 +13,5 @@
 - `hero-poster.jpg` — legacy hero poster
 
 Muted looping backgrounds for the portfolio's cinematic sections.
+
+Recognition / Experience shared runway uses `hero-cinematic.mp4` as a quiet full-bleed plate (no ASCII/CRT overlay).
