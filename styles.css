@@ -1344,14 +1344,25 @@
 
   .ty-content {
     position: relative; z-index: 5;
-    width: min(920px, 92vw);
+    width: min(1180px, 94vw);
     margin: 0 auto;
-    padding: 120px 0 100px;
-    text-align: center;
+    padding: 100px 0 90px;
+    text-align: left;
   }
-  .ty-endcard { position: relative; max-width: 760px; margin: 0 auto 8px; }
+  .ty-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.9fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+  .ty-left {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+  }
+  .ty-endcard { position: relative; margin: 0 0 8px; }
   .ty-house-mark {
-    display: flex; align-items: center; justify-content: center; gap: 14px;
+    display: flex; align-items: center; justify-content: flex-start; gap: 14px;
     margin-bottom: 22px;
   }
   .ty-house-line {
@@ -1368,44 +1379,44 @@
     color: var(--ty-muted); margin-bottom: 14px;
   }
   .thank-you-row {
-    display: flex; justify-content: center; align-items: flex-start; gap: 16px;
+    display: flex; justify-content: flex-start; align-items: flex-start; gap: 16px;
   }
   .thank-you {
     font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: clamp(3.4rem, 11vw, 7.2rem);
+    font-size: clamp(3.2rem, 8.5vw, 6.4rem);
     color: var(--ty-ink); letter-spacing: -0.03em; line-height: 0.92; margin: 0;
     text-shadow: 0 10px 40px rgba(0,0,0,0.45);
   }
   .ty-subcopy {
-    margin: 22px auto 0; max-width: 42ch;
+    margin: 22px 0 0; max-width: 38ch;
     font-size: 1.02rem; line-height: 1.65; color: var(--ty-muted);
   }
 
   .contact-pills {
     position: relative; z-index: 1;
-    display: flex; flex-wrap: wrap; justify-content: center;
-    gap: 14px 16px; margin: 42px auto 28px; max-width: 780px;
+    display: flex; flex-wrap: wrap; justify-content: flex-start;
+    gap: 12px 12px; margin: 34px 0 26px; max-width: 520px;
   }
   .contact-pill {
     display: inline-flex; align-items: center; gap: 10px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.14);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 30px; padding: 10px 18px;
-    box-shadow: 0 12px 30px -18px rgba(0,0,0,0.55);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 30px; padding: 10px 16px;
+    box-shadow: 0 12px 30px -18px rgba(0,0,0,0.45);
     text-decoration: none; color: var(--ty-ink);
-    font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
     transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s, background 0.25s;
   }
   .contact-pill:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     border-color: rgba(240,184,110,0.55);
     background: rgba(240,184,110,0.12);
-    box-shadow: 0 16px 34px -14px rgba(0,0,0,0.6);
+    box-shadow: 0 16px 34px -14px rgba(0,0,0,0.55);
   }
-  .contact-pill:nth-child(2n) { margin-top: 10px; }
-  .contact-pill:nth-child(3n) { margin-top: -6px; }
+  .contact-pill:nth-child(2n),
+  .contact-pill:nth-child(3n) { margin-top: 0; }
   .pill-icon-badge {
     width: 26px; height: 26px; border-radius: 7px;
     background: rgba(240,184,110,0.92); color: #14181f;
@@ -1415,18 +1426,18 @@
 
   .ty-mail {
     position: relative; z-index: 1;
-    width: min(560px, 100%);
-    margin: 8px auto 36px;
+    width: 100%;
+    margin: 0;
     padding: 28px 26px 24px;
     text-align: left;
-    background: rgba(8,10,14,0.52);
-    border: 1px solid rgba(244,239,230,0.12);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: transparent;
+    border: 1px solid rgba(244,239,230,0.16);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border-radius: 4px;
-    box-shadow: 0 24px 60px -32px rgba(0,0,0,0.75);
+    box-shadow: none;
   }
-  .ty-mail-head { margin-bottom: 22px; text-align: center; }
+  .ty-mail-head { margin-bottom: 22px; text-align: left; }
   .ty-mail-eyebrow {
     display: block;
     font-family: 'Space Mono', monospace;
@@ -1435,7 +1446,7 @@
   }
   .ty-mail-lede {
     font-size: 0.92rem; line-height: 1.55; color: var(--ty-muted);
-    max-width: 36ch; margin: 0 auto;
+    max-width: 34ch; margin: 0;
   }
   .ty-mail-honey {
     position: absolute; left: -9999px; width: 1px; height: 1px;
@@ -1455,8 +1466,8 @@
   .ty-mail input,
   .ty-mail textarea {
     width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(244,239,230,0.14);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(244,239,230,0.18);
     border-radius: 2px;
     color: var(--ty-ink);
     font-family: 'DM Sans', sans-serif;
@@ -1472,8 +1483,8 @@
   .ty-mail input:focus,
   .ty-mail textarea:focus {
     border-color: rgba(240,184,110,0.55);
-    background: rgba(240,184,110,0.06);
-    box-shadow: 0 0 0 3px rgba(240,184,110,0.12);
+    background: rgba(240,184,110,0.05);
+    box-shadow: 0 0 0 3px rgba(240,184,110,0.1);
   }
   .ty-mail-actions {
     display: flex; flex-direction: column; align-items: stretch; gap: 12px;
@@ -1494,12 +1505,12 @@
     min-height: 1.3em;
     font-family: 'Space Mono', monospace;
     font-size: 0.68rem; letter-spacing: 0.06em;
-    text-align: center; color: var(--ty-muted);
+    text-align: left; color: var(--ty-muted);
   }
   .ty-mail-status.is-ok { color: #9ad7b5; }
   .ty-mail-status.is-err { color: #f0a0a0; }
 
-  .ty-cta { position: relative; z-index: 1; text-align: center; }
+  .ty-cta { position: relative; z-index: 1; text-align: left; }
   .ty-resume {
     background: linear-gradient(135deg, #f0b86e, #e8a25c);
     color: #14181f; border: none;
@@ -1507,13 +1518,27 @@
   }
   .ty-resume:hover { filter: brightness(1.05); }
 
+  @media (max-width: 900px) {
+    .ty-layout {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    .ty-left { max-width: none; }
+    .ty-content { text-align: center; padding: 110px 0 80px; }
+    .ty-house-mark,
+    .thank-you-row,
+    .contact-pills,
+    .ty-cta { justify-content: center; }
+    .ty-house-mark { justify-content: center; }
+    .ty-subcopy { margin-left: auto; margin-right: auto; }
+    .ty-mail-head,
+    .ty-mail-status { text-align: center; }
+    .ty-mail-lede { margin-left: auto; margin-right: auto; }
+  }
   @media (max-width: 700px) {
-    .ty-content { padding: 110px 0 80px; }
     .ty-subcopy { font-size: 0.95rem; }
-    .contact-pill:nth-child(2n),
-    .contact-pill:nth-child(3n) { margin-top: 0; }
     .ty-house-line { width: 28px; }
-    .ty-mail { padding: 22px 18px 20px; margin-bottom: 28px; }
+    .ty-mail { padding: 22px 18px 20px; }
     .ty-mail-grid { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) {
