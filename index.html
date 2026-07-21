@@ -346,9 +346,28 @@
 
 <!-- PROJECTS -->
 <section id="projects">
+  <div class="projects-stage" aria-hidden="true">
+    <video
+      class="projects-video"
+      id="projectsBgVideo"
+      poster="videos/projects-nature-poster.jpg"
+      muted
+      loop
+      playsinline
+      preload="metadata"
+    >
+      <source src="videos/projects-nature-cinematic.mp4" type="video/mp4">
+    </video>
+    <div class="projects-video-fallback"></div>
+    <div class="projects-video-wash"></div>
+    <div class="projects-video-grain"></div>
+  </div>
+
+  <div class="projects-shell">
   <div class="section-header fade-in">
     <div class="section-tag">// 02 &mdash; Projects</div>
     <h2>What I've Built</h2>
+    <p class="projects-lead">Shipped products, patents, and platforms &mdash; built under pressure, not for the portfolio.</p>
   </div>
   <div class="projects-grid">
     <div class="proj-card fade-in" data-project="vertex">
@@ -386,6 +405,7 @@
   <div class="proj-tags">07 &middot; IoT + Precision Agriculture</div>
   <div class="proj-title-row"><div class="proj-title">AutoSeed Bot</div><div class="proj-arrow">&rarr;</div></div>
 </div>
+  </div>
   </div>
 
   <div id="project-detail">
