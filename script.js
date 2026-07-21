@@ -1786,16 +1786,24 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Thank You — mail form delivers to inbox via FormSubmit
+// Thank You — mail form delivers to inbox via FormSubmit (+ mailto fallback)
 (function(){
   var form = document.getElementById('tyMailForm');
   if(!form) return;
 
   var submitBtn = document.getElementById('tyMailSubmit');
+  var fallbackBtn = document.getElementById('tyMailFallback');
   var statusEl = document.getElementById('tyMailStatus');
+  var setupEl = document.getElementById('tyMailSetup');
   var labelEl = submitBtn ? submitBtn.querySelector('.ty-mail-send-label') : null;
-  var endpoint = form.getAttribute('action') || 'https://formsubmit.co/ajax/allenschristian07@gmail.com';
+  var endpoint = 'https://formsubmit.co/ajax/allenschristian07@gmail.com';
+  var inbox = 'allenschristian07@gmail.com';
   var sending = false;
+  var activatedKey = 'tyMailFormActivated';
+
+  if(setupEl && window.localStorage && localStorage.getItem(activatedKey) === '1'){
+    setupEl.classList.add('is-hidden');
+  }
 
   function setStatus(msg, kind){
     if(!statusEl) return;
@@ -1814,29 +1822,79 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
   }
 
+  function readFields(){
+    return {
+      name: String((form.querySelector('#tyMailName') || {}).value || '').trim(),
+      email: String((form.querySelector('#tyMailEmail') || {}).value || '').trim(),
+      message: String((form.querySelector('#tyMailMessage') || {}).value || '').trim(),
+      honey: String((form.querySelector('[name="_honey_trap"]') || {}).value || '').trim()
+    };
+  }
+
+  function openMailto(fields){
+    var subject = 'Portfolio message from ' + (fields.name || 'visitor');
+    var body = [
+      'Name: ' + fields.name,
+      'Email: ' + fields.email,
+      '',
+      fields.message
+    ].join('\n');
+    var href = 'mailto:' + encodeURIComponent(inbox)
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+    window.location.href = href;
+  }
+
+  function isSuccessPayload(data){
+    if(!data) return false;
+    if(data.success === true || data.success === 'true') return true;
+    if(data.ok === true) return true;
+    return false;
+  }
+
+  function looksLikeActivation(data, rawText){
+    var msg = '';
+    if(data){
+      msg = String(data.message || data.error || data.Message || '');
+    }
+    msg = (msg + ' ' + String(rawText || '')).toLowerCase();
+    return msg.indexOf('activat') !== -1
+      || msg.indexOf('confirm') !== -1
+      || msg.indexOf('check your email') !== -1;
+  }
+
+  if(fallbackBtn){
+    fallbackBtn.addEventListener('click', function(){
+      var fields = readFields();
+      if(!fields.name || !fields.email || !fields.message){
+        setStatus('Fill name, email, and message first.', 'is-err');
+        return;
+      }
+      if(!validEmail(fields.email)){
+        setStatus('Please enter a valid email address.', 'is-err');
+        return;
+      }
+      openMailto(fields);
+      setStatus('Opening your mail app…', 'is-ok');
+    });
+  }
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
     if(sending) return;
 
-    var name = (form.querySelector('#tyMailName') || {}).value || '';
-    var email = (form.querySelector('#tyMailEmail') || {}).value || '';
-    var message = (form.querySelector('#tyMailMessage') || {}).value || '';
-    var honey = (form.querySelector('[name="_honey"]') || {}).value || '';
+    var fields = readFields();
 
-    name = String(name).trim();
-    email = String(email).trim();
-    message = String(message).trim();
-
-    if(honey){
+    if(fields.honey){
       setStatus('Thanks — message noted.', 'is-ok');
       form.reset();
       return;
     }
-    if(!name || !email || !message){
+    if(!fields.name || !fields.email || !fields.message){
       setStatus('Please fill in name, email, and message.', 'is-err');
       return;
     }
-    if(!validEmail(email)){
+    if(!validEmail(fields.email)){
       setStatus('Please enter a valid email address.', 'is-err');
       return;
     }
@@ -1844,44 +1902,53 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     setBusy(true);
     setStatus('Sending your message…');
 
-    var payload = {
-      name: name,
-      email: email,
-      message: message,
-      _subject: 'Portfolio message from ' + name,
-      _template: 'table',
-      _captcha: 'false',
-      _replyto: email
-    };
+    var body = new FormData();
+    body.append('name', fields.name);
+    body.append('email', fields.email);
+    body.append('message', fields.message);
+    body.append('_replyto', fields.email);
+    body.append('_subject', 'Portfolio message from ' + fields.name);
+    body.append('_template', 'table');
+    body.append('_captcha', 'false');
+    body.append('_honey', '');
 
     fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payload)
+      headers: { 'Accept': 'application/json' },
+      body: body
     })
       .then(function(res){
-        return res.json().catch(function(){ return {}; }).then(function(data){
-          return { ok: res.ok, status: res.status, data: data };
+        return res.text().then(function(text){
+          var data = {};
+          try { data = text ? JSON.parse(text) : {}; } catch(err){ data = { raw: text }; }
+          return { ok: res.ok, status: res.status, data: data, text: text };
         });
       })
       .then(function(result){
-        if(result.ok || (result.data && (result.data.success === 'true' || result.data.success === true))){
+        var data = result.data || {};
+        var activation = looksLikeActivation(data, result.text);
+
+        if(activation){
+          if(setupEl) setupEl.classList.remove('is-hidden');
+          setStatus('Activation needed: open Gmail for allenschristian07@gmail.com, click FormSubmit Activate, then send again.', 'is-err');
+          return;
+        }
+
+        if(isSuccessPayload(data)){
+          if(window.localStorage) localStorage.setItem(activatedKey, '1');
+          if(setupEl) setupEl.classList.add('is-hidden');
           setStatus('Sent. I will get back to you soon.', 'is-ok');
           form.reset();
           return;
         }
-        var errMsg = (result.data && (result.data.message || result.data.error)) || '';
-        if(String(errMsg).toLowerCase().indexOf('confirm') !== -1 || result.status === 200){
-          setStatus('Check your Gmail once to activate FormSubmit, then try again.', 'is-err');
-        } else {
-          setStatus('Could not send right now. Email me at allenschristian07@gmail.com.', 'is-err');
-        }
+
+        // Do not treat bare HTTP 200 as success — FormSubmit often returns 200 for activation.
+        setStatus('Could not deliver yet. Use “Open in Mail app”, or activate FormSubmit in Gmail first.', 'is-err');
+        if(setupEl) setupEl.classList.remove('is-hidden');
       })
       .catch(function(){
-        setStatus('Network issue. Email me at allenschristian07@gmail.com.', 'is-err');
+        setStatus('Network blocked FormSubmit. Opening your mail app instead…', 'is-err');
+        openMailto(fields);
       })
       .finally(function(){
         setBusy(false);
