@@ -768,70 +768,74 @@
   </div>
 
   <div class="ty-content">
-    <div class="ty-endcard fade-in">
-      <div class="ty-house-mark">
-        <span class="ty-house-line"></span>
-        <span class="ty-house-label">ASC // END CARD</span>
-        <span class="ty-house-line"></span>
-      </div>
-      <div class="collab-tag">Let's collaborate!</div>
-      <div class="thank-you-row">
-        <h2 class="thank-you">Thank You</h2>
-      </div>
-      <p class="ty-subcopy">For floating through this transmission. If the work resonates, let's build the next one together.</p>
-    </div>
+    <div class="ty-layout">
+      <div class="ty-left">
+        <div class="ty-endcard fade-in">
+          <div class="ty-house-mark">
+            <span class="ty-house-line"></span>
+            <span class="ty-house-label">ASC // END CARD</span>
+            <span class="ty-house-line"></span>
+          </div>
+          <div class="collab-tag">Let's collaborate!</div>
+          <div class="thank-you-row">
+            <h2 class="thank-you">Thank You</h2>
+          </div>
+          <p class="ty-subcopy">For floating through this transmission. If the work resonates, let's build the next one together.</p>
+        </div>
 
-    <div class="contact-pills fade-in">
-      <a href="mailto:allenschristian07@gmail.com" class="contact-pill"><span class="pill-icon-badge">✉</span>allenschristian07@gmail.com</a>
-      <a href="https://github.com/allen745" target="_blank" class="contact-pill"><span class="pill-icon-badge">GH</span>allen745</a>
-      <a href="https://www.instagram.com/msd7_allen1405" target="_blank" class="contact-pill"><span class="pill-icon-badge">📷</span>@msd7_allen1405</a>
-      <a href="https://www.linkedin.com/in/allen-christian-708545409/" target="_blank" class="contact-pill"><span class="pill-icon-badge">in</span>Allen Christian</a>
-      <a href="tel:+916355941155" class="contact-pill"><span class="pill-icon-badge">☎</span>+91 6355941155</a>
-    </div>
+        <div class="contact-pills fade-in">
+          <a href="mailto:allenschristian07@gmail.com" class="contact-pill"><span class="pill-icon-badge">✉</span>allenschristian07@gmail.com</a>
+          <a href="https://github.com/allen745" target="_blank" class="contact-pill"><span class="pill-icon-badge">GH</span>allen745</a>
+          <a href="https://www.instagram.com/msd7_allen1405" target="_blank" class="contact-pill"><span class="pill-icon-badge">📷</span>@msd7_allen1405</a>
+          <a href="https://www.linkedin.com/in/allen-christian-708545409/" target="_blank" class="contact-pill"><span class="pill-icon-badge">in</span>Allen Christian</a>
+          <a href="tel:+916355941155" class="contact-pill"><span class="pill-icon-badge">☎</span>+91 6355941155</a>
+        </div>
 
-    <form
-      class="ty-mail fade-in"
-      id="tyMailForm"
-      action="https://formsubmit.co/ajax/allenschristian07@gmail.com"
-      method="POST"
-      novalidate
-    >
-      <div class="ty-mail-head">
-        <span class="ty-mail-eyebrow">Send a message</span>
-        <p class="ty-mail-lede">Type your note below and hit send &mdash; it lands in my inbox.</p>
+        <div class="ty-cta fade-in">
+          <a href="ALLEN_CHRISTIAN_RESUMEMAIN.pdf" download class="btn btn-primary ty-resume">&#8595; Download Resume</a>
+        </div>
       </div>
 
-      <input type="hidden" name="_subject" value="Portfolio message from Thank You page">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="text" name="_honey" class="ty-mail-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <form
+        class="ty-mail fade-in"
+        id="tyMailForm"
+        action="https://formsubmit.co/ajax/allenschristian07@gmail.com"
+        method="POST"
+        novalidate
+      >
+        <div class="ty-mail-head">
+          <span class="ty-mail-eyebrow">Send a message</span>
+          <p class="ty-mail-lede">Type your note below and hit send &mdash; it lands in my inbox.</p>
+        </div>
 
-      <div class="ty-mail-grid">
+        <input type="hidden" name="_subject" value="Portfolio message from Thank You page">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="text" name="_honey" class="ty-mail-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="ty-mail-grid">
+          <label class="ty-mail-field">
+            <span class="ty-mail-label">Your name</span>
+            <input type="text" name="name" id="tyMailName" required autocomplete="name" placeholder="How should I address you?">
+          </label>
+          <label class="ty-mail-field">
+            <span class="ty-mail-label">Your email</span>
+            <input type="email" name="email" id="tyMailEmail" required autocomplete="email" placeholder="you@example.com">
+          </label>
+        </div>
+
         <label class="ty-mail-field">
-          <span class="ty-mail-label">Your name</span>
-          <input type="text" name="name" id="tyMailName" required autocomplete="name" placeholder="How should I address you?">
+          <span class="ty-mail-label">Message</span>
+          <textarea name="message" id="tyMailMessage" required rows="5" placeholder="What are you building, and how can I help?"></textarea>
         </label>
-        <label class="ty-mail-field">
-          <span class="ty-mail-label">Your email</span>
-          <input type="email" name="email" id="tyMailEmail" required autocomplete="email" placeholder="you@example.com">
-        </label>
-      </div>
 
-      <label class="ty-mail-field">
-        <span class="ty-mail-label">Message</span>
-        <textarea name="message" id="tyMailMessage" required rows="5" placeholder="What are you building, and how can I help?"></textarea>
-      </label>
-
-      <div class="ty-mail-actions">
-        <button type="submit" class="btn ty-mail-send" id="tyMailSubmit">
-          <span class="ty-mail-send-label">Send Mail</span>
-        </button>
-        <p class="ty-mail-status" id="tyMailStatus" role="status" aria-live="polite"></p>
-      </div>
-    </form>
-
-    <div class="ty-cta fade-in">
-      <a href="ALLEN_CHRISTIAN_RESUMEMAIN.pdf" download class="btn btn-primary ty-resume">&#8595; Download Resume</a>
+        <div class="ty-mail-actions">
+          <button type="submit" class="btn ty-mail-send" id="tyMailSubmit">
+            <span class="ty-mail-send-label">Send Mail</span>
+          </button>
+          <p class="ty-mail-status" id="tyMailStatus" role="status" aria-live="polite"></p>
+        </div>
+      </form>
     </div>
   </div>
 </section>
