@@ -1412,6 +1412,93 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 0.8rem; flex-shrink: 0;
   }
+
+  .ty-mail {
+    position: relative; z-index: 1;
+    width: min(560px, 100%);
+    margin: 8px auto 36px;
+    padding: 28px 26px 24px;
+    text-align: left;
+    background: rgba(8,10,14,0.52);
+    border: 1px solid rgba(244,239,230,0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 4px;
+    box-shadow: 0 24px 60px -32px rgba(0,0,0,0.75);
+  }
+  .ty-mail-head { margin-bottom: 22px; text-align: center; }
+  .ty-mail-eyebrow {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ty-accent); margin-bottom: 8px;
+  }
+  .ty-mail-lede {
+    font-size: 0.92rem; line-height: 1.55; color: var(--ty-muted);
+    max-width: 36ch; margin: 0 auto;
+  }
+  .ty-mail-honey {
+    position: absolute; left: -9999px; width: 1px; height: 1px;
+    opacity: 0; pointer-events: none;
+  }
+  .ty-mail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin-bottom: 14px;
+  }
+  .ty-mail-field { display: block; margin-bottom: 14px; }
+  .ty-mail-label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(244,239,230,0.55); margin-bottom: 8px;
+  }
+  .ty-mail input,
+  .ty-mail textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(244,239,230,0.14);
+    border-radius: 2px;
+    color: var(--ty-ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+    resize: vertical;
+  }
+  .ty-mail textarea { min-height: 120px; line-height: 1.55; }
+  .ty-mail input::placeholder,
+  .ty-mail textarea::placeholder { color: rgba(244,239,230,0.32); }
+  .ty-mail input:focus,
+  .ty-mail textarea:focus {
+    border-color: rgba(240,184,110,0.55);
+    background: rgba(240,184,110,0.06);
+    box-shadow: 0 0 0 3px rgba(240,184,110,0.12);
+  }
+  .ty-mail-actions {
+    display: flex; flex-direction: column; align-items: stretch; gap: 12px;
+    margin-top: 6px;
+  }
+  .ty-mail-send {
+    width: 100%;
+    justify-content: center;
+    background: linear-gradient(135deg, #f0b86e, #e8a25c);
+    color: #14181f; border: none; font-weight: 700;
+    box-shadow: 0 0 0 1px rgba(240,184,110,0.35), 0 16px 36px -16px rgba(240,184,110,0.55);
+  }
+  .ty-mail-send:hover { filter: brightness(1.05); }
+  .ty-mail-send:disabled {
+    opacity: 0.65; cursor: wait; filter: none;
+  }
+  .ty-mail-status {
+    min-height: 1.3em;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.06em;
+    text-align: center; color: var(--ty-muted);
+  }
+  .ty-mail-status.is-ok { color: #9ad7b5; }
+  .ty-mail-status.is-err { color: #f0a0a0; }
+
   .ty-cta { position: relative; z-index: 1; text-align: center; }
   .ty-resume {
     background: linear-gradient(135deg, #f0b86e, #e8a25c);
@@ -1426,6 +1513,8 @@
     .contact-pill:nth-child(2n),
     .contact-pill:nth-child(3n) { margin-top: 0; }
     .ty-house-line { width: 28px; }
+    .ty-mail { padding: 22px 18px 20px; margin-bottom: 28px; }
+    .ty-mail-grid { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) {
     .ty-light-a, .ty-light-b, .ty-light-c, .ty-scan { animation: none; }
