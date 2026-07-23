@@ -35,9 +35,15 @@
 </head>
 <body>
 
-<div id="preloader">
-  <div class="preloader-count">0</div>
-  <div class="preloader-bar"><div class="preloader-fill"></div></div>
+<div id="preloader" aria-busy="true" aria-live="polite">
+  <div class="preloader-sign" aria-hidden="true">
+    <span class="preloader-sign-mark">ASC</span>
+    <span class="preloader-sign-name">Allen</span>
+  </div>
+  <div class="preloader-meter">
+    <div class="preloader-count">0</div>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+  </div>
 </div>
 
 <!-- NAV -->

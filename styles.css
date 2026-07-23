@@ -1872,16 +1872,76 @@
 
 #preloader {
   position: fixed; inset: 0; z-index: 999;
-  background: var(--bg);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 22px;
+  background: #06080c;
+  overflow: hidden;
+}
+.preloader-sign {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transform: scale(2.35);
+  transform-origin: center center;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.preloader-sign-mark {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(1.1rem, 3.2vw, 1.6rem);
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: rgba(240,184,110,0.92);
+  text-shadow: 0 0 28px rgba(240,184,110,0.35);
+}
+.preloader-sign-name {
+  font-family: 'Archivo Black', 'Syne', sans-serif;
+  font-size: clamp(4.2rem, 16vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  color: #f4efe6;
+  text-shadow: 0 18px 50px rgba(0,0,0,0.55);
+}
+.preloader-meter {
+  position: absolute;
+  left: 4%;
+  bottom: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  z-index: 2;
 }
 .preloader-count {
-  font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(3rem, 10vw, 6rem); color: var(--text); letter-spacing: -0.02em;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+  color: rgba(242,236,225,0.92);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
-.preloader-bar { width: 200px; height: 1px; background: rgba(226,232,240,0.15); overflow: hidden; }
-.preloader-fill { height: 100%; width: 0%; background: var(--accent); }
+.preloader-bar {
+  width: min(160px, 28vw);
+  height: 1px;
+  background: rgba(226,232,240,0.15);
+  overflow: hidden;
+}
+.preloader-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #f0b86e, #e8a25c);
+}
+@media (max-width: 600px) {
+  .preloader-meter { left: 5%; bottom: 6%; }
+  .preloader-sign { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader-sign { transform: scale(1); }
+}
 
 /* Hidden by default so there's no flash before GSAP takes over */
 .hb-eyebrow, .hb-letter, .hb-orb, .hb-lastname, .hb-role, .hb-kicker, .hb-scroll { opacity: 0; }
