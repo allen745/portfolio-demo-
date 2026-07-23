@@ -37,11 +37,12 @@ lenis.stop(); // lock scroll until intro finishes
   });
   tl.to(pre, { yPercent: -100, duration: 0.55, ease: 'power4.inOut' }, '-=0.05');
   tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55');
-  tl.fromTo('.hb-signature-hero', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.45');
-  tl.fromTo('.hb-letter', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out', stagger: 0.04 }, '-=0.5');
-  tl.fromTo('.hb-orb', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.7)' }, '-=0.6');
-  tl.fromTo('.hb-role', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, '-=0.45');
-  tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.3');
+  tl.fromTo('.hb-letter', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out', stagger: 0.05 }, '-=0.5');
+  tl.fromTo('.hb-orb', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.7)' }, '-=0.55');
+  tl.fromTo('.hb-lastname', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' }, '-=0.55');
+  tl.fromTo('.hb-role', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, '-=0.4');
+  tl.fromTo('.hb-kicker', { opacity: 0 }, { opacity: 1, duration: 0.55 }, '-=0.35');
+  tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.25');
   tl.fromTo('.hero-letterbox span', { scaleY: 1.6 }, { scaleY: 1, duration: 1.1, ease: 'power3.out' }, '-=1.2');
   tl.fromTo('.hero-video', { scale: 1.28 }, { scale: 1.12, duration: 2.2, ease: 'power2.out' }, '-=1.4');
 })();
@@ -538,13 +539,13 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ]
     },
     devmindagent: {
-      num: "05", tag: "Microsoft Agents League 2026",
+      num: "05", tag: "Agent Build · Submitted 2026",
       title: "DevMind AI Agent — Autonomous Repository Intelligence Agent",
-      desc: "A 4-step autonomous reasoning agent that turns any public GitHub repo into a cited Project Health Report, built around a dual-model reasoning pipeline instead of single-shot analysis.",
+      desc: "A student-built 4-step reasoning agent that turns a public GitHub repo into a cited Project Health Report, using a dual-model pipeline instead of single-shot analysis. Entered in Microsoft Agents League 2026.",
       highlights: [
         "GitHub fetch, parallel per-file analysis, cross-file pattern detection, Foundry IQ synthesis",
         "Grounded, cited 0 to 100 health score with top 5 recommended fixes",
-        "Submitted to Microsoft Agents League 2026, Reasoning Agents track"
+        "Submitted to the Reasoning Agents track — entry, not a placement"
       ],
       tech: ["FastAPI","Groq/LLaMA-3.3-70b","Microsoft Foundry IQ","GitHub REST API"],
       theme: { bg:"#1a1442", panel:"#241b58", text:"#ece9ff", muted:"#b3a9e0", border:"rgba(255,255,255,0.14)", accent:"#8b7cf6" },
