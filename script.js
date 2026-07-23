@@ -598,6 +598,27 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var currentProjectId = null;
   var isChaining = false;
 
+  function hexToRgba(hex, alpha){
+    var h = String(hex || '').replace('#','').trim();
+    if(h.length === 3) h = h.split('').map(function(c){ return c + c; }).join('');
+    if(h.length !== 6) return 'rgba(8,12,18,' + alpha + ')';
+    var n = parseInt(h, 16);
+    return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
+  }
+
+  function applyProjectTheme(th){
+    detailEl.style.setProperty('--pd-bg', th.bg);
+    detailEl.style.setProperty('--pd-panel', th.panel);
+    detailEl.style.setProperty('--pd-text', th.text);
+    detailEl.style.setProperty('--pd-muted', th.muted);
+    detailEl.style.setProperty('--pd-border', th.border);
+    detailEl.style.setProperty('--pd-accent', th.accent);
+    // Translucent theme wash so the animated atmosphere shows through
+    detailEl.style.setProperty('--pd-bg-wash', hexToRgba(th.bg, 0.58));
+    detailEl.style.setProperty('--pd-accent-glow', hexToRgba(th.accent, 0.5));
+    detailEl.style.setProperty('--pd-accent-soft', hexToRgba(th.accent, 0.22));
+  }
+
   function buildTrack(data){
     track.innerHTML = ''; panels = [];
     var intro = document.createElement('div');
@@ -646,12 +667,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     track.style.opacity = '1';
 
     var th = data.theme;
-    detailEl.style.setProperty('--pd-bg', th.bg);
-    detailEl.style.setProperty('--pd-panel', th.panel);
-    detailEl.style.setProperty('--pd-text', th.text);
-    detailEl.style.setProperty('--pd-muted', th.muted);
-    detailEl.style.setProperty('--pd-border', th.border);
-    detailEl.style.setProperty('--pd-accent', th.accent);
+    applyProjectTheme(th);
 
     detailEl.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -705,12 +721,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       buildTrack(data);
 
       var th = data.theme;
-      detailEl.style.setProperty('--pd-bg', th.bg);
-      detailEl.style.setProperty('--pd-panel', th.panel);
-      detailEl.style.setProperty('--pd-text', th.text);
-      detailEl.style.setProperty('--pd-muted', th.muted);
-      detailEl.style.setProperty('--pd-border', th.border);
-      detailEl.style.setProperty('--pd-accent', th.accent);
+      applyProjectTheme(th);
 
       updateMax();
       targetX = direction === 1 ? Math.max(0, Math.min(maxX, overflow)) : Math.max(0, maxX - overflow);
