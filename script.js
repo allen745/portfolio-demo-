@@ -31,13 +31,15 @@ if (hasLenis) {
   window.lenis = null;
 }
 
-// Page-load intro
+// Page-load intro — Allen mark zooms out; count sits lower-left; then site opens
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
   var countEl = pre.querySelector('.preloader-count');
   var fillEl = pre.querySelector('.preloader-fill');
+  var signEl = pre.querySelector('.preloader-sign');
   var counter = { val: 0 };
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function finishIntro(){
     if(pre && pre.parentNode) pre.remove();
@@ -48,21 +50,53 @@ if (hasLenis) {
   if(!hasGsap){
     if(countEl) countEl.textContent = '100';
     if(fillEl) fillEl.style.width = '100%';
-    setTimeout(finishIntro, 200);
+    if(signEl) signEl.style.transform = 'scale(1)';
+    setTimeout(finishIntro, 280);
     return;
   }
 
   var tl = gsap.timeline({ onComplete: finishIntro });
 
+  if(signEl && !reduceMotion){
+    gsap.set(signEl, { scale: 2.35, opacity: 1 });
+  } else if(signEl){
+    gsap.set(signEl, { scale: 1, opacity: 1 });
+  }
+
+  // Count up in the corner while the Allen mark zooms out (large → small)
   tl.to(counter, {
-    val: 100, duration: 0.45, ease: 'power2.inOut',
+    val: 100,
+    duration: reduceMotion ? 0.2 : 1.15,
+    ease: 'power2.inOut',
     onUpdate: function(){
       var v = Math.round(counter.val);
-      countEl.textContent = v;
-      fillEl.style.width = v + '%';
+      if(countEl) countEl.textContent = v;
+      if(fillEl) fillEl.style.width = v + '%';
     }
-  });
-  tl.to(pre, { yPercent: -100, duration: 0.55, ease: 'power4.inOut' }, '-=0.05');
+  }, 0);
+
+  if(signEl && !reduceMotion){
+    tl.to(signEl, {
+      scale: 0.92,
+      duration: 1.15,
+      ease: 'power2.inOut'
+    }, 0);
+    // Final zoom-out punch as the loader exits
+    tl.to(signEl, {
+      scale: 0.55,
+      opacity: 0,
+      duration: 0.65,
+      ease: 'power3.in'
+    }, '>-0.05');
+  }
+
+  tl.to(pre, {
+    yPercent: -100,
+    duration: 0.7,
+    ease: 'power4.inOut'
+  }, '-=0.35');
+
+  // Reveal hero once the loader is lifting
   tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55');
   tl.fromTo('.hb-letter', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out', stagger: 0.05 }, '-=0.5');
   tl.fromTo('.hb-orb', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.7)' }, '-=0.55');
