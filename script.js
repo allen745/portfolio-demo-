@@ -36,11 +36,11 @@ lenis.stop(); // lock scroll until intro finishes
     }
   });
   tl.to(pre, { yPercent: -100, duration: 0.55, ease: 'power4.inOut' }, '-=0.05');
-  tl.fromTo('.hb-house', { opacity: 0, letterSpacing: '0.5em' }, { opacity: 1, letterSpacing: '0.28em', duration: 0.8, ease: 'power3.out' }, '-=0.55');
   tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55');
+  tl.fromTo('.hb-signature-hero', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.45');
   tl.fromTo('.hb-letter', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out', stagger: 0.04 }, '-=0.5');
   tl.fromTo('.hb-orb', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.7)' }, '-=0.6');
-  tl.fromTo('.hb-signature', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5');
+  tl.fromTo('.hb-role', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, '-=0.45');
   tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.3');
   tl.fromTo('.hero-letterbox span', { scaleY: 1.6 }, { scaleY: 1, duration: 1.1, ease: 'power3.out' }, '-=1.2');
   tl.fromTo('.hero-video', { scale: 1.28 }, { scale: 1.12, duration: 2.2, ease: 'power2.out' }, '-=1.4');
@@ -462,9 +462,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 (function(){
   const projects = {
     vertex: {
-      num: "01", tag: "Founder & CEO · Imagine Cup 2027",
+      num: "01", tag: "Career Intelligence · In Progress",
       title: "Vertex — AI Career Intelligence Platform",
-      desc: "A data-driven platform helping tech students decide what to learn next: real salary data across 15 countries, a 10-year demand forecast, and an AI advisor that actually knows where each student stands.",
+      desc: "A student-built platform helping tech learners decide what to study next: salary signals across countries, demand trends, and an AI advisor grounded in where each student actually stands.",
       highlights: [
         "Phase-based roadmaps with 70+ curated resources per domain",
         "Salary and demand data projected to 2036",
