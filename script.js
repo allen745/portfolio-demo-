@@ -31,7 +31,7 @@ if (hasLenis) {
   window.lenis = null;
 }
 
-// Page-load intro — Allen mark zooms out; count sits lower-left; then site opens
+// Page-load intro — Allen mark zooms in (small → big); count lower-left; then site opens
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
@@ -58,15 +58,15 @@ if (hasLenis) {
   var tl = gsap.timeline({ onComplete: finishIntro });
 
   if(signEl && !reduceMotion){
-    gsap.set(signEl, { scale: 2.35, opacity: 1 });
+    gsap.set(signEl, { scale: 0.28, opacity: 0.9 });
   } else if(signEl){
     gsap.set(signEl, { scale: 1, opacity: 1 });
   }
 
-  // Count up in the corner while the Allen mark zooms out (large → small)
+  // Count up in the corner while the Allen mark zooms in (small → big)
   tl.to(counter, {
     val: 100,
-    duration: reduceMotion ? 0.2 : 1.15,
+    duration: reduceMotion ? 0.2 : 1.2,
     ease: 'power2.inOut',
     onUpdate: function(){
       var v = Math.round(counter.val);
@@ -77,16 +77,22 @@ if (hasLenis) {
 
   if(signEl && !reduceMotion){
     tl.to(signEl, {
-      scale: 0.92,
-      duration: 1.15,
-      ease: 'power2.inOut'
+      scale: 1.08,
+      opacity: 1,
+      duration: 1.2,
+      ease: 'power3.out'
     }, 0);
-    // Final zoom-out punch as the loader exits
     tl.to(signEl, {
-      scale: 0.55,
+      scale: 1,
+      duration: 0.28,
+      ease: 'power2.inOut'
+    }, '>-0.02');
+    // Soft exit of the mark as the loader lifts
+    tl.to(signEl, {
       opacity: 0,
-      duration: 0.65,
-      ease: 'power3.in'
+      scale: 1.12,
+      duration: 0.45,
+      ease: 'power2.in'
     }, '>-0.05');
   }
 
@@ -94,7 +100,7 @@ if (hasLenis) {
     yPercent: -100,
     duration: 0.7,
     ease: 'power4.inOut'
-  }, '-=0.35');
+  }, '-=0.28');
 
   // Reveal hero once the loader is lifting
   tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55');
