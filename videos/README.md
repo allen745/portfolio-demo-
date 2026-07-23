@@ -1,17 +1,16 @@
-# Cinematic videos
+# Cinematic videos (web encodes)
 
-- `stage-entrance-hero.mp4` — opening hero plate: stage entrance from behind (web encode)
-- `stage-entrance-poster.jpg` — hero poster / reduced-motion fallback
-- `stage-entrance-cinematic.mp4` — full-quality stage entrance master (optional)
-- `astronaut-cinematic.mp4` — thank-you cinematic background (Mixkit)
-- `astronaut-poster.jpg` — thank-you poster / reduced-motion fallback
-- `about-orbit-cinematic.mp4` — About Me spaceship orbit plate (Pexels: Adis Resic, 36046979)
-- `about-orbit-poster.jpg` — About poster / reduced-motion fallback
-- `projects-nature-cinematic.mp4` — Projects close-up rain on leaves (Pexels: Anil Donoji, 26524813)
-- `projects-nature-poster.jpg` — Projects poster / reduced-motion fallback
-- `hero-cinematic.mp4` — legacy Interstellar black-hole plate
-- `hero-poster.jpg` — legacy hero poster
+Keep these light. Prefer `preload="metadata"` and play only when in view.
 
-Muted looping backgrounds for the portfolio's cinematic sections.
+- `stage-entrance-hero.mp4` — hero plate (~0.7MB)
+- `stage-entrance-poster.jpg` — hero poster
+- `about-orbit-cinematic.mp4` — About spaceship orbit (~1.2MB)
+- `about-orbit-poster.jpg` — About poster
+- `projects-nature-cinematic.mp4` — Projects rain leaves (~1.0MB)
+- `projects-nature-poster.jpg` — Projects poster
+- `astronaut-cinematic.mp4` — Thank You end card (~1.2MB)
+- `astronaut-poster.jpg` — Thank You poster
+- `hero-cinematic.mp4` — Recognition/Experience runway (~0.1MB)
+- `hero-poster.jpg` — runway poster
 
-Recognition / Experience shared runway uses `hero-cinematic.mp4` as a quiet full-bleed plate (no ASCII/CRT overlay).
+Do not commit full-quality masters (e.g. multi‑10MB cinematic sources) to the site deploy.

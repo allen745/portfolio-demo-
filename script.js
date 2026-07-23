@@ -28,14 +28,14 @@ lenis.stop(); // lock scroll until intro finishes
   });
 
   tl.to(counter, {
-    val: 100, duration: 1.6, ease: 'power2.inOut',
+    val: 100, duration: 0.45, ease: 'power2.inOut',
     onUpdate: function(){
       var v = Math.round(counter.val);
       countEl.textContent = v;
       fillEl.style.width = v + '%';
     }
   });
-  tl.to(pre, { yPercent: -100, duration: 0.9, ease: 'power4.inOut' }, '-=0.1');
+  tl.to(pre, { yPercent: -100, duration: 0.55, ease: 'power4.inOut' }, '-=0.05');
   tl.fromTo('.hb-house', { opacity: 0, letterSpacing: '0.5em' }, { opacity: 1, letterSpacing: '0.28em', duration: 0.8, ease: 'power3.out' }, '-=0.55');
   tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55');
   tl.fromTo('.hb-letter', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out', stagger: 0.04 }, '-=0.5');
@@ -472,7 +472,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["FastAPI","React.js","Azure OpenAI","Recharts","Microsoft Auth"],
       theme: { bg:"#2b1d14", panel:"#3a2718", text:"#f3e9dd", muted:"#c9b8a8", border:"rgba(255,255,255,0.14)", accent:"#e8a25c" },
-      images: ["images/projects/vertex/1.png","images/projects/vertex/2.png","images/projects/vertex/3.png","images/projects/vertex/4.png","images/projects/vertex/5.png"],
+      images: ["images/projects/vertex/1.jpg","images/projects/vertex/2.jpg","images/projects/vertex/3.jpg","images/projects/vertex/4.jpg","images/projects/vertex/5.jpg"],
       stories: [
         { title: "The Reframe", sub: "Most platforms give you a list. We give you a moving picture." },
         { title: "Pick Your Track", sub: "6 domains mapped, ML Engineer live first." },
@@ -491,7 +491,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["Piezoelectric","PZT-5A/5H","Mechanical Design"],
       theme: { bg:"#0f2018", panel:"#183526", text:"#eaf4ec", muted:"#a9c6b1", border:"rgba(255,255,255,0.14)", accent:"#4ade80" },
-      images: ["images/projects/patent/1.png","images/projects/patent/2.png","images/projects/patent/3.jpeg","images/projects/patent/4.png"],
+      images: ["images/projects/patent/1.jpg","images/projects/patent/2.jpg","images/projects/patent/3.jpeg","images/projects/patent/4.jpg"],
       stories: [
         { title: "The Engineering", sub: "7-view technical model, working principle mapped in 4 steps." },
         { title: "Use It or Lose It", sub: "Hands-on energy generation, hit, charge, repeat." },
@@ -509,7 +509,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["FastAPI","Groq","React.js","Vercel"],
       theme: { bg:"#1c1c1e", panel:"#28282b", text:"#f0f0f0", muted:"#a8a8ac", border:"rgba(255,255,255,0.14)", accent:"#5eead4" },
-      images: ["images/projects/devmind/1.png","images/projects/devmind/2.png","images/projects/devmind/3.png","images/projects/devmind/4.png","images/projects/devmind/5.png","images/projects/devmind/6.png"],
+      images: ["images/projects/devmind/1.jpg","images/projects/devmind/2.png","images/projects/devmind/3.png","images/projects/devmind/4.png","images/projects/devmind/5.png","images/projects/devmind/6.png"],
       stories: [
         { title: "Sign In", sub: "Google OAuth, straight into the toolkit." },
         { title: "Five Tools, One Dashboard", sub: "Code review, bug hunt, docs, complexity, commits." },
@@ -529,7 +529,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["FastAPI","PostgreSQL","React.js","Groq/LLaMA-3.3"],
       theme: { bg:"#ded8f9", panel:"#cfc7f3", text:"#251f47", muted:"#5c5480", border:"rgba(0,0,0,0.12)", accent:"#6c4fe0" },
-      images: ["images/projects/casaas/1.png","images/projects/casaas/2.png","images/projects/casaas/3.png","images/projects/casaas/4.png","images/projects/casaas/5.png"],
+      images: ["images/projects/casaas/1.jpg","images/projects/casaas/2.png","images/projects/casaas/3.png","images/projects/casaas/4.png","images/projects/casaas/5.png"],
       stories: [
         { title: "Sign In", sub: "JWT-secured login, built for CA workflows." },
         { title: "The Dashboard", sub: "128 clients, 342 documents, 7 anomalies flagged." },
@@ -566,7 +566,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["ESP32-S3","A* Pathfinding","RFID Localization","scikit-learn"],
       theme: { bg:"#0a1428", panel:"#0f1c38", text:"#e6edf7", muted:"#93a4c2", border:"rgba(255,255,255,0.14)", accent:"#4d9fff" },
-      images: ["images/projects/trackbot/1.png","images/projects/trackbot/2.png","images/projects/trackbot/3.png"],
+      images: ["images/projects/trackbot/1.jpg","images/projects/trackbot/2.jpg","images/projects/trackbot/3.jpg"],
       stories: [
         { title: "The Architecture", sub: "Mecanum drive, RFID navigation, live telemetry, AI advisory, one ESP32-S3." },
         { title: "Under the Hood", sub: "Dual-core split: real-time navigation on one core, I/O on the other." }
@@ -583,7 +583,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["Arduino","Ultrasonic Sensing","Motor Control","IoT"],
       theme: { bg:"#ede4d3", panel:"#e2d6bd", text:"#3a3226", muted:"#7a6f5c", border:"rgba(0,0,0,0.12)", accent:"#7c8f52" },
-      images: ["images/projects/autoseed/1.png","images/projects/autoseed/2.png"],
+      images: ["images/projects/autoseed/1.jpg","images/projects/autoseed/2.jpg"],
       stories: [
         { title: "Status: Running", sub: "12 seeds planted and counting, live on the onboard LCD." }
       ]
@@ -667,7 +667,27 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 
   document.querySelectorAll('.proj-card[data-project]').forEach(function(card){
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
     card.addEventListener('click', function(){ openProject(card.dataset.project); });
+    card.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        openProject(card.dataset.project);
+      }
+    });
+  });
+
+  var pdCloseBtn = document.getElementById('pdCloseBtn');
+  if(pdCloseBtn){
+    pdCloseBtn.addEventListener('click', function(){ closeProject(); });
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && detailEl.classList.contains('open')){
+      e.preventDefault();
+      closeProject();
+    }
   });
 
 
@@ -1803,6 +1823,11 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   if(setupEl && window.localStorage && localStorage.getItem(activatedKey) === '1'){
     setupEl.classList.add('is-hidden');
+    setupEl.hidden = true;
+  } else if(setupEl){
+    // Never show owner-facing activation copy to visitors by default.
+    setupEl.classList.add('is-hidden');
+    setupEl.hidden = true;
   }
 
   function setStatus(msg, kind){
@@ -1929,25 +1954,22 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         var activation = looksLikeActivation(data, result.text);
 
         if(activation){
-          if(setupEl) setupEl.classList.remove('is-hidden');
-          setStatus('Activation needed: open Gmail for allenschristian07@gmail.com, click FormSubmit Activate, then send again.', 'is-err');
+          setStatus('Could not deliver automatically. Use “Open in Mail app”.', 'is-err');
           return;
         }
 
         if(isSuccessPayload(data)){
           if(window.localStorage) localStorage.setItem(activatedKey, '1');
-          if(setupEl) setupEl.classList.add('is-hidden');
           setStatus('Sent. I will get back to you soon.', 'is-ok');
           form.reset();
           return;
         }
 
         // Do not treat bare HTTP 200 as success — FormSubmit often returns 200 for activation.
-        setStatus('Could not deliver yet. Use “Open in Mail app”, or activate FormSubmit in Gmail first.', 'is-err');
-        if(setupEl) setupEl.classList.remove('is-hidden');
+        setStatus('Could not deliver automatically. Use “Open in Mail app”.', 'is-err');
       })
       .catch(function(){
-        setStatus('Network blocked FormSubmit. Opening your mail app instead…', 'is-err');
+        setStatus('Network issue. Opening your mail app instead…', 'is-err');
         openMailto(fields);
       })
       .finally(function(){

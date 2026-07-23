@@ -1456,7 +1456,8 @@
     background: rgba(240,184,110,0.08);
     font-size: 0.78rem; line-height: 1.5; color: rgba(244,239,230,0.78);
   }
-  .ty-mail-setup.is-hidden { display: none; }
+  .ty-mail-setup.is-hidden,
+  .ty-mail-setup[hidden] { display: none !important; }
   .ty-mail-setup strong { color: var(--ty-accent); font-weight: 600; }
   .ty-mail-honey {
     position: absolute; left: -9999px; width: 1px; height: 1px;

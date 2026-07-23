@@ -39,8 +39,7 @@
       <li><a href="#about"><span>About</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#skills"><span>Skills</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#projects"><span>Projects</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#achievements"><span>Achievements</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#certificates"><span>Certificates</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#achievements"><span>Recognition</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#experience"><span>Experience</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#contact"><span>Contact</span><span class="nav-panel-dot"></span></a></li>
     </ul>
@@ -58,7 +57,7 @@
       loop
       playsinline
       autoplay
-      preload="auto"
+      preload="metadata"
     >
       <source src="videos/stage-entrance-hero.mp4" type="video/mp4">
     </video>
@@ -133,7 +132,7 @@
           <span class="about-frame-corner c-bl"></span>
           <span class="about-frame-corner c-br"></span>
           <div class="about-photo-mask">
-            <img src="profile.png" alt="Allen Christian" class="about-photo">
+            <img src="profile.jpg" alt="Allen Christian" class="about-photo">
           </div>
           <div class="about-frame-caption">ALLEN CHRISTIAN &middot; AI &amp; DATA</div>
         </div>
@@ -371,22 +370,22 @@
   </div>
   <div class="projects-grid">
     <div class="proj-card fade-in" data-project="vertex">
-  <div class="proj-card-media"><img src="images/projects/vertex/1.png" alt="Vertex" loading="lazy"></div>
+  <div class="proj-card-media"><img src="images/projects/vertex/1.jpg" alt="Vertex" loading="lazy"></div>
   <div class="proj-tags">01 &middot; Founder &amp; CEO &middot; Imagine Cup 2027</div>
   <div class="proj-title-row"><div class="proj-title">Vertex</div><div class="proj-arrow">&rarr;</div></div>
 </div>
 <div class="proj-card fade-in" data-project="patent">
-  <div class="proj-card-media"><img src="images/projects/patent/1.png" alt="Piezoelectric Striker Device" loading="lazy"></div>
+  <div class="proj-card-media"><img src="images/projects/patent/1.jpg" alt="Piezoelectric Striker Device" loading="lazy"></div>
   <div class="proj-tags">02 &middot; Government of India Patent</div>
   <div class="proj-title-row"><div class="proj-title">Piezoelectric Striker Device</div><div class="proj-arrow">&rarr;</div></div>
 </div>
 <div class="proj-card fade-in" data-project="devmind">
-  <div class="proj-card-media"><img src="images/projects/devmind/1.png" alt="DevMind AI" loading="lazy"></div>
+  <div class="proj-card-media"><img src="images/projects/devmind/1.jpg" alt="DevMind AI" loading="lazy"></div>
   <div class="proj-tags">03 &middot; Live Product &middot; 2025&ndash;2026</div>
   <div class="proj-title-row"><div class="proj-title">DevMind AI</div><div class="proj-arrow">&rarr;</div></div>
 </div>
 <div class="proj-card fade-in" data-project="casaas">
-  <div class="proj-card-media"><img src="images/projects/casaas/1.png" alt="CA SaaS" loading="lazy"></div>
+  <div class="proj-card-media"><img src="images/projects/casaas/1.jpg" alt="CA SaaS" loading="lazy"></div>
   <div class="proj-tags">04 &middot; B2B SaaS &middot; In Progress</div>
   <div class="proj-title-row"><div class="proj-title">CA SaaS</div><div class="proj-arrow">&rarr;</div></div>
 </div>
@@ -396,12 +395,12 @@
   <div class="proj-title-row"><div class="proj-title">DevMind AI Agent</div><div class="proj-arrow">&rarr;</div></div>
 </div>
 <div class="proj-card fade-in" data-project="trackbot">
-  <div class="proj-card-media"><img src="images/projects/trackbot/1.png" alt="TrackBot 1" loading="lazy"></div>
+  <div class="proj-card-media"><img src="images/projects/trackbot/1.jpg" alt="TrackBot 1" loading="lazy"></div>
   <div class="proj-tags">06 &middot; SSIP-Funded Team Project</div>
   <div class="proj-title-row"><div class="proj-title">TrackBot 1</div><div class="proj-arrow">&rarr;</div></div>
 </div>
 <div class="proj-card fade-in" data-project="autoseed">
-  <div class="proj-card-media"><img src="images/projects/autoseed/1.png" alt="AutoSeed Bot" loading="lazy"></div>
+  <div class="proj-card-media"><img src="images/projects/autoseed/1.jpg" alt="AutoSeed Bot" loading="lazy"></div>
   <div class="proj-tags">07 &middot; IoT + Precision Agriculture</div>
   <div class="proj-title-row"><div class="proj-title">AutoSeed Bot</div><div class="proj-arrow">&rarr;</div></div>
 </div>
@@ -410,7 +409,8 @@
 
   <div id="project-detail">
     <div class="pd-navbar">
-      <div class="pd-hint">scroll to explore &raquo;</div>
+      <button type="button" class="pd-close" id="pdCloseBtn" aria-label="Close project">Close</button>
+      <div class="pd-hint">scroll to explore &raquo; · Esc to close</div>
     </div>
     <div class="pd-track" id="pdTrack"></div>
   </div>
@@ -454,7 +454,6 @@
       <p class="ach-lede">Patents, competitions, and credentials &mdash; the marks that held under pressure.</p>
     </div>
 
-    <div id="certificates"></div>
     <div class="phase-grid">
     <article class="phase-card">
       <div class="phase-index">01</div>
@@ -806,8 +805,8 @@
         <div class="ty-mail-head">
           <span class="ty-mail-eyebrow">Send a message</span>
           <p class="ty-mail-lede">Type your note below and hit send &mdash; it lands in my inbox.</p>
-          <p class="ty-mail-setup" id="tyMailSetup">
-            First-time setup for Allen: check <strong>allenschristian07@gmail.com</strong> (and Spam) for a FormSubmit &ldquo;Activate Form&rdquo; email, click the link once, then send again.
+          <p class="ty-mail-setup is-hidden" id="tyMailSetup" hidden>
+            If mail doesn&rsquo;t arrive, use <strong>Open in Mail app</strong> below.
           </p>
         </div>
 
@@ -845,7 +844,7 @@
   </div>
 </section>
 
-<audio id="bgMusic" loop preload="auto" playsinline crossorigin="anonymous">
+<audio id="bgMusic" loop preload="none" playsinline crossorigin="anonymous">
   <source src="audio/interstellar-ambient.mp3" type="audio/mpeg">
 </audio>
 
