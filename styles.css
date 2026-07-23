@@ -824,9 +824,10 @@
 
   #project-detail {
     position: fixed; inset: 0; z-index: 300;
-    background: transparent;
+    /* Solid themed plate — hides the portfolio page; animation lives ON TOP of this */
+    background: var(--pd-bg, #0a0908);
     transform: translateY(100%);
-    transition: transform 0.7s cubic-bezier(.16,1,.3,1);
+    transition: transform 0.7s cubic-bezier(.16,1,.3,1), background 0.55s ease;
     overflow: hidden;
   }
   #project-detail.open { transform: translateY(0); }
@@ -842,9 +843,9 @@
       radial-gradient(ellipse 60% 50% at 88% 78%, var(--pd-accent2-soft, rgba(94,234,212,0.2)) 0%, transparent 64%),
       linear-gradient(
         155deg,
-        var(--pd-base-a, rgba(10,9,8,0.72)) 0%,
-        var(--pd-base-b, rgba(18,16,14,0.58)) 48%,
-        var(--pd-base-c, rgba(11,12,16,0.7)) 100%
+        var(--pd-base-a, #0a0908) 0%,
+        var(--pd-base-b, #12100e) 48%,
+        var(--pd-base-c, #0b0c10) 100%
       );
     transition: background 0.55s ease;
   }
@@ -889,10 +890,10 @@
     position: absolute; inset: 0; opacity: 0.14; mix-blend-mode: soft-light;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
   }
-  /* Under the orbs — light tint only so motion stays visible */
+  /* Soft themed veil under the orbs — still fully covers the page behind */
   .pd-atmos-wash {
     position: absolute; inset: 0;
-    background: var(--pd-bg-wash, rgba(43,29,20,0.32));
+    background: var(--pd-bg-wash, #0a0908);
     transition: background 0.55s ease;
   }
   @keyframes pdOrbA {
@@ -938,11 +939,14 @@
   .intro-image-frame {
     width: 50%; height: 80%; margin-right: 4%;
     border-radius: 20px; overflow: hidden;
-    box-shadow: 0 40px 80px -30px rgba(0,0,0,0.4), 0 0 0 1px var(--pd-border, rgba(255,255,255,0.1));
-    background: color-mix(in srgb, var(--pd-panel, var(--surface)) 42%, transparent);
+    box-shadow:
+      0 40px 80px -30px rgba(0,0,0,0.45),
+      0 0 48px -12px var(--pd-accent-soft, transparent);
+    /* Glass against the atmosphere only — page behind is already blocked */
+    background: color-mix(in srgb, var(--pd-panel, var(--surface)) 55%, transparent);
     border: 1px solid var(--pd-border, rgba(255,255,255,0.14));
-    backdrop-filter: blur(14px) saturate(1.15);
-    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(12px) saturate(1.1);
+    -webkit-backdrop-filter: blur(12px) saturate(1.1);
     display: flex; align-items: center; justify-content: center;
   }
   .intro-image-frame img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }

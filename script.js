@@ -907,16 +907,16 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     detailEl.style.setProperty('--pd-muted', th.muted);
     detailEl.style.setProperty('--pd-border', th.border);
     detailEl.style.setProperty('--pd-accent', th.accent);
-    // Light translucent wash — orbs sit above this so animation stays visible
-    detailEl.style.setProperty('--pd-bg-wash', hexToRgba(th.bg, 0.3));
-    detailEl.style.setProperty('--pd-accent-glow', hexToRgba(th.accent, 0.72));
-    detailEl.style.setProperty('--pd-accent-soft', hexToRgba(th.accent, 0.34));
-    detailEl.style.setProperty('--pd-accent2-glow', hexToRgba(accent2, 0.62));
-    detailEl.style.setProperty('--pd-accent2-soft', hexToRgba(accent2, 0.28));
-    detailEl.style.setProperty('--pd-base-a', hexToRgba(th.bg, 0.7));
-    detailEl.style.setProperty('--pd-base-b', hexToRgba(th.panel, 0.52));
-    detailEl.style.setProperty('--pd-base-c', hexToRgba(th.bg, 0.68));
-    detailEl.style.setProperty('--pd-sweep', hexToRgba(th.accent, 0.12));
+    // Opaque themed plate (hides page content) + glowing accents for the animation layer
+    detailEl.style.setProperty('--pd-bg-wash', th.bg);
+    detailEl.style.setProperty('--pd-accent-glow', hexToRgba(th.accent, 0.78));
+    detailEl.style.setProperty('--pd-accent-soft', hexToRgba(th.accent, 0.38));
+    detailEl.style.setProperty('--pd-accent2-glow', hexToRgba(accent2, 0.68));
+    detailEl.style.setProperty('--pd-accent2-soft', hexToRgba(accent2, 0.32));
+    detailEl.style.setProperty('--pd-base-a', th.bg);
+    detailEl.style.setProperty('--pd-base-b', th.panel);
+    detailEl.style.setProperty('--pd-base-c', th.bg);
+    detailEl.style.setProperty('--pd-sweep', hexToRgba(th.accent, 0.14));
     detailEl.dataset.themeReady = '1';
   }
 
