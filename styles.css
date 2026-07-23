@@ -20,9 +20,44 @@
   }
   @keyframes gridFloat { 0%{background-position:0 0,0 0} 100%{background-position:60px 60px,60px 60px} }
 
-  /* NAV */
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 18px 5%; background: rgba(8,12,18,0.88); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
-  .nav-logo { font-family: 'Space Mono', monospace; font-size: 1rem; color: var(--accent); letter-spacing: 0.05em; text-decoration: none; }
+  /* NAV — floating buttons only (no filled bar) */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 250;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 4%;
+    pointer-events: none;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+  }
+  nav > * { pointer-events: auto; }
+  .nav-logo {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #f2ece1;
+    padding: 12px 20px;
+    border-radius: 30px;
+    background: rgba(8,12,18,0.55);
+    border: 1px solid rgba(240,184,110,0.35);
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.3s ease, color 0.3s ease;
+  }
+  .nav-logo:hover {
+    border-color: rgba(240,184,110,0.7);
+    color: #f0b86e;
+    transform: scale(1.04);
+  }
   .nav-links { display: flex; gap: 28px; list-style: none; }
   .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover { color: var(--accent); }
@@ -422,18 +457,21 @@
     min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
     position: relative; z-index: 7; padding: 130px 6% 80px; overflow: hidden;
   }
-  .hb-house {
-    position: relative; z-index: 1;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase;
-    color: rgba(240,184,110,0.85); margin-bottom: 18px;
-    text-shadow: 0 0 18px rgba(240,184,110,0.35);
-  }
   .hero-banner::before { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0; mix-blend-mode: overlay; opacity: 0.35;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E"); }
   .hb-eyebrow { position: relative; z-index: 1; font-family: 'Syne', sans-serif; font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 700; margin-bottom: 6px; }
   .hb-eyebrow .hb-bold { color: #f5f7fa; }
   .hb-eyebrow .hb-muted { color: var(--muted); font-weight: 500; }
+  .hb-signature-hero {
+    position: relative; z-index: 1;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.65rem, 4.2vw, 3.1rem);
+    letter-spacing: -0.02em;
+    color: #f2ece1;
+    margin: 4px 0 10px;
+    text-shadow: 0 8px 28px rgba(0,0,0,0.45);
+  }
   .hb-word { position: relative; z-index: 1; display: flex; align-items: center; flex-wrap: wrap; line-height: 0.85; }
   .hb-letter {
     font-family: 'Archivo Black', sans-serif; font-size: clamp(3.4rem, 13vw, 10.5rem);
@@ -445,13 +483,22 @@
   .hb-orb { display: inline-block; font-size: clamp(3.4rem, 13vw, 10.5rem); width: 0.82em; height: 0.82em; border-radius: 50%; margin: 0 0.02em; vertical-align: -0.07em; position: relative; z-index: 1; flex-shrink: 0;
     background: radial-gradient(circle at 36% 30%, #ffffff 0%, #ffffff 38%, #f2efe4 62%, #cfc9b4 85%, #a39c82 100%);
     box-shadow: 0 0 50px 16px rgba(255,255,255,0.55), 0 0 110px 45px rgba(255,250,230,0.28); }
+  .hb-role {
+    position: relative; z-index: 1;
+    max-width: 34rem;
+    margin-top: 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+    font-weight: 400;
+    line-height: 1.55;
+    color: rgba(226,232,240,0.78);
+  }
   .hb-signature { position: relative; z-index: 1; font-family: 'Sacramento', 'Caveat', cursive; font-size: clamp(1.8rem, 5vw, 3rem); color: #9ee34a; margin-top: 14px; align-self: flex-end; margin-right: 2%; text-shadow: 0 0 18px rgba(158,227,74,0.5); }
   .hb-scroll { position: relative; z-index: 1; margin-top: 40px; font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .hb-scroll .scroll-line { width: 1px; height: 30px; background: linear-gradient(var(--accent), transparent); }
   @media (max-width: 640px) {
     .hb-signature { align-self: center; margin-right: 0; }
     .hero-frame-lines { inset: 10px; }
-    .hb-house { letter-spacing: 0.16em; font-size: 0.6rem; }
   }
 
   .btn { font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 28px; border-radius: 4px; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
@@ -1733,8 +1780,22 @@
 .preloader-fill { height: 100%; width: 0%; background: var(--accent); }
 
 /* Hidden by default so there's no flash before GSAP takes over */
-.hb-eyebrow, .hb-letter, .hb-orb, .hb-signature, .hb-scroll, .hb-house { opacity: 0; }
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 250; display: flex; justify-content: space-between; align-items: center; padding: 22px 4%; pointer-events: none; background: transparent; }
+.hb-eyebrow, .hb-letter, .hb-orb, .hb-signature, .hb-role, .hb-scroll { opacity: 0; }
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 250;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 4%;
+  pointer-events: none;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+}
 nav > * { pointer-events: auto; }
 
 .nav-pills { display: flex; align-items: center; gap: 10px; }
