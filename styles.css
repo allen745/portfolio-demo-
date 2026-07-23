@@ -1656,18 +1656,6 @@
   .ty-mail-send:disabled {
     opacity: 0.65; cursor: wait; filter: none;
   }
-  .ty-mail-fallback {
-    width: 100%;
-    justify-content: center;
-    background: transparent;
-    color: var(--ty-ink);
-    border: 1px solid rgba(244,239,230,0.22);
-    font-weight: 600;
-  }
-  .ty-mail-fallback:hover {
-    border-color: rgba(240,184,110,0.5);
-    background: rgba(240,184,110,0.08);
-  }
   .ty-mail-status {
     min-height: 1.3em;
     font-family: 'Space Mono', monospace;

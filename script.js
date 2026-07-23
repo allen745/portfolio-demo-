@@ -1818,27 +1818,18 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Thank You — mail form: FormSubmit native POST + mailto fallback
+// Thank You — direct inbox delivery via FormSubmit (no mail app)
 (function(){
   var form = document.getElementById('tyMailForm');
   if(!form) return;
 
   var submitBtn = document.getElementById('tyMailSubmit');
-  var fallbackBtn = document.getElementById('tyMailFallback');
   var statusEl = document.getElementById('tyMailStatus');
-  var setupEl = document.getElementById('tyMailSetup');
   var labelEl = submitBtn ? submitBtn.querySelector('.ty-mail-send-label') : null;
   var nextInput = document.getElementById('tyMailNext');
   var subjectInput = document.getElementById('tyMailSubject');
   var replyInput = document.getElementById('tyMailReplyTo');
-  var inbox = 'allenschristian07@gmail.com';
-  var ajaxEndpoint = 'https://formsubmit.co/ajax/allenschristian07@gmail.com';
   var sending = false;
-
-  if(setupEl){
-    setupEl.classList.add('is-hidden');
-    setupEl.hidden = true;
-  }
 
   function setStatus(msg, kind){
     if(!statusEl) return;
@@ -1873,41 +1864,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     return url.toString();
   }
 
-  function openMailto(fields){
-    var subject = 'Portfolio message from ' + (fields.name || 'visitor');
-    var body = [
-      'Name: ' + fields.name,
-      'Email: ' + fields.email,
-      '',
-      fields.message
-    ].join('\n');
-    var href = 'mailto:' + encodeURIComponent(inbox)
-      + '?subject=' + encodeURIComponent(subject)
-      + '&body=' + encodeURIComponent(body);
-    window.location.href = href;
-  }
+  if(nextInput) nextInput.value = returnUrl();
 
-  function isSuccessPayload(data){
-    if(!data) return false;
-    if(data.success === true || data.success === 'true') return true;
-    if(data.ok === true) return true;
-    return false;
-  }
-
-  function looksBlockedOrActivation(data, rawText, status){
-    var msg = '';
-    if(data) msg = String(data.message || data.error || data.Message || '');
-    msg = (msg + ' ' + String(rawText || '')).toLowerCase();
-    if(status === 403 || status === 503) return true;
-    return msg.indexOf('activat') !== -1
-      || msg.indexOf('confirm') !== -1
-      || msg.indexOf('check your email') !== -1
-      || msg.indexOf('just a moment') !== -1
-      || msg.indexOf('cf-mitigated') !== -1
-      || msg.indexOf('cloudflare') !== -1;
-  }
-
-  // Show success after FormSubmit redirects back
+  // After FormSubmit delivers, it redirects back here with ?mail=sent
   (function showReturnStatus(){
     try {
       var params = new URLSearchParams(window.location.search);
@@ -1916,25 +1875,13 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         params.delete('mail');
         var clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + '#contact';
         if(window.history && history.replaceState) history.replaceState(null, '', clean);
+        if(window.lenis){
+          var target = document.getElementById('contact');
+          if(target) lenis.scrollTo(target, { offset: -70 });
+        }
       }
     } catch(err){}
   })();
-
-  if(fallbackBtn){
-    fallbackBtn.addEventListener('click', function(){
-      var fields = readFields();
-      if(!fields.name || !fields.email || !fields.message){
-        setStatus('Fill name, email, and message first.', 'is-err');
-        return;
-      }
-      if(!validEmail(fields.email)){
-        setStatus('Please enter a valid email address.', 'is-err');
-        return;
-      }
-      openMailto(fields);
-      setStatus('Opening your mail app…', 'is-ok');
-    });
-  }
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
@@ -1963,49 +1910,10 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     setBusy(true);
     setStatus('Sending your message…');
 
-    // Try AJAX first (stays on page). If FormSubmit/Cloudflare blocks it,
-    // fall back to mailto so the visitor can still deliver the note.
-    fetch(ajaxEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        name: fields.name,
-        email: fields.email,
-        message: fields.message,
-        _replyto: fields.email,
-        _subject: 'Portfolio message from ' + fields.name,
-        _template: 'table',
-        _captcha: 'false'
-      })
-    })
-      .then(function(res){
-        return res.text().then(function(text){
-          var data = {};
-          try { data = text ? JSON.parse(text) : {}; } catch(err){ data = { raw: text }; }
-          return { ok: res.ok, status: res.status, data: data, text: text };
-        });
-      })
-      .then(function(result){
-        if(isSuccessPayload(result.data)){
-          setStatus('Sent. I will get back to you soon.', 'is-ok');
-          form.reset();
-          return;
-        }
-
-        // AJAX path blocked or unactivated — finish via mail app so it never dead-ends
-        setStatus('Opening your mail app to finish sending…', 'is-ok');
-        openMailto(fields);
-      })
-      .catch(function(){
-        setStatus('Opening your mail app to finish sending…', 'is-ok');
-        openMailto(fields);
-      })
-      .finally(function(){
-        setBusy(false);
-      });
+    // Native FormSubmit POST — delivers to inbox, then returns to this page.
+    // No mailto / mail app.
+    form.removeAttribute('target');
+    HTMLFormElement.prototype.submit.call(form);
   });
 })();
 
