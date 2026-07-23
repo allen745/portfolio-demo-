@@ -37,6 +37,12 @@
     backdrop-filter: none;
   }
   nav > * { pointer-events: auto; }
+  body.pd-open nav {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
   .nav-logo {
     display: inline-flex;
     align-items: center;
@@ -823,7 +829,7 @@
   }
 
   #project-detail {
-    position: fixed; inset: 0; z-index: 300;
+    position: fixed; inset: 0; z-index: 400;
     /* Solid themed plate — hides the portfolio page; animation lives ON TOP of this */
     background: var(--pd-bg, #0a0908);
     transform: translateY(100%);

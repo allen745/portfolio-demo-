@@ -727,6 +727,11 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var currentProjectId = null;
   var isChaining = false;
 
+  // Lift overlay to <body> so it isn't trapped under section stacking / site nav
+  if(detailEl && detailEl.parentElement !== document.body){
+    document.body.appendChild(detailEl);
+  }
+
   function hexToRgba(hex, alpha){
     var h = String(hex || '').replace('#','').trim();
     if(h.length === 3) h = h.split('').map(function(c){ return c + c; }).join('');
@@ -997,6 +1002,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
     detailEl.classList.add('open');
     detailEl.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('pd-open');
     document.body.style.overflow = 'hidden';
     if(window.lenis) lenis.stop();
     requestAnimationFrame(updateMax);
@@ -1006,6 +1012,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   function closeProject(){
     detailEl.classList.remove('open');
     detailEl.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('pd-open');
     document.body.style.overflow = '';
     if(window.lenis) lenis.start();
     // Reset fade state so the next open is never stuck invisible.
