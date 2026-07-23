@@ -601,7 +601,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "Vertice AI reads a student's progress before responding, no generic answers"
       ],
       tech: ["FastAPI","React.js","Azure OpenAI","Recharts","Microsoft Auth"],
-      theme: { bg:"#2b1d14", panel:"#3a2718", text:"#f3e9dd", muted:"#c9b8a8", border:"rgba(255,255,255,0.14)", accent:"#e8a25c" },
+      theme: { bg:"#1a120c", panel:"#2a1c14", text:"#f3e9dd", muted:"#c9b8a8", border:"rgba(255,255,255,0.14)", accent:"#e8a25c", accent2:"#60a5fa" },
       images: ["images/projects/vertex/1.jpg","images/projects/vertex/2.jpg","images/projects/vertex/3.jpg","images/projects/vertex/4.jpg","images/projects/vertex/5.jpg"],
       stories: [
         { title: "The Reframe", sub: "Most platforms give you a list. We give you a moving picture." },
@@ -620,7 +620,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "Built as a hands-on exhibit installation, not just a spec sheet"
       ],
       tech: ["Piezoelectric","PZT-5A/5H","Mechanical Design"],
-      theme: { bg:"#0f2018", panel:"#183526", text:"#eaf4ec", muted:"#a9c6b1", border:"rgba(255,255,255,0.14)", accent:"#4ade80" },
+      theme: { bg:"#0f2018", panel:"#183526", text:"#eaf4ec", muted:"#a9c6b1", border:"rgba(255,255,255,0.14)", accent:"#4ade80", accent2:"#fbbf24" },
       images: ["images/projects/patent/1.jpg","images/projects/patent/2.jpg","images/projects/patent/3.jpeg","images/projects/patent/4.jpg"],
       stories: [
         { title: "The Engineering", sub: "7-view technical model, working principle mapped in 4 steps." },
@@ -638,7 +638,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "Live at devmind-ai-topaz.vercel.app"
       ],
       tech: ["FastAPI","Groq","React.js","Vercel"],
-      theme: { bg:"#1c1c1e", panel:"#28282b", text:"#f0f0f0", muted:"#a8a8ac", border:"rgba(255,255,255,0.14)", accent:"#5eead4" },
+      theme: { bg:"#14102a", panel:"#221a3d", text:"#f0f0f0", muted:"#b4a8d4", border:"rgba(255,255,255,0.14)", accent:"#c084fc", accent2:"#5eead4" },
       images: ["images/projects/devmind/1.jpg","images/projects/devmind/2.png","images/projects/devmind/3.png","images/projects/devmind/4.png","images/projects/devmind/5.png","images/projects/devmind/6.png"],
       stories: [
         { title: "Sign In", sub: "Google OAuth, straight into the toolkit." },
@@ -658,7 +658,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "20+ REST API endpoints across auth, clients, documents, AI, and notices"
       ],
       tech: ["FastAPI","PostgreSQL","React.js","Groq/LLaMA-3.3"],
-      theme: { bg:"#ded8f9", panel:"#cfc7f3", text:"#251f47", muted:"#5c5480", border:"rgba(0,0,0,0.12)", accent:"#6c4fe0" },
+      theme: { bg:"#101a14", panel:"#1c2a20", text:"#eaf4ec", muted:"#a9c6b1", border:"rgba(255,255,255,0.14)", accent:"#3d8b6e", accent2:"#d4a574" },
       images: ["images/projects/casaas/1.jpg","images/projects/casaas/2.png","images/projects/casaas/3.png","images/projects/casaas/4.png","images/projects/casaas/5.png"],
       stories: [
         { title: "Sign In", sub: "JWT-secured login, built for CA workflows." },
@@ -677,7 +677,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "Submitted to the Reasoning Agents track — entry, not a placement"
       ],
       tech: ["FastAPI","Groq/LLaMA-3.3-70b","Microsoft Foundry IQ","GitHub REST API"],
-      theme: { bg:"#1a1442", panel:"#241b58", text:"#ece9ff", muted:"#b3a9e0", border:"rgba(255,255,255,0.14)", accent:"#8b7cf6" },
+      theme: { bg:"#1a1442", panel:"#241b58", text:"#ece9ff", muted:"#b3a9e0", border:"rgba(255,255,255,0.14)", accent:"#8b7cf6", accent2:"#22d3ee" },
       images: ["images/projects/devmindagent/1.png","images/projects/devmindagent/2.png","images/projects/devmindagent/3.png","images/projects/devmindagent/4.png"],
       stories: [
         { title: "Analysis Summary", sub: "A real repo scanned in seconds, health score 55/100." },
@@ -695,7 +695,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "4-module embedded AI advisory layer: offline-trained coefficients only, zero cloud dependency, zero impact on navigation firmware"
       ],
       tech: ["ESP32-S3","A* Pathfinding","RFID Localization","scikit-learn"],
-      theme: { bg:"#0a1428", panel:"#0f1c38", text:"#e6edf7", muted:"#93a4c2", border:"rgba(255,255,255,0.14)", accent:"#4d9fff" },
+      theme: { bg:"#0a1428", panel:"#0f1c38", text:"#e6edf7", muted:"#93a4c2", border:"rgba(255,255,255,0.14)", accent:"#4d9fff", accent2:"#38bdf8" },
       images: ["images/projects/trackbot/1.jpg","images/projects/trackbot/2.jpg","images/projects/trackbot/3.jpg"],
       stories: [
         { title: "The Architecture", sub: "Mecanum drive, RFID navigation, live telemetry, AI advisory, one ESP32-S3." },
@@ -712,7 +712,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "Addresses labour inefficiency in small-scale farming"
       ],
       tech: ["Arduino","Ultrasonic Sensing","Motor Control","IoT"],
-      theme: { bg:"#ede4d3", panel:"#e2d6bd", text:"#3a3226", muted:"#7a6f5c", border:"rgba(0,0,0,0.12)", accent:"#7c8f52" },
+      theme: { bg:"#1a1810", panel:"#2a2618", text:"#f3e9dd", muted:"#a89f88", border:"rgba(255,255,255,0.14)", accent:"#7c8f52", accent2:"#c4a574" },
       images: ["images/projects/autoseed/1.jpg","images/projects/autoseed/2.jpg"],
       stories: [
         { title: "Status: Running", sub: "12 seeds planted and counting, live on the onboard LCD." }
@@ -727,6 +727,11 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var currentProjectId = null;
   var isChaining = false;
 
+  // Lift overlay to <body> so it isn't trapped under section stacking / site nav
+  if(detailEl && detailEl.parentElement !== document.body){
+    document.body.appendChild(detailEl);
+  }
+
   function hexToRgba(hex, alpha){
     var h = String(hex || '').replace('#','').trim();
     if(h.length === 3) h = h.split('').map(function(c){ return c + c; }).join('');
@@ -735,17 +740,202 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
   }
 
+  function rgbToHex(r, g, b){
+    return '#' + [r, g, b].map(function(v){
+      var s = Math.max(0, Math.min(255, Math.round(v))).toString(16);
+      return s.length === 1 ? '0' + s : s;
+    }).join('');
+  }
+
+  function luminance(r, g, b){
+    return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  }
+
+  function saturateHex(hex, amount){
+    var h = String(hex || '').replace('#','');
+    if(h.length !== 6) return hex;
+    var r = parseInt(h.slice(0,2), 16) / 255;
+    var g = parseInt(h.slice(2,4), 16) / 255;
+    var b = parseInt(h.slice(4,6), 16) / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var l = (max + min) / 2;
+    var s = 0, hue = 0;
+    if(max !== min){
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if(max === r) hue = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+      else if(max === g) hue = ((b - r) / d + 2) / 6;
+      else hue = ((r - g) / d + 4) / 6;
+    }
+    s = Math.max(0, Math.min(1, s + amount));
+    function hue2rgb(p, q, t){
+      if(t < 0) t += 1;
+      if(t > 1) t -= 1;
+      if(t < 1/6) return p + (q - p) * 6 * t;
+      if(t < 1/2) return q;
+      if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    }
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    var p = 2 * l - q;
+    return rgbToHex(
+      hue2rgb(p, q, hue + 1/3) * 255,
+      hue2rgb(p, q, hue) * 255,
+      hue2rgb(p, q, hue - 1/3) * 255
+    );
+  }
+
+  // Pull dominant colors from the project cover so the overlay theme matches the image.
+  function sampleImagePalette(src, done){
+    if(!src){ done(null); return; }
+    var img = new Image();
+    img.decoding = 'async';
+    img.onload = function(){
+      try {
+        var size = 40;
+        var canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if(!ctx){ done(null); return; }
+        ctx.drawImage(img, 0, 0, size, size);
+        var data = ctx.getImageData(0, 0, size, size).data;
+        var buckets = {};
+        var dark = { r:0, g:0, b:0, n:0 };
+        var i, r, g, b, a, lum, key, sat, score;
+
+        for(i = 0; i < data.length; i += 4){
+          r = data[i]; g = data[i+1]; b = data[i+2]; a = data[i+3];
+          if(a < 140) continue;
+          lum = luminance(r, g, b);
+          if(lum < 0.12 || lum > 0.92){
+            if(lum < 0.35){ dark.r += r; dark.g += g; dark.b += b; dark.n++; }
+            continue;
+          }
+          // 5-bit quantize keeps similar hues together
+          key = (r >> 3) + ',' + (g >> 3) + ',' + (b >> 3);
+          sat = (Math.max(r,g,b) - Math.min(r,g,b)) / 255;
+          score = 1 + sat * 2.4 + (lum > 0.25 && lum < 0.75 ? 0.6 : 0);
+          if(!buckets[key]) buckets[key] = { r:0, g:0, b:0, n:0, score:0 };
+          buckets[key].r += r;
+          buckets[key].g += g;
+          buckets[key].b += b;
+          buckets[key].n += 1;
+          buckets[key].score += score;
+        }
+
+        var ranked = Object.keys(buckets).map(function(k){
+          var v = buckets[k];
+          var rr = v.r / v.n, gg = v.g / v.n, bb = v.b / v.n;
+          var sat = (Math.max(rr,gg,bb) - Math.min(rr,gg,bb)) / 255;
+          var lm = luminance(rr, gg, bb);
+          // Prefer colorful mid-tones for accents (not near-black / near-white UI chrome)
+          var accentScore = v.score * (0.55 + sat * 2.2) * (lm > 0.18 && lm < 0.82 ? 1.35 : 0.55);
+          return { r: rr, g: gg, b: bb, score: accentScore, n: v.n, sat: sat, lm: lm };
+        }).sort(function(a, b){ return b.score - a.score; });
+
+        if(!ranked.length){ done(null); return; }
+
+        function boostAccent(c){
+          // Lift dark/dull samples into a usable glow color
+          var rr = c.r, gg = c.g, bb = c.b;
+          var lm = luminance(rr, gg, bb);
+          if(lm < 0.35){
+            var lift = (0.48 - lm) * 255;
+            rr = Math.min(255, rr + lift);
+            gg = Math.min(255, gg + lift * 0.92);
+            bb = Math.min(255, bb + lift * 0.95);
+          }
+          return saturateHex(rgbToHex(rr, gg, bb), 0.28);
+        }
+
+        var primary = ranked[0];
+        // If top bucket is dull (cream/gray UI), promote a more saturated color
+        if(primary.sat < 0.18){
+          for(i = 1; i < ranked.length; i++){
+            if(ranked[i].sat > primary.sat + 0.08){ primary = ranked[i]; break; }
+          }
+        }
+        var secondary = ranked[1] || ranked[0];
+        for(i = 0; i < ranked.length; i++){
+          if(ranked[i] === primary) continue;
+          var dr = ranked[i].r - primary.r;
+          var dg = ranked[i].g - primary.g;
+          var db = ranked[i].b - primary.b;
+          if((dr*dr + dg*dg + db*db) > 70*70 && ranked[i].sat > 0.12){
+            secondary = ranked[i];
+            break;
+          }
+        }
+
+        var bgR = dark.n ? dark.r / dark.n : primary.r * 0.18;
+        var bgG = dark.n ? dark.g / dark.n : primary.g * 0.18;
+        var bgB = dark.n ? dark.b / dark.n : primary.b * 0.18;
+        // Tint the dark base with a hint of the primary accent
+        bgR = bgR * 0.72 + primary.r * 0.12;
+        bgG = bgG * 0.72 + primary.g * 0.12;
+        bgB = bgB * 0.72 + primary.b * 0.12;
+        if(luminance(bgR, bgG, bgB) > 0.38){
+          bgR *= 0.32; bgG *= 0.32; bgB *= 0.32;
+        }
+
+        var accent = boostAccent(primary);
+        var accent2 = boostAccent(secondary);
+        var bg = rgbToHex(bgR, bgG, bgB);
+        var panelR = Math.min(255, bgR + (primary.r - bgR) * 0.32);
+        var panelG = Math.min(255, bgG + (primary.g - bgG) * 0.32);
+        var panelB = Math.min(255, bgB + (primary.b - bgB) * 0.32);
+        var panel = rgbToHex(panelR, panelG, panelB);
+
+        done({
+          bg: bg,
+          panel: panel,
+          accent: accent,
+          accent2: accent2,
+          text: '#f2f4f8',
+          muted: '#a8b0bc',
+          border: 'rgba(255,255,255,0.14)'
+        });
+      } catch(err){
+        done(null);
+      }
+    };
+    img.onerror = function(){ done(null); };
+    img.src = src;
+  }
+
   function applyProjectTheme(th){
+    var accent2 = th.accent2 || th.accent;
     detailEl.style.setProperty('--pd-bg', th.bg);
     detailEl.style.setProperty('--pd-panel', th.panel);
     detailEl.style.setProperty('--pd-text', th.text);
     detailEl.style.setProperty('--pd-muted', th.muted);
     detailEl.style.setProperty('--pd-border', th.border);
     detailEl.style.setProperty('--pd-accent', th.accent);
-    // Translucent theme wash so the animated atmosphere shows through
-    detailEl.style.setProperty('--pd-bg-wash', hexToRgba(th.bg, 0.58));
-    detailEl.style.setProperty('--pd-accent-glow', hexToRgba(th.accent, 0.5));
-    detailEl.style.setProperty('--pd-accent-soft', hexToRgba(th.accent, 0.22));
+    // Opaque themed plate (hides page content) + glowing accents for the animation layer
+    detailEl.style.setProperty('--pd-bg-wash', th.bg);
+    detailEl.style.setProperty('--pd-accent-glow', hexToRgba(th.accent, 0.78));
+    detailEl.style.setProperty('--pd-accent-soft', hexToRgba(th.accent, 0.38));
+    detailEl.style.setProperty('--pd-accent2-glow', hexToRgba(accent2, 0.68));
+    detailEl.style.setProperty('--pd-accent2-soft', hexToRgba(accent2, 0.32));
+    detailEl.style.setProperty('--pd-base-a', th.bg);
+    detailEl.style.setProperty('--pd-base-b', th.panel);
+    detailEl.style.setProperty('--pd-base-c', th.bg);
+    detailEl.style.setProperty('--pd-sweep', hexToRgba(th.accent, 0.14));
+    detailEl.dataset.themeReady = '1';
+  }
+
+  function mergeTheme(base, sampled){
+    if(!sampled) return base;
+    return {
+      bg: sampled.bg || base.bg,
+      panel: sampled.panel || base.panel,
+      text: sampled.text || base.text,
+      muted: sampled.muted || base.muted,
+      border: sampled.border || base.border,
+      accent: sampled.accent || base.accent,
+      accent2: sampled.accent2 || sampled.accent || base.accent
+    };
   }
 
   function buildTrack(data){
@@ -780,6 +970,18 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     }
   }
 
+  function themeFromCover(data, apply){
+    var fallback = data.theme;
+    applyProjectTheme(fallback);
+    var cover = (data.images && data.images[0]) || null;
+    sampleImagePalette(cover, function(sampled){
+      // Ignore stale samples if the user already switched projects
+      if(currentProjectId && projects[currentProjectId] !== data) return;
+      applyProjectTheme(mergeTheme(fallback, sampled));
+      if(typeof apply === 'function') apply();
+    });
+  }
+
   function openProject(id){
     var data = projects[id];
     if(!data) return;
@@ -796,11 +998,11 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     track.style.transform = 'translateX(0px)';
     track.style.opacity = '1';
 
-    var th = data.theme;
-    applyProjectTheme(th);
+    themeFromCover(data);
 
     detailEl.classList.add('open');
     detailEl.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('pd-open');
     document.body.style.overflow = 'hidden';
     if(window.lenis) lenis.stop();
     requestAnimationFrame(updateMax);
@@ -810,6 +1012,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   function closeProject(){
     detailEl.classList.remove('open');
     detailEl.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('pd-open');
     document.body.style.overflow = '';
     if(window.lenis) lenis.start();
     // Reset fade state so the next open is never stuck invisible.
@@ -856,8 +1059,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       currentProjectId = id;
       buildTrack(data);
 
-      var th = data.theme;
-      applyProjectTheme(th);
+      themeFromCover(data);
 
       updateMax();
       targetX = direction === 1 ? Math.max(0, Math.min(maxX, overflow)) : Math.max(0, maxX - overflow);
