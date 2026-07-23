@@ -1,0 +1,21 @@
+{
+  "name": "Allen Christian — ASC Portfolio",
+  "short_name": "ASC Portfolio",
+  "description": "AI & Data Science portfolio — projects, patent, and contact.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080c12",
+  "theme_color": "#080c12",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "og-image.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg"
+    }
+  ]
+}
