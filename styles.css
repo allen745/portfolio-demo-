@@ -1883,7 +1883,8 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transform: scale(2.35);
+  transform: scale(0.28);
+  opacity: 0.95;
   transform-origin: center center;
   will-change: transform, opacity;
   pointer-events: none;
