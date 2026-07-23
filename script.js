@@ -1818,7 +1818,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Thank You — mail form delivers to inbox via FormSubmit (+ mailto fallback)
+// Thank You — mail form: FormSubmit native POST + mailto fallback
 (function(){
   var form = document.getElementById('tyMailForm');
   if(!form) return;
@@ -1828,16 +1828,14 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var statusEl = document.getElementById('tyMailStatus');
   var setupEl = document.getElementById('tyMailSetup');
   var labelEl = submitBtn ? submitBtn.querySelector('.ty-mail-send-label') : null;
-  var endpoint = 'https://formsubmit.co/ajax/allenschristian07@gmail.com';
+  var nextInput = document.getElementById('tyMailNext');
+  var subjectInput = document.getElementById('tyMailSubject');
+  var replyInput = document.getElementById('tyMailReplyTo');
   var inbox = 'allenschristian07@gmail.com';
+  var ajaxEndpoint = 'https://formsubmit.co/ajax/allenschristian07@gmail.com';
   var sending = false;
-  var activatedKey = 'tyMailFormActivated';
 
-  if(setupEl && window.localStorage && localStorage.getItem(activatedKey) === '1'){
-    setupEl.classList.add('is-hidden');
-    setupEl.hidden = true;
-  } else if(setupEl){
-    // Never show owner-facing activation copy to visitors by default.
+  if(setupEl){
     setupEl.classList.add('is-hidden');
     setupEl.hidden = true;
   }
@@ -1868,6 +1866,13 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     };
   }
 
+  function returnUrl(){
+    var url = new URL(window.location.href);
+    url.searchParams.set('mail', 'sent');
+    url.hash = 'contact';
+    return url.toString();
+  }
+
   function openMailto(fields){
     var subject = 'Portfolio message from ' + (fields.name || 'visitor');
     var body = [
@@ -1889,16 +1894,31 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     return false;
   }
 
-  function looksLikeActivation(data, rawText){
+  function looksBlockedOrActivation(data, rawText, status){
     var msg = '';
-    if(data){
-      msg = String(data.message || data.error || data.Message || '');
-    }
+    if(data) msg = String(data.message || data.error || data.Message || '');
     msg = (msg + ' ' + String(rawText || '')).toLowerCase();
+    if(status === 403 || status === 503) return true;
     return msg.indexOf('activat') !== -1
       || msg.indexOf('confirm') !== -1
-      || msg.indexOf('check your email') !== -1;
+      || msg.indexOf('check your email') !== -1
+      || msg.indexOf('just a moment') !== -1
+      || msg.indexOf('cf-mitigated') !== -1
+      || msg.indexOf('cloudflare') !== -1;
   }
+
+  // Show success after FormSubmit redirects back
+  (function showReturnStatus(){
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if(params.get('mail') === 'sent'){
+        setStatus('Sent. I will get back to you soon.', 'is-ok');
+        params.delete('mail');
+        var clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + '#contact';
+        if(window.history && history.replaceState) history.replaceState(null, '', clean);
+      }
+    } catch(err){}
+  })();
 
   if(fallbackBtn){
     fallbackBtn.addEventListener('click', function(){
@@ -1936,23 +1956,30 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       return;
     }
 
+    if(nextInput) nextInput.value = returnUrl();
+    if(subjectInput) subjectInput.value = 'Portfolio message from ' + fields.name;
+    if(replyInput) replyInput.value = fields.email;
+
     setBusy(true);
     setStatus('Sending your message…');
 
-    var body = new FormData();
-    body.append('name', fields.name);
-    body.append('email', fields.email);
-    body.append('message', fields.message);
-    body.append('_replyto', fields.email);
-    body.append('_subject', 'Portfolio message from ' + fields.name);
-    body.append('_template', 'table');
-    body.append('_captcha', 'false');
-    body.append('_honey', '');
-
-    fetch(endpoint, {
+    // Try AJAX first (stays on page). If FormSubmit/Cloudflare blocks it,
+    // fall back to mailto so the visitor can still deliver the note.
+    fetch(ajaxEndpoint, {
       method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: body
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        name: fields.name,
+        email: fields.email,
+        message: fields.message,
+        _replyto: fields.email,
+        _subject: 'Portfolio message from ' + fields.name,
+        _template: 'table',
+        _captcha: 'false'
+      })
     })
       .then(function(res){
         return res.text().then(function(text){
@@ -1962,26 +1989,18 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         });
       })
       .then(function(result){
-        var data = result.data || {};
-        var activation = looksLikeActivation(data, result.text);
-
-        if(activation){
-          setStatus('Could not deliver automatically. Use “Open in Mail app”.', 'is-err');
-          return;
-        }
-
-        if(isSuccessPayload(data)){
-          if(window.localStorage) localStorage.setItem(activatedKey, '1');
+        if(isSuccessPayload(result.data)){
           setStatus('Sent. I will get back to you soon.', 'is-ok');
           form.reset();
           return;
         }
 
-        // Do not treat bare HTTP 200 as success — FormSubmit often returns 200 for activation.
-        setStatus('Could not deliver automatically. Use “Open in Mail app”.', 'is-err');
+        // AJAX path blocked or unactivated — finish via mail app so it never dead-ends
+        setStatus('Opening your mail app to finish sending…', 'is-ok');
+        openMailto(fields);
       })
       .catch(function(){
-        setStatus('Network issue. Opening your mail app instead…', 'is-err');
+        setStatus('Opening your mail app to finish sending…', 'is-ok');
         openMailto(fields);
       })
       .finally(function(){
