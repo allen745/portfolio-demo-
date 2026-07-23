@@ -31,18 +31,33 @@ if (hasLenis) {
   window.lenis = null;
 }
 
-// Page-load intro — Allen mark zooms in (small → big); count lower-left; then site opens
+// Page-load intro — Allen grows until it fills the screen, then dashboard opens from center
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
   var countEl = pre.querySelector('.preloader-count');
   var fillEl = pre.querySelector('.preloader-fill');
   var signEl = pre.querySelector('.preloader-sign');
-  var counter = { val: 0 };
+  var bloomEl = pre.querySelector('.preloader-bloom');
+  var meterEl = pre.querySelector('.preloader-meter');
+  var hero = document.getElementById('hero');
+  var counter = { val: 0, hole: 0 };
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setHole(pct){
+    // Transparent hole grows from center → site/dashboard shows through
+    var p = Math.max(0, Math.min(160, pct));
+    var grad = 'radial-gradient(circle at 50% 50%, transparent ' + p + '%, #000 ' + (p + 0.5) + '%)';
+    pre.style.webkitMaskImage = grad;
+    pre.style.maskImage = grad;
+  }
 
   function finishIntro(){
     if(pre && pre.parentNode) pre.remove();
+    if(hero){
+      hero.classList.remove('preloader-center-load');
+      gsap.set(hero, { clearProps: 'transform,opacity' });
+    }
     if(window.lenis) lenis.start();
     if(hasGsap && hasScrollTrigger) ScrollTrigger.refresh();
   }
@@ -57,16 +72,23 @@ if (hasLenis) {
 
   var tl = gsap.timeline({ onComplete: finishIntro });
 
+  if(hero){
+    hero.classList.add('preloader-center-load');
+    gsap.set(hero, { scale: reduceMotion ? 1 : 0.72, opacity: reduceMotion ? 1 : 0.35, transformOrigin: '50% 50%' });
+  }
+
   if(signEl && !reduceMotion){
-    gsap.set(signEl, { scale: 0.28, opacity: 0.9 });
+    gsap.set(signEl, { scale: 0.16, opacity: 0.95 });
   } else if(signEl){
     gsap.set(signEl, { scale: 1, opacity: 1 });
   }
+  if(bloomEl) gsap.set(bloomEl, { opacity: 0, scale: 0.55 });
+  setHole(0);
 
-  // Count up in the corner while the Allen mark zooms in (small → big)
+  // 1) Count up while sign starts growing
   tl.to(counter, {
     val: 100,
-    duration: reduceMotion ? 0.2 : 1.2,
+    duration: reduceMotion ? 0.2 : 0.95,
     ease: 'power2.inOut',
     onUpdate: function(){
       var v = Math.round(counter.val);
@@ -77,32 +99,59 @@ if (hasLenis) {
 
   if(signEl && !reduceMotion){
     tl.to(signEl, {
-      scale: 1.08,
+      scale: 1.15,
       opacity: 1,
-      duration: 1.2,
-      ease: 'power3.out'
+      duration: 0.95,
+      ease: 'power2.out'
     }, 0);
-    tl.to(signEl, {
-      scale: 1,
-      duration: 0.28,
-      ease: 'power2.inOut'
-    }, '>-0.02');
-    // Soft exit of the mark as the loader lifts
-    tl.to(signEl, {
-      opacity: 0,
-      scale: 1.12,
-      duration: 0.45,
-      ease: 'power2.in'
-    }, '>-0.05');
   }
 
-  tl.to(pre, {
-    yPercent: -100,
-    duration: 0.7,
-    ease: 'power4.inOut'
-  }, '-=0.28');
+  // 2) Sign goes BIG BIG BIG — covers the whole display; meter fades away
+  if(!reduceMotion){
+    if(meterEl){
+      tl.to(meterEl, { opacity: 0, duration: 0.35, ease: 'power2.in' }, '>-0.15');
+    }
+    if(bloomEl){
+      tl.to(bloomEl, {
+        opacity: 1,
+        scale: 1.35,
+        duration: 0.85,
+        ease: 'power2.inOut'
+      }, '<-0.1');
+    }
+    if(signEl){
+      tl.to(signEl, {
+        scale: 18,
+        duration: 1.05,
+        ease: 'power3.in'
+      }, '<');
+    }
 
-  // Reveal hero once the loader is lifting
+    // 3) From center: punch open to the dashboard/hero
+    tl.to(counter, {
+      hole: 160,
+      duration: 0.95,
+      ease: 'power3.inOut',
+      onUpdate: function(){ setHole(counter.hole); }
+    }, '>-0.12');
+
+    if(hero){
+      tl.to(hero, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.95,
+        ease: 'power3.out'
+      }, '<');
+    }
+
+    if(signEl){
+      tl.to(signEl, { opacity: 0, duration: 0.45, ease: 'power2.in' }, '<+0.15');
+    }
+  } else {
+    tl.to(pre, { opacity: 0, duration: 0.35 }, '>-0.05');
+  }
+
+  // Hero type/content reveal as the center open finishes
   tl.fromTo('.hb-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55');
   tl.fromTo('.hb-letter', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out', stagger: 0.05 }, '-=0.5');
   tl.fromTo('.hb-orb', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.7)' }, '-=0.55');
