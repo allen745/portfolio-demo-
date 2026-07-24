@@ -37,6 +37,7 @@ if (hasLenis) {
   if(!pre) return;
   var starsCanvas = document.getElementById('preloaderStars');
   var nebulaEl = pre.querySelector('.preloader-nebula');
+  var creditEl = pre.querySelector('.preloader-credit');
   var titleEl = pre.querySelector('.preloader-title-line');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var starRaf = 0;
@@ -244,6 +245,7 @@ if (hasLenis) {
   starField = buildStarfield();
 
   if(!hasGsap){
+    if(creditEl) creditEl.style.opacity = '1';
     if(titleEl) titleEl.style.opacity = '1';
     if(starsCanvas) starsCanvas.style.opacity = '1';
     if(nebulaEl) nebulaEl.style.opacity = '1';
@@ -264,7 +266,7 @@ if (hasLenis) {
   });
 
   if(reduceMotion){
-    gsap.set([starsCanvas, nebulaEl, titleEl], { opacity: 1 });
+    gsap.set([starsCanvas, nebulaEl, creditEl, titleEl], { opacity: 1 });
     tl.to(pre, { opacity: 0, duration: 0.35 }, 0.4);
   } else {
     // 1) Space awakens — slow Ken Burns on the starfield
@@ -286,7 +288,16 @@ if (hasLenis) {
       }, 0.15);
     }
 
-    // 2) Title fades in — no scale grow; tracking settles wide → final
+    // 2) Cinematic credit, then title — no scale grow; tracking settles wide → final
+    if(creditEl){
+      gsap.set(creditEl, { opacity: 0, y: 8 });
+      tl.to(creditEl, {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: 'power2.out'
+      }, 0.45);
+    }
     if(titleEl){
       var wideTrack = window.matchMedia('(max-width: 700px)').matches ? '0.42em' : '0.72em';
       var finalTrack = window.matchMedia('(max-width: 700px)').matches ? '0.32em' : '0.55em';
@@ -301,16 +312,23 @@ if (hasLenis) {
         textIndent: finalTrack,
         duration: 2.6,
         ease: 'power2.out'
-      }, 0.55);
+      }, 0.7);
     }
 
     // 3) Hold on the title card, then soft cinematic dissolve
     tl.to({}, { duration: 1.15 });
+    if(creditEl){
+      tl.to(creditEl, {
+        opacity: 0,
+        duration: 1.0,
+        ease: 'power2.inOut'
+      }, '>-0.05');
+    }
     tl.to(titleEl, {
       opacity: 0,
       duration: 1.1,
       ease: 'power2.inOut'
-    }, '>-0.05');
+    }, '<');
     if(starsCanvas){
       tl.to(starsCanvas, {
         opacity: 0,
