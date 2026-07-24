@@ -2107,23 +2107,26 @@
 }
 .preloader-nebula {
   position: absolute;
-  inset: -10%;
+  inset: -12%;
   background:
-    radial-gradient(ellipse 70% 28% at 50% 48%, rgba(160, 170, 190, 0.16) 0%, transparent 62%),
-    radial-gradient(ellipse 90% 40% at 50% 52%, rgba(90, 100, 130, 0.1) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 22% at 42% 50%, rgba(200, 210, 230, 0.06) 0%, transparent 55%);
+    radial-gradient(ellipse 88% 34% at 50% 50%, rgba(95, 75, 145, 0.22) 0%, transparent 68%),
+    radial-gradient(ellipse 110% 42% at 48% 52%, rgba(55, 70, 130, 0.14) 0%, transparent 72%),
+    radial-gradient(ellipse 60% 24% at 58% 48%, rgba(150, 140, 190, 0.1) 0%, transparent 58%),
+    radial-gradient(ellipse 45% 18% at 38% 52%, rgba(120, 160, 210, 0.07) 0%, transparent 55%);
   opacity: 0;
-  filter: blur(2px);
-  animation: preloaderNebulaDrift 28s ease-in-out infinite alternate;
+  filter: blur(6px) saturate(1.05);
+  mix-blend-mode: screen;
+  animation: preloaderNebulaDrift 32s ease-in-out infinite alternate;
   will-change: opacity, transform;
 }
 .preloader-vignette {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 35%, rgba(0, 0, 0, 0.55) 100%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, transparent 22%, transparent 78%, rgba(0, 0, 0, 0.55) 100%);
-  opacity: 0.9;
+    radial-gradient(ellipse 75% 65% at 50% 50%, transparent 28%, rgba(0, 0, 0, 0.62) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, transparent 18%, transparent 82%, rgba(0, 0, 0, 0.6) 100%);
+  opacity: 1;
+  pointer-events: none;
 }
 .preloader-title {
   position: relative;
