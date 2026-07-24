@@ -2523,13 +2523,15 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// Hero opening — icy landscape plate + slow Ken Burns
+// Hero opening — icy landscape plate + dissolve ash + Ken Burns
 (function(){
   var hero = document.getElementById('hero');
   var plate = document.getElementById('heroPlate');
+  var ash = document.getElementById('heroAsh');
   if(!hero || !plate) return;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ashRaf = 0;
 
   function showPlate(){
     plate.classList.add('is-ready');
@@ -2538,11 +2540,74 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   if(plate.complete) showPlate();
   else plate.addEventListener('load', showPlate);
 
+  // Title bottom dissolve — ash/particle fall matching mock B
+  function bootAsh(){
+    if(!ash || reduceMotion) return;
+    var ctx = ash.getContext('2d');
+    if(!ctx) return;
+    var particles = [];
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize(){
+      var rect = ash.getBoundingClientRect();
+      var w = Math.max(320, Math.floor(rect.width));
+      var h = Math.max(100, Math.floor(rect.height));
+      ash.width = Math.floor(w * dpr);
+      ash.height = Math.floor(h * dpr);
+      ash.style.width = w + 'px';
+      ash.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      particles = [];
+      var count = Math.min(220, Math.floor(w * 0.28));
+      for(var i = 0; i < count; i++){
+        particles.push({
+          x: w * (0.08 + Math.random() * 0.84),
+          y: h * (0.05 + Math.random() * 0.35),
+          r: 0.4 + Math.random() * 1.6,
+          a: 0.15 + Math.random() * 0.55,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: 0.15 + Math.random() * 0.55,
+          life: Math.random()
+        });
+      }
+      return { w: w, h: h };
+    }
+
+    var size = resize();
+    window.addEventListener('resize', function(){ size = resize(); });
+
+    function draw(){
+      var w = size.w;
+      var h = size.h;
+      ctx.clearRect(0, 0, w, h);
+      for(var i = 0; i < particles.length; i++){
+        var p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life += 0.004;
+        if(p.y > h * 0.95 || p.life > 1){
+          p.x = w * (0.1 + Math.random() * 0.8);
+          p.y = h * (0.02 + Math.random() * 0.2);
+          p.life = 0;
+        }
+        var fade = Math.max(0, 1 - p.life);
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(210,218,230,' + (p.a * fade) + ')';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ashRaf = requestAnimationFrame(draw);
+    }
+    ashRaf = requestAnimationFrame(draw);
+  }
+
+  bootAsh();
+
   if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
 
   gsap.to(plate, {
-    scale: 1.18,
-    yPercent: 4,
+    scale: 1.16,
+    yPercent: 3,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
@@ -2553,8 +2618,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 
   gsap.to('.hero-mist', {
-    opacity: 0.55,
-    yPercent: -8,
+    opacity: 0.7,
+    yPercent: -6,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
