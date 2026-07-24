@@ -338,14 +338,14 @@
     width: 108%;
     height: 108%;
     object-fit: cover;
-    object-position: center 42%;
+    object-position: center 55%;
     transform: scale(1.06);
-    filter: contrast(1.05) saturate(0.5) brightness(0.78);
+    filter: contrast(1.04) saturate(0.38) brightness(0.92);
     will-change: transform;
   }
   .hero-plate-fallback {
     z-index: 0;
-    background: #02040a url('images/hero-ice-landscape.jpg') center 42% / cover no-repeat;
+    background: #02040a url('images/hero-ice-landscape.jpg') center 55% / cover no-repeat;
   }
   .hero-plate {
     z-index: 1;
@@ -363,18 +363,18 @@
     position: absolute;
     left: -8%;
     right: -8%;
-    top: 38%;
-    height: 36%;
+    top: 34%;
+    height: 42%;
     z-index: 2;
     background:
       linear-gradient(180deg,
         transparent 0%,
-        rgba(8, 10, 14, 0.35) 28%,
-        rgba(4, 6, 10, 0.72) 48%,
-        rgba(4, 6, 10, 0.55) 62%,
+        rgba(220, 228, 240, 0.08) 22%,
+        rgba(12, 16, 22, 0.42) 48%,
+        rgba(8, 12, 18, 0.35) 62%,
         transparent 100%),
-      radial-gradient(ellipse 90% 55% at 50% 50%, rgba(20, 28, 40, 0.55) 0%, transparent 72%);
-    filter: blur(14px);
+      radial-gradient(ellipse 95% 60% at 50% 48%, rgba(200, 210, 225, 0.12) 0%, transparent 70%);
+    filter: blur(16px);
     opacity: 1;
     pointer-events: none;
   }
@@ -383,13 +383,13 @@
     inset: 0;
     z-index: 3;
     background:
-      linear-gradient(180deg, rgba(2, 4, 8, 0.55) 0%, transparent 22%, transparent 55%, rgba(2, 4, 8, 0.78) 100%);
+      linear-gradient(180deg, rgba(2, 4, 8, 0.38) 0%, transparent 24%, transparent 58%, rgba(2, 4, 8, 0.55) 100%);
   }
   .hero-grain {
     position: absolute;
     inset: 0;
     z-index: 4;
-    opacity: 0.32;
+    opacity: 0.28;
     mix-blend-mode: soft-light;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     animation: heroGrain 0.4s steps(2) infinite;
@@ -403,8 +403,8 @@
     inset: 0;
     z-index: 5;
     background:
-      radial-gradient(ellipse 68% 58% at 50% 46%, transparent 8%, rgba(0, 0, 0, 0.45) 52%, rgba(0, 0, 0, 0.92) 100%),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0%, transparent 16%, transparent 84%, rgba(0, 0, 0, 0.55) 100%);
+      radial-gradient(ellipse 72% 62% at 50% 48%, transparent 12%, rgba(0, 0, 0, 0.32) 55%, rgba(0, 0, 0, 0.86) 100%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.42) 0%, transparent 18%, transparent 82%, rgba(0, 0, 0, 0.42) 100%);
   }
 
   @media (prefers-reduced-motion: reduce) {
