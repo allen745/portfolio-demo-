@@ -31,142 +31,182 @@ if (hasLenis) {
   window.lenis = null;
 }
 
-// Page-load intro — smooth Allen grow → cover → center reveal (GPU-friendly)
+// Page-load intro — Interstellar title card (starfield + cinematic fade)
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
-  var countEl = pre.querySelector('.preloader-count');
-  var fillEl = pre.querySelector('.preloader-fill');
-  var signEl = pre.querySelector('.preloader-sign');
-  var coverEl = pre.querySelector('.preloader-cover');
-  var meterEl = pre.querySelector('.preloader-meter');
+  var starsCanvas = document.getElementById('preloaderStars');
+  var nebulaEl = pre.querySelector('.preloader-nebula');
+  var titleEl = pre.querySelector('.preloader-title-line');
   var hero = document.getElementById('hero');
-  var counter = { val: 0 };
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var starRaf = 0;
+  var starField = null;
 
   function finishIntro(){
+    if(starRaf) cancelAnimationFrame(starRaf);
+    starRaf = 0;
     if(pre && pre.parentNode) pre.remove();
-    if(hero){
-      hero.classList.remove('preloader-center-load');
-      if(hasGsap) gsap.set(hero, { clearProps: 'transform,opacity' });
-    }
     if(window.lenis) lenis.start();
     if(hasGsap && hasScrollTrigger) ScrollTrigger.refresh();
   }
 
+  function buildStarfield(){
+    if(!starsCanvas || reduceMotion) return null;
+    var ctx = starsCanvas.getContext('2d');
+    if(!ctx) return null;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var stars = [];
+    var w = 0;
+    var h = 0;
+
+    function resize(){
+      w = window.innerWidth;
+      h = window.innerHeight;
+      starsCanvas.width = Math.floor(w * dpr);
+      starsCanvas.height = Math.floor(h * dpr);
+      starsCanvas.style.width = w + 'px';
+      starsCanvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var count = Math.min(280, Math.floor((w * h) / 4500));
+      stars = [];
+      for(var i = 0; i < count; i++){
+        stars.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 1.35 + 0.2,
+          a: Math.random() * 0.55 + 0.25,
+          tw: Math.random() * Math.PI * 2,
+          sp: 0.4 + Math.random() * 1.2
+        });
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    var t0 = performance.now();
+    function draw(now){
+      var t = (now - t0) / 1000;
+      ctx.clearRect(0, 0, w, h);
+      // faint galactic band
+      var band = ctx.createLinearGradient(0, h * 0.35, 0, h * 0.65);
+      band.addColorStop(0, 'rgba(0,0,0,0)');
+      band.addColorStop(0.5, 'rgba(120,130,155,0.07)');
+      band.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = band;
+      ctx.fillRect(0, 0, w, h);
+
+      for(var i = 0; i < stars.length; i++){
+        var s = stars[i];
+        var twinkle = 0.55 + 0.45 * Math.sin(t * s.sp + s.tw);
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(230,235,245,' + (s.a * twinkle) + ')';
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      starRaf = requestAnimationFrame(draw);
+    }
+    starRaf = requestAnimationFrame(draw);
+
+    return {
+      destroy: function(){
+        window.removeEventListener('resize', resize);
+        if(starRaf) cancelAnimationFrame(starRaf);
+      }
+    };
+  }
+
+  starField = buildStarfield();
+
   if(!hasGsap){
-    if(countEl) countEl.textContent = '100';
-    if(fillEl) fillEl.style.width = '100%';
-    if(signEl) signEl.style.transform = 'scale(1)';
-    setTimeout(finishIntro, 240);
+    if(titleEl) titleEl.style.opacity = '1';
+    if(starsCanvas) starsCanvas.style.opacity = '1';
+    if(nebulaEl) nebulaEl.style.opacity = '1';
+    setTimeout(function(){
+      if(starField) starField.destroy();
+      finishIntro();
+    }, reduceMotion ? 200 : 2200);
     return;
   }
 
-  // Prefer compositor-friendly transforms only (no per-frame mask writes)
   gsap.ticker.lagSmoothing(500, 33);
   var tl = gsap.timeline({
     defaults: { force3D: true, ease: 'power2.out' },
-    onComplete: finishIntro
+    onComplete: function(){
+      if(starField) starField.destroy();
+      finishIntro();
+    }
   });
 
-  if(hero){
-    hero.classList.add('preloader-center-load');
-    gsap.set(hero, {
-      scale: reduceMotion ? 1 : 0.86,
-      opacity: reduceMotion ? 1 : 0.25,
-      transformOrigin: '50% 50%',
-      force3D: true
-    });
-  }
-
-  if(signEl){
-    gsap.set(signEl, {
-      scale: reduceMotion ? 1 : 0.18,
-      opacity: 1,
-      force3D: true
-    });
-  }
-  if(coverEl){
-    gsap.set(coverEl, { scale: 0, opacity: 0, force3D: true });
-  }
-
-  // 1) Corner count + Allen grows small → readable big
-  tl.to(counter, {
-    val: 100,
-    duration: reduceMotion ? 0.18 : 0.85,
-    ease: 'power2.inOut',
-    onUpdate: function(){
-      var v = Math.round(counter.val);
-      if(countEl) countEl.textContent = v;
-      if(fillEl) fillEl.style.width = v + '%';
-    }
-  }, 0);
-
-  if(signEl && !reduceMotion){
-    tl.to(signEl, {
-      scale: 1.12,
-      duration: 0.85,
-      ease: 'power3.out'
-    }, 0);
-  }
-
   if(reduceMotion){
-    tl.to(pre, { opacity: 0, duration: 0.3 }, '>-0.02');
+    gsap.set([starsCanvas, nebulaEl, titleEl], { opacity: 1 });
+    tl.to(pre, { opacity: 0, duration: 0.35 }, 0.4);
   } else {
-    // 2) Cover whole display with expanding circle + sign keeps growing
-    if(meterEl){
-      tl.to(meterEl, { opacity: 0, duration: 0.28, ease: 'power2.in' }, '>-0.08');
-    }
-    if(coverEl){
-      tl.to(coverEl, {
-        scale: 1,
+    // 1) Space awakens — slow Ken Burns on the starfield
+    if(starsCanvas){
+      gsap.set(starsCanvas, { opacity: 0, scale: 1.12 });
+      tl.to(starsCanvas, {
         opacity: 1,
-        duration: 0.7,
-        ease: 'power3.inOut'
-      }, '<-0.05');
+        scale: 1,
+        duration: 2.4,
+        ease: 'power1.out'
+      }, 0);
     }
-    if(signEl){
-      tl.to(signEl, {
-        scale: 3.4,
-        duration: 0.7,
-        ease: 'power3.in'
-      }, '<');
+    if(nebulaEl){
+      gsap.set(nebulaEl, { opacity: 0 });
+      tl.to(nebulaEl, {
+        opacity: 1,
+        duration: 2.2,
+        ease: 'power1.out'
+      }, 0.15);
     }
 
-    // 3) From center: cover shrinks away while dashboard scales up
-    if(coverEl){
-      tl.to(coverEl, {
-        scale: 0,
-        duration: 0.75,
-        ease: 'power3.inOut'
-      }, '>-0.02');
-    }
-    if(signEl){
-      tl.to(signEl, {
+    // 2) Title fades in — no scale grow; tracking settles wide → final
+    if(titleEl){
+      var wideTrack = window.matchMedia('(max-width: 700px)').matches ? '0.42em' : '0.72em';
+      var finalTrack = window.matchMedia('(max-width: 700px)').matches ? '0.32em' : '0.55em';
+      gsap.set(titleEl, {
         opacity: 0,
-        scale: 4.2,
-        duration: 0.55,
-        ease: 'power2.in'
+        letterSpacing: wideTrack,
+        textIndent: wideTrack
+      });
+      tl.to(titleEl, {
+        opacity: 1,
+        letterSpacing: finalTrack,
+        textIndent: finalTrack,
+        duration: 2.6,
+        ease: 'power2.out'
+      }, 0.55);
+    }
+
+    // 3) Hold on the title card, then soft cinematic dissolve
+    tl.to({}, { duration: 1.15 });
+    tl.to(titleEl, {
+      opacity: 0,
+      duration: 1.1,
+      ease: 'power2.inOut'
+    }, '>-0.05');
+    if(starsCanvas){
+      tl.to(starsCanvas, {
+        opacity: 0,
+        scale: 1.06,
+        duration: 1.25,
+        ease: 'power2.inOut'
       }, '<');
+    }
+    if(nebulaEl){
+      tl.to(nebulaEl, { opacity: 0, duration: 1.1, ease: 'power2.inOut' }, '<');
     }
     tl.to(pre, {
       opacity: 0,
-      duration: 0.45,
+      duration: 0.85,
       ease: 'power2.inOut'
-    }, '<+0.2');
-
-    if(hero){
-      tl.to(hero, {
-        scale: 1,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out'
-      }, '<-0.55');
-    }
+    }, '-=0.55');
   }
 
-  // Hero type reveal (lighter overlap, still cinematic)
-  tl.fromTo('.hb-eyebrow', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, '-=0.45');
+  // Hero type reveal after the title card dissolves
+  tl.fromTo('.hb-eyebrow', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, '-=0.35');
   tl.fromTo('.hb-letter', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power4.out', stagger: 0.035 }, '-=0.4');
   tl.fromTo('.hb-lastname', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, '-=0.4');
   tl.fromTo('.hb-role', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3');
