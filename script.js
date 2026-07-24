@@ -330,14 +330,19 @@ if (hasLenis) {
   }
 
   // Hero type reveal after the title card dissolves
-  tl.fromTo('.hb-eyebrow', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, '-=0.35');
-  tl.fromTo('.hb-letter', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power4.out', stagger: 0.035 }, '-=0.4');
-  tl.fromTo('.hb-lastname', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, '-=0.4');
-  tl.fromTo('.hb-role', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3');
-  tl.fromTo('.hb-kicker', { opacity: 0 }, { opacity: 1, duration: 0.4 }, '-=0.25');
-  tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.45 }, '-=0.2');
-  tl.fromTo('.hero-letterbox span', { scaleY: 1.35 }, { scaleY: 1, duration: 0.85, ease: 'power3.out' }, '-=0.85');
-  tl.fromTo('.hero-video', { scale: 1.18 }, { scale: 1.12, duration: 1.6, ease: 'power2.out' }, '-=1.1');
+  tl.fromTo('.hb-kicker', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.35');
+  tl.fromTo('.hb-title-text', {
+    opacity: 0,
+    letterSpacing: window.matchMedia('(max-width: 700px)').matches ? '0.36em' : '0.62em'
+  }, {
+    opacity: 1,
+    letterSpacing: window.matchMedia('(max-width: 700px)').matches ? '0.22em' : '0.42em',
+    duration: 1.4,
+    ease: 'power2.out'
+  }, '-=0.45');
+  tl.fromTo('.hb-role', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.7');
+  tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.35');
+  tl.fromTo('.hero-plate', { scale: 1.14 }, { scale: 1.08, duration: 2.2, ease: 'power1.out' }, '-=1.6');
 })();
 
 // Make nav-links work with Lenis instead of native scroll
@@ -2518,92 +2523,44 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// Hero opening — extreme cinematic video plate + dust + parallax
+// Hero opening — icy landscape plate + slow Ken Burns
 (function(){
   var hero = document.getElementById('hero');
-  var video = document.getElementById('heroCinematicVideo');
-  var dust = document.getElementById('heroDust');
-  if(!hero || !video) return;
+  var plate = document.getElementById('heroPlate');
+  if(!hero || !plate) return;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function playHero(){
-    if(reduceMotion) return;
-    var p = video.play();
-    if(p && p.then){
-      p.then(function(){ video.classList.add('is-ready'); })
-       .catch(function(){});
-    } else {
-      video.classList.add('is-ready');
-    }
+  function showPlate(){
+    plate.classList.add('is-ready');
   }
 
-  video.addEventListener('loadeddata', function(){
-    if(!video.paused) video.classList.add('is-ready');
-  });
-
-  // Start as soon as possible after first gesture/load; also retry after preloader
-  playHero();
-  window.addEventListener('pointerdown', playHero, { once: true });
-  setTimeout(playHero, 1800);
-
-  if('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting) playHero();
-        else if(!video.paused) video.pause();
-      });
-    }, { threshold: 0.15 });
-    io.observe(hero);
-  }
-
-  if(dust && !reduceMotion){
-    var html = '';
-    for(var i = 0; i < 28; i++){
-      var left = Math.random() * 100;
-      var delay = Math.random() * 8;
-      var dur = 7 + Math.random() * 10;
-      var size = 1 + Math.random() * 2.2;
-      html += '<span style="left:' + left + '%;bottom:-8%;width:' + size + 'px;height:' + size + 'px;animation-duration:' + dur + 's;animation-delay:' + delay + 's;"></span>';
-    }
-    dust.innerHTML = html;
-  }
+  if(plate.complete) showPlate();
+  else plate.addEventListener('load', showPlate);
 
   if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
 
-  // Crazy cinematic push: slow push-in + vertical drift while leaving the opening title
-  gsap.to(video, {
+  gsap.to(plate, {
     scale: 1.18,
-    yPercent: 6,
+    yPercent: 4,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
       start: 'top top',
       end: 'bottom top',
-      scrub: 0.8
+      scrub: 0.9
     }
   });
 
-  gsap.to('.hero-bloom', {
-    opacity: 0.15,
-    scale: 1.35,
+  gsap.to('.hero-mist', {
+    opacity: 0.55,
+    yPercent: -8,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
       start: 'top top',
       end: 'bottom top',
       scrub: true
-    }
-  });
-
-  gsap.to('.hero-letterbox span', {
-    scaleY: 1.8,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: hero,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 0.5
     }
   });
 })();
