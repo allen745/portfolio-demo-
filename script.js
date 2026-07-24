@@ -1561,11 +1561,11 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
   if(photo){
     gsap.fromTo(photo,
-      { scale: 1.1, filter: 'contrast(1.08) brightness(0.82)' },
+      { scale: 1.12, filter: 'contrast(1.15) saturate(0.7) brightness(0.75)' },
       {
-        scale: 1.03,
-        filter: 'contrast(1.04) brightness(0.96)',
-        duration: 1.8, ease: 'power2.out',
+        scale: 1.05,
+        filter: 'contrast(1.08) saturate(0.88) brightness(0.92)',
+        duration: 1.9, ease: 'power2.out',
         scrollTrigger: { trigger: photo, start: 'top 82%', toggleActions: 'play none none reverse' }
       }
     );
