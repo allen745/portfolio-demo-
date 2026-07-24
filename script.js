@@ -588,6 +588,56 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
+// Gallery — memory-reel cinematic background (built from fol stills)
+(function(){
+  var section = document.getElementById('gallery');
+  var video = document.getElementById('galleryBgVideo');
+  if(!section || !video) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function playGalleryVideo(){
+    if(reduceMotion) return;
+    video.muted = true;
+    var p = video.play();
+    if(p && p.then){
+      p.then(function(){ video.classList.add('is-ready'); }).catch(function(){});
+    } else {
+      video.classList.add('is-ready');
+    }
+  }
+
+  video.addEventListener('loadeddata', function(){
+    if(!video.paused) video.classList.add('is-ready');
+  });
+
+  if('IntersectionObserver' in window){
+    var vio = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) playGalleryVideo();
+        else if(!video.paused) video.pause();
+      });
+    }, { threshold: 0.1 });
+    vio.observe(section);
+  } else {
+    playGalleryVideo();
+  }
+
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+
+  gsap.to(video, {
+    scale: 1.12,
+    yPercent: 4,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: section,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 0.95
+    }
+  });
+})();
+
 // Project case-study system — click a card, scroll horizontally through the story
 (function(){
   const projects = {
