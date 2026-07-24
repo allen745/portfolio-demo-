@@ -8,6 +8,8 @@ Keep these light. Prefer `preload="metadata"` and play only when in view.
 - `about-orbit-poster.jpg` — About poster
 - `projects-nature-cinematic.mp4` — Projects rain leaves (~1.0MB)
 - `projects-nature-poster.jpg` — Projects poster
+- `gallery-memories-cinematic.mp4` — Gallery memory reel from `fol` stills (~1.3MB)
+- `gallery-memories-poster.jpg` — Gallery poster
 - `astronaut-cinematic.mp4` — Thank You end card (~1.2MB)
 - `astronaut-poster.jpg` — Thank You poster
 - `hero-cinematic.mp4` — Recognition/Experience runway (~0.1MB)

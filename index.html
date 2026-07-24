@@ -446,20 +446,40 @@
   </div>
 </section>
 
-<!-- Circular gallery — React Bits–style curved image strip -->
+<!-- Circular gallery — memory reel background + curved image strip -->
 <section id="gallery" class="cg-section">
-  <div class="cg-copy fade-in">
-    <div class="cg-eyebrow">// 02b &mdash; Gallery</div>
-    <h2 class="cg-heading">Moments from the Build</h2>
-    <p class="cg-lead">A curved look at the work — drag or scroll sideways to spin the ring.</p>
+  <div class="cg-stage-bg" aria-hidden="true">
+    <video
+      class="cg-video"
+      id="galleryBgVideo"
+      poster="videos/gallery-memories-poster.jpg"
+      muted
+      loop
+      playsinline
+      preload="metadata"
+    >
+      <source src="videos/gallery-memories-cinematic.mp4" type="video/mp4">
+    </video>
+    <div class="cg-video-fallback"></div>
+    <div class="cg-video-wash"></div>
+    <div class="cg-video-grain"></div>
+    <div class="cg-memory-veil"></div>
   </div>
-  <div
-    class="cg-stage"
-    id="circularGallery"
-    role="region"
-    aria-label="Circular project gallery"
-  ></div>
-  <p class="cg-hint fade-in">Drag to explore &middot; Scroll sideways</p>
+
+  <div class="cg-shell">
+    <div class="cg-copy fade-in">
+      <div class="cg-eyebrow">// 02b &mdash; Gallery</div>
+      <h2 class="cg-heading">Moments from the Build</h2>
+      <p class="cg-lead">A memory reel of the work — drag or scroll sideways to spin the ring.</p>
+    </div>
+    <div
+      class="cg-stage"
+      id="circularGallery"
+      role="region"
+      aria-label="Circular project gallery"
+    ></div>
+    <p class="cg-hint fade-in">Drag to explore &middot; Scroll sideways</p>
+  </div>
 </section>
 
 <!-- CINEMATIC RUNWAY — shared Recognition → Experience background -->
