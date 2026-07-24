@@ -58,7 +58,7 @@ function Title(opts) {
   this.plane = opts.plane;
   this.text = opts.text;
   this.textColor = opts.textColor || '#f2f4f8';
-  this.font = opts.font || 'bold 28px Syne, sans-serif';
+  this.font = opts.font || '500 28px Cinzel, serif';
   this.createMesh();
 }
 
@@ -326,7 +326,7 @@ App.prototype.createMedias = function (items, bend, textColor, borderRadius, fon
   bend = bend == null ? 1 : bend;
   textColor = textColor || '#f4f1ea';
   borderRadius = borderRadius == null ? 0.05 : borderRadius;
-  font = font || '600 28px Syne, sans-serif';
+  font = font || '500 28px Cinzel, serif';
   var galleryItems = (items && items.length) ? items : [];
   // Duplicate for seamless infinite loop
   this.mediasImages = galleryItems.concat(galleryItems);
@@ -519,7 +519,7 @@ function bootCircularGallery() {
       bend: 1,
       textColor: '#f4efe6',
       borderRadius: 0.05,
-      font: '600 28px Syne, sans-serif',
+      font: '500 28px Cinzel, serif',
       scrollSpeed: 1.6,
       scrollEase: 0.045,
       autoScrollSpeed: 0.048,
