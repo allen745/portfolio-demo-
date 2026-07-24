@@ -1483,7 +1483,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var stats = section.querySelectorAll('.about-stat-num');
   var pill = section.querySelector('.about-approach-pill');
   var connect = section.querySelectorAll('.about-connect-item');
-  var corners = section.querySelectorAll('.about-frame-corner');
   var video = document.getElementById('aboutBgVideo');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

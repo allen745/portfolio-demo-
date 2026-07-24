@@ -124,13 +124,13 @@
   .about-orb-a {
     width: min(42vw, 420px); height: min(42vw, 420px);
     top: 4%; left: -8%;
-    background: rgba(126,200,212,0.16);
+    background: rgba(70, 110, 160, 0.14);
     animation: aboutOrbA 16s ease-in-out infinite;
   }
   .about-orb-b {
     width: min(36vw, 360px); height: min(36vw, 360px);
     right: -6%; bottom: 8%;
-    background: rgba(232,160,120,0.12);
+    background: rgba(40, 70, 110, 0.12);
     animation: aboutOrbB 19s ease-in-out infinite;
   }
   @keyframes aboutOrbA {
@@ -413,15 +413,15 @@
 
   @media (max-width: 860px) {
     .about-grid { grid-template-columns: 1fr; gap: 36px; text-align: center; }
-    .about-media { max-width: 280px; }
+    .about-media { max-width: 300px; }
     .about-stats { grid-template-columns: repeat(3, 1fr); gap: 14px; margin-left: auto; margin-right: auto; }
     .about-desc { margin-left: auto; margin-right: auto; }
     .about-connect-row { justify-content: center; }
-    .about-signature-path { opacity: 0.55; }
   }
   @media (prefers-reduced-motion: reduce) {
     .about-orb-a, .about-orb-b { animation: none; }
     .about-video { display: none; }
+    .about-portrait-grain { opacity: 0.2; }
   }
 
   /* HERO — Interstellar concept B (match mock exactly) */
