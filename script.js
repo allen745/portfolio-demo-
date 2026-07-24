@@ -1551,31 +1551,34 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     });
   }
 
-  // Photo mask + scale reveal
+  // Portrait plate reveal — cinematic wipe, no tech HUD
   if(photoMask){
-    gsap.set(photoMask, { clipPath: 'inset(48% 48% 48% 48%)' });
+    gsap.set(photoMask, { clipPath: 'inset(0% 0% 100% 0%)' });
     gsap.to(photoMask, {
       clipPath: 'inset(0% 0% 0% 0%)',
-      duration: 1.35, ease: 'power4.out',
-      scrollTrigger: { trigger: photoMask, start: 'top 80%', toggleActions: 'play none none reverse' }
+      duration: 1.45, ease: 'power3.inOut',
+      scrollTrigger: { trigger: photoMask, start: 'top 82%', toggleActions: 'play none none reverse' }
     });
   }
   if(photo){
     gsap.fromTo(photo,
-      { scale: 1.22, filter: 'contrast(1.1) brightness(0.85)' },
+      { scale: 1.14, filter: 'contrast(1.2) saturate(0.28) brightness(0.55) grayscale(0.45)' },
       {
-        scale: 1.08, filter: 'contrast(1.04) saturate(0.96) brightness(1)',
-        duration: 1.6, ease: 'power3.out',
-        scrollTrigger: { trigger: photo, start: 'top 80%', toggleActions: 'play none none reverse' }
+        scale: 1.04,
+        filter: 'contrast(1.12) saturate(0.42) brightness(0.78) grayscale(0.28)',
+        duration: 1.8, ease: 'power2.out',
+        scrollTrigger: { trigger: photo, start: 'top 82%', toggleActions: 'play none none reverse' }
       }
     );
   }
-  if(corners.length){
-    gsap.fromTo(corners,
-      { opacity: 0, scale: 0.6 },
+  var portrait = section.querySelector('.about-portrait');
+  var caption = section.querySelector('.about-frame-caption');
+  if(caption){
+    gsap.fromTo(caption,
+      { opacity: 0, y: 14 },
       {
-        opacity: 1, scale: 1, duration: 0.7, stagger: 0.06, ease: 'power3.out',
-        scrollTrigger: { trigger: section.querySelector('.about-frame'), start: 'top 82%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: portrait || caption, start: 'top 78%', toggleActions: 'play none none reverse' }
       }
     );
   }

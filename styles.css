@@ -169,51 +169,120 @@
     display: grid; grid-template-columns: 0.9fr 1.2fr;
     gap: clamp(40px, 6vw, 80px); align-items: center;
   }
-  .about-media { position: relative; width: 100%; max-width: 380px; margin: 0 auto; }
-  .about-frame {
-    position: relative; padding: 14px;
-    background: rgba(12,16,22,0.55);
-    border: 1px solid rgba(244,239,230,0.12);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  .about-media {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
   }
-  .about-frame-corner {
-    position: absolute; width: 18px; height: 18px;
-    border-color: var(--about-accent); border-style: solid; border-width: 0;
+  .about-portrait {
+    margin: 0;
+    position: relative;
   }
-  .about-frame-corner.c-tl { top: 6px; left: 6px; border-top-width: 1.5px; border-left-width: 1.5px; }
-  .about-frame-corner.c-tr { top: 6px; right: 6px; border-top-width: 1.5px; border-right-width: 1.5px; }
-  .about-frame-corner.c-bl { bottom: 6px; left: 6px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
-  .about-frame-corner.c-br { bottom: 6px; right: 6px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+  .about-portrait-plate {
+    position: relative;
+    overflow: hidden;
+    background: #05070c;
+    box-shadow:
+      0 0 0 1px rgba(220, 228, 240, 0.1),
+      0 40px 80px -36px rgba(0, 0, 0, 0.85);
+  }
   .about-photo-mask {
-    overflow: hidden; aspect-ratio: 4/5;
-    clip-path: inset(12% 12% 12% 12%);
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    position: relative;
+    z-index: 1;
   }
   .about-photo {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-    transform: scale(1.08);
-    filter: contrast(1.04) saturate(0.96);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+    display: block;
+    transform: scale(1.04);
+    filter: contrast(1.12) saturate(0.42) brightness(0.78) grayscale(0.28);
   }
+  .about-portrait-grade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(8, 16, 28, 0.28) 0%, transparent 28%, transparent 58%, rgba(4, 8, 14, 0.72) 100%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.28) 0%, transparent 22%, transparent 78%, rgba(0, 0, 0, 0.28) 100%),
+      radial-gradient(ellipse 70% 55% at 50% 35%, rgba(90, 140, 190, 0.12) 0%, transparent 62%);
+    mix-blend-mode: multiply;
+  }
+  .about-portrait-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.34;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  }
+  .about-portrait-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: radial-gradient(ellipse 72% 68% at 50% 42%, transparent 28%, rgba(0, 0, 0, 0.55) 78%, rgba(0, 0, 0, 0.82) 100%);
+  }
+  .about-portrait-matte {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .about-portrait-matte span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: clamp(18px, 4.5%, 28px);
+    background: #000;
+  }
+  .about-portrait-matte span:first-child { top: 0; }
+  .about-portrait-matte span:last-child { bottom: 0; }
   .about-frame-caption {
-    margin-top: 12px;
+    margin: 18px 0 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .about-frame-credit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.48em;
+    text-indent: 0.48em;
+    text-transform: uppercase;
+    color: rgba(170, 190, 210, 0.55);
+  }
+  .about-frame-name {
     font-family: 'Cinzel', 'Times New Roman', serif;
     font-weight: 500;
-    font-size: 0.68rem;
-    letter-spacing: 0.28em;
-    text-indent: 0.28em;
+    font-size: clamp(0.82rem, 1.5vw, 1rem);
+    letter-spacing: 0.36em;
+    text-indent: 0.36em;
     text-transform: uppercase;
-    color: rgba(220, 226, 236, 0.72);
-    text-align: center;
+    color: transparent;
+    background-image: linear-gradient(180deg, #f4f6fa 0%, #b8c0ce 70%, #8e98aa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
-  .about-signature-path {
-    position: absolute; inset: -8% -10%;
-    width: 120%; height: 116%;
-    pointer-events: none; z-index: 3;
-    overflow: visible;
+  .about-frame-role {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.32em;
+    text-indent: 0.32em;
+    text-transform: uppercase;
+    color: rgba(160, 185, 210, 0.62);
   }
-  .about-signature-path path {
-    stroke-dasharray: 1; stroke-dashoffset: 1;
-    opacity: 0.85;
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-portrait-grain { opacity: 0.22; }
   }
 
   .about-copy { position: relative; }
