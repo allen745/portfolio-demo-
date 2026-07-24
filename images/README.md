@@ -1,3 +1,3 @@
 # Hero media
 
-- `hero-ice-landscape.jpg` — Interstellar concept B plate: bright mist/whiteness, reflective water valley, cool monochrome ridges.
+- `hero-ice-landscape.jpg` — Interstellar concept B plate: sky-blue mist glow, reflective water valley, cool monochrome ridges.

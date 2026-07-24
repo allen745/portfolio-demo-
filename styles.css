@@ -340,7 +340,7 @@
     object-fit: cover;
     object-position: center 55%;
     transform: scale(1.06);
-    filter: contrast(1.04) saturate(0.38) brightness(0.92);
+    filter: contrast(1.05) saturate(0.72) brightness(0.94);
     will-change: transform;
   }
   .hero-plate-fallback {
@@ -369,11 +369,11 @@
     background:
       linear-gradient(180deg,
         transparent 0%,
-        rgba(220, 228, 240, 0.08) 22%,
-        rgba(12, 16, 22, 0.42) 48%,
-        rgba(8, 12, 18, 0.35) 62%,
+        rgba(180, 210, 235, 0.1) 22%,
+        rgba(10, 18, 28, 0.4) 48%,
+        rgba(8, 14, 22, 0.32) 62%,
         transparent 100%),
-      radial-gradient(ellipse 95% 60% at 50% 48%, rgba(200, 210, 225, 0.12) 0%, transparent 70%);
+      radial-gradient(ellipse 95% 60% at 50% 48%, rgba(170, 205, 235, 0.14) 0%, transparent 70%);
     filter: blur(16px);
     opacity: 1;
     pointer-events: none;
@@ -383,7 +383,8 @@
     inset: 0;
     z-index: 3;
     background:
-      linear-gradient(180deg, rgba(2, 4, 8, 0.38) 0%, transparent 24%, transparent 58%, rgba(2, 4, 8, 0.55) 100%);
+      linear-gradient(180deg, rgba(30, 70, 110, 0.22) 0%, rgba(20, 50, 85, 0.08) 28%, transparent 52%, rgba(2, 4, 8, 0.55) 100%),
+      radial-gradient(ellipse 80% 45% at 50% 18%, rgba(120, 180, 230, 0.18) 0%, transparent 65%);
   }
   .hero-grain {
     position: absolute;
