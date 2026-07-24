@@ -199,8 +199,8 @@
     object-fit: cover;
     object-position: center 18%;
     display: block;
-    transform: scale(1.04);
-    filter: contrast(1.12) saturate(0.42) brightness(0.78) grayscale(0.28);
+    transform: scale(1.03);
+    filter: contrast(1.04) brightness(0.96);
   }
   .about-portrait-grade {
     position: absolute;
