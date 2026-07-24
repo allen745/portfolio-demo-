@@ -1003,6 +1003,107 @@
 
   /* project cards use the same reliable fade-in as the rest of the site (see .fade-in below) */
 
+  /* CIRCULAR GALLERY — React Bits–style curved strip */
+  .cg-section {
+    position: relative;
+    z-index: 2;
+    padding: 90px 0 70px;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 40%, rgba(90, 70, 40, 0.18) 0%, transparent 62%),
+      linear-gradient(180deg, #07090d 0%, #0b0e14 50%, #07090d 100%);
+    overflow: hidden;
+  }
+  .cg-copy {
+    max-width: 920px;
+    margin: 0 auto 18px;
+    padding: 0 5%;
+    text-align: center;
+  }
+  .cg-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c9a87a;
+    margin-bottom: 14px;
+  }
+  .cg-heading {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: #f2eee6;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .cg-lead {
+    color: #9a9388;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .cg-stage {
+    position: relative;
+    width: 100%;
+    height: min(58vh, 520px);
+    margin: 10px 0 8px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .cg-stage.is-dragging { cursor: grabbing; }
+  .cg-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .cg-hint {
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(242, 238, 230, 0.4);
+    margin: 0;
+    padding: 0 5% 8px;
+  }
+  .cg-fallback {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 12px 5% 24px;
+    scroll-snap-type: x mandatory;
+    cursor: default;
+  }
+  .cg-fallback-card {
+    flex: 0 0 min(62vw, 260px);
+    scroll-snap-align: center;
+    margin: 0;
+  }
+  .cg-fallback-card img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: 14px;
+    display: block;
+  }
+  .cg-fallback-card figcaption {
+    margin-top: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #c9b8a8;
+    text-align: center;
+  }
+  @media (max-width: 700px) {
+    .cg-section { padding: 70px 0 50px; }
+    .cg-stage { height: min(48vh, 380px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cg-stage { cursor: default; }
+  }
+
   /* CINEMATIC RUNWAY — shared sticky field across Recognition → Experience */
   .ascii-cinema-zone {
     position: relative;
