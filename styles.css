@@ -788,6 +788,7 @@
   }
   .skills-heading-accent {
     color: var(--skills-teal);
+    letter-spacing: 0.08em;
   }
   .skills-lede {
     font-size: 1.02rem; line-height: 1.7; color: var(--skills-muted);
@@ -1449,9 +1450,9 @@
   .ach-heading-inner { display: block; will-change: transform; }
   .ach-heading-accent {
     color: rgba(242,238,230,0.55);
-    font-weight: 600;
+    font-weight: 400;
     font-size: 0.72em;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.12em;
     margin-top: 6px;
   }
   .ach-lede {
@@ -1491,14 +1492,14 @@
   }
   .phase-card-top { margin-bottom: 10px; }
   .phase-org {
-    font-family: 'Space Mono', monospace; font-size: 0.66rem;
-    letter-spacing: 0.14em; text-transform: uppercase;
+    font-family: var(--font-credit); font-size: 0.64rem;
+    letter-spacing: 0.28em; text-transform: uppercase;
     color: var(--ach-amber);
   }
   .phase-title {
-    font-family: 'Syne', sans-serif; font-weight: 700;
-    font-size: clamp(1.15rem, 2vw, 1.5rem); margin-bottom: 10px;
-    line-height: 1.22; color: var(--ach-ink); letter-spacing: -0.015em;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.05rem, 1.8vw, 1.35rem); margin-bottom: 10px;
+    line-height: 1.3; color: var(--ach-ink); letter-spacing: 0.08em; text-transform: uppercase;
   }
   .phase-desc {
     font-size: 0.9rem; color: var(--ach-muted); line-height: 1.65;
@@ -1509,13 +1510,13 @@
   }
   .phase-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .phase-stat-label {
-    font-family: 'Space Mono', monospace; font-size: 0.56rem;
-    letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: var(--font-credit); font-size: 0.56rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
     color: rgba(154,147,136,0.9); margin-bottom: 6px;
   }
   .phase-stat-value {
-    font-family: 'Syne', sans-serif; font-weight: 600;
-    font-size: 0.84rem; color: var(--ach-ink); line-height: 1.25;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 0.8rem; letter-spacing: 0.04em; color: var(--ach-ink); line-height: 1.3;
   }
   .phase-stat-value.pending { color: rgba(154,147,136,0.75); font-style: italic; font-weight: 500; }
 
