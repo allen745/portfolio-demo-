@@ -134,47 +134,24 @@
   <div class="about-shell">
     <div class="about-grid">
       <div class="about-media">
-        <div class="about-frame">
-          <span class="about-frame-corner c-tl"></span>
-          <span class="about-frame-corner c-tr"></span>
-          <span class="about-frame-corner c-bl"></span>
-          <span class="about-frame-corner c-br"></span>
-          <div class="about-photo-mask">
-            <img src="profile.jpg" alt="Allen Christian" class="about-photo">
+        <figure class="about-portrait">
+          <div class="about-portrait-plate">
+            <div class="about-photo-mask">
+              <img src="profile.jpg" alt="Allen Christian" class="about-photo">
+            </div>
+            <div class="about-portrait-grade" aria-hidden="true"></div>
+            <div class="about-portrait-grain" aria-hidden="true"></div>
+            <div class="about-portrait-vignette" aria-hidden="true"></div>
+            <div class="about-portrait-matte" aria-hidden="true">
+              <span></span><span></span>
+            </div>
           </div>
-          <div class="about-frame-caption">Allen Christian &middot; AI &amp; Data</div>
-        </div>
-        <svg class="about-signature-path" id="aboutSignature" viewBox="0 0 400 520" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="aboutPathGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#7ec8d4"/>
-              <stop offset="55%" stop-color="#e8a078"/>
-              <stop offset="100%" stop-color="#7ec8d4"/>
-            </linearGradient>
-            <filter id="aboutPathGlow" x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur stdDeviation="2.2" result="b"/>
-              <feMerge>
-                <feMergeNode in="b"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-          <path id="aboutPath"
-            d="M 36 70
-               C 20 160, 28 250, 70 320
-               C 120 410, 210 470, 300 455
-               C 370 442, 390 380, 360 320
-               C 320 240, 250 210, 200 180
-               C 140 145, 110 100, 130 55
-               C 155 8, 240 18, 280 55
-               C 330 105, 310 170, 250 195"
-            stroke="url(#aboutPathGrad)"
-            stroke-width="1.6"
-            stroke-linecap="round"
-            filter="url(#aboutPathGlow)"
-          />
-          <circle id="aboutPathDot" r="3.5" fill="#7ec8d4" opacity="0.9"/>
-        </svg>
+          <figcaption class="about-frame-caption">
+            <span class="about-frame-credit">Portrait</span>
+            <span class="about-frame-name">Allen Christian</span>
+            <span class="about-frame-role">AI &amp; Data Science</span>
+          </figcaption>
+        </figure>
       </div>
 
       <div class="about-copy">
