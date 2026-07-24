@@ -69,6 +69,7 @@
       <li><a href="#about"><span>About</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#skills"><span>Skills</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#projects"><span>Projects</span><span class="nav-panel-dot"></span></a></li>
+      <li><a href="#gallery"><span>Gallery</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#achievements"><span>Recognition</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#experience"><span>Experience</span><span class="nav-panel-dot"></span></a></li>
       <li><a href="#contact"><span>Contact</span><span class="nav-panel-dot"></span></a></li>
@@ -445,6 +446,22 @@
   </div>
 </section>
 
+<!-- Circular gallery — React Bits–style curved image strip -->
+<section id="gallery" class="cg-section">
+  <div class="cg-copy fade-in">
+    <div class="cg-eyebrow">// 02b &mdash; Gallery</div>
+    <h2 class="cg-heading">Moments from the Build</h2>
+    <p class="cg-lead">A curved look at the work — drag or scroll sideways to spin the ring.</p>
+  </div>
+  <div
+    class="cg-stage"
+    id="circularGallery"
+    role="region"
+    aria-label="Circular project gallery"
+  ></div>
+  <p class="cg-hint fade-in">Drag to explore &middot; Scroll sideways</p>
+</section>
+
 <!-- CINEMATIC RUNWAY — shared Recognition → Experience background -->
 <div id="ascii-cinema-zone" class="ascii-cinema-zone">
   <div class="ach-sticky-bg" aria-hidden="true">
@@ -741,5 +758,6 @@
 
 
 <script src="script.js"></script>
+<script type="module" src="circular-gallery.js"></script>
 </body>
 </html>
