@@ -269,6 +269,9 @@ function App(container, config) {
   config = config || {};
   this.container = container;
   this.scrollSpeed = config.scrollSpeed == null ? 2 : config.scrollSpeed;
+  // Slow continuous drift when idle (world units per frame @ ~60fps)
+  this.autoScrollSpeed = config.autoScrollSpeed == null ? 0.045 : config.autoScrollSpeed;
+  this.autoResumeMs = config.autoResumeMs == null ? 1800 : config.autoResumeMs;
   this.scroll = { ease: config.scrollEase == null ? 0.05 : config.scrollEase, current: 0, target: 0, last: 0 };
   this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
   this.medias = [];
@@ -276,6 +279,7 @@ function App(container, config) {
   this.raf = 0;
   this.isDown = false;
   this.start = 0;
+  this.autoPausedUntil = 0;
   this.createRenderer();
   this.createCamera();
   this.createScene();
@@ -285,6 +289,10 @@ function App(container, config) {
   this.addEventListeners();
   this.update();
 }
+
+App.prototype.pauseAutoScroll = function () {
+  this.autoPausedUntil = performance.now() + this.autoResumeMs;
+};
 
 App.prototype.createRenderer = function () {
   this.renderer = new Renderer({
@@ -345,6 +353,7 @@ App.prototype.createMedias = function (items, bend, textColor, borderRadius, fon
 
 App.prototype.onTouchDown = function (e) {
   this.isDown = true;
+  this.pauseAutoScroll();
   this.scroll.position = this.scroll.current;
   this.start = e.touches ? e.touches[0].clientX : e.clientX;
   this.container.classList.add('is-dragging');
@@ -353,23 +362,26 @@ App.prototype.onTouchDown = function (e) {
 
 App.prototype.onTouchMove = function (e) {
   if (!this.isDown) return;
+  this.pauseAutoScroll();
   var x = e.touches ? e.touches[0].clientX : e.clientX;
-  var distance = (this.start - x) * (this.scrollSpeed * 0.025);
+  // Gentle drag so the ring turns slowly under the finger
+  var distance = (this.start - x) * (this.scrollSpeed * 0.018);
   this.scroll.target = (this.scroll.position || 0) + distance;
   if (e.cancelable) e.preventDefault();
 };
 
 App.prototype.onTouchUp = function () {
   this.isDown = false;
+  this.pauseAutoScroll();
   this.container.classList.remove('is-dragging');
-  this.onCheck();
+  // Don't snap-to-item — keep free continuous scroll for auto-drift
   if (window.lenis) window.lenis.start();
 };
 
 App.prototype.onWheel = function (e) {
+  this.pauseAutoScroll();
   var delta = e.deltaY || e.wheelDelta || e.detail || 0;
-  this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2;
-  this.onCheckDebounce();
+  this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.12;
   e.preventDefault();
 };
 
@@ -403,11 +415,11 @@ App.prototype.onResize = function () {
 App.prototype.update = function () {
   var self = this;
   if (this.visible) {
-    this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
-    // Gentle auto-drift when idle
-    if (!this.isDown && Math.abs(this.scroll.target - this.scroll.current) < 0.01) {
-      this.scroll.target += 0.012;
+    // Steady slow spin when the user isn't dragging / just finished interacting
+    if (!this.isDown && performance.now() >= this.autoPausedUntil) {
+      this.scroll.target += this.autoScrollSpeed;
     }
+    this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
     var direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
     this.medias.forEach(function (media) {
       media.update(self.scroll, direction);
@@ -508,8 +520,10 @@ function bootCircularGallery() {
       textColor: '#f4efe6',
       borderRadius: 0.05,
       font: '600 28px Syne, sans-serif',
-      scrollSpeed: 2,
-      scrollEase: 0.05
+      scrollSpeed: 1.6,
+      scrollEase: 0.045,
+      autoScrollSpeed: 0.048,
+      autoResumeMs: 1600
     });
   }
 
