@@ -1,7 +1,11 @@
-# Gallery images (`fol`)
+# Gallery photos (`fol`)
 
-Drop photos from your desktop **`fol`** folder here.
+Web-optimized JPEGs for the Circular Gallery section (max edge ~1600px).
 
-The circular gallery section reads files listed in `circular-gallery.js` (`DEFAULT_ITEMS`).
+Source: OneDrive Desktop `fol` folder — compressed for Git/Vercel (full-res originals stay on your machine).
 
-Current files are stand-ins from project stills because the desktop `fol` folder was not available in the cloud build environment. Replace these files (keep names, or update `DEFAULT_ITEMS`) with your own shots.
+| File | Label in gallery |
+|------|------------------|
+| `1000253866.jpg` … `1000253886.jpg` | Pitch Day → Moments |
+
+To replace a shot: overwrite the matching file, keep the same name, then recommit.

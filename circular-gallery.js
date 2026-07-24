@@ -455,17 +455,27 @@ App.prototype.destroy = function () {
 };
 
 var DEFAULT_ITEMS = [
-  { image: 'images/fol/01-vertex.jpg', text: 'Vertex' },
-  { image: 'images/fol/02-patent.jpg', text: 'Patent' },
-  { image: 'images/fol/03-devmind.jpg', text: 'DevMind AI' },
-  { image: 'images/fol/04-casaas.jpg', text: 'CA SaaS' },
-  { image: 'images/fol/05-agent.png', text: 'AI Agent' },
-  { image: 'images/fol/06-trackbot.jpg', text: 'TrackBot' },
-  { image: 'images/fol/07-autoseed.jpg', text: 'AutoSeed' },
-  { image: 'images/fol/08-vertex-ui.jpg', text: 'Roadmaps' },
-  { image: 'images/fol/09-devmind-ui.png', text: 'Toolkit' },
-  { image: 'images/fol/10-patent-build.jpg', text: 'Build Day' },
-  { image: 'images/fol/11-portrait.jpg', text: 'Allen' }
+  { image: 'images/fol/1000253866.jpg', text: 'Pitch Day' },
+  { image: 'images/fol/1000253867.jpg', text: 'Review Meet' },
+  { image: 'images/fol/1000253868.jpg', text: 'Power Strikes' },
+  { image: 'images/fol/1000253869.jpg', text: 'Exhibit Frame' },
+  { image: 'images/fol/1000253870.jpg', text: 'Build Stage' },
+  { image: 'images/fol/1000253871.jpg', text: 'Workshop Build' },
+  { image: 'images/fol/1000253872.jpg', text: 'Soldering' },
+  { image: 'images/fol/1000253873.jpg', text: 'Team Build' },
+  { image: 'images/fol/1000253874.jpg', text: 'Bench Work' },
+  { image: 'images/fol/1000253875.jpg', text: 'Wiring' },
+  { image: 'images/fol/1000253876.jpg', text: 'Piezo Array' },
+  { image: 'images/fol/1000253877.jpg', text: 'Sensor Grid' },
+  { image: 'images/fol/1000253878.jpg', text: 'Pipe Matrix' },
+  { image: 'images/fol/1000253879.jpg', text: 'Prototype Deck' },
+  { image: 'images/fol/1000253880.jpg', text: 'Circuit Board' },
+  { image: 'images/fol/1000253881.jpg', text: 'Hardware Lab' },
+  { image: 'images/fol/1000253882.jpg', text: 'Campus Crew' },
+  { image: 'images/fol/1000253883.jpg', text: 'Certificate' },
+  { image: 'images/fol/1000253884.jpg', text: 'Recognition' },
+  { image: 'images/fol/1000253885.jpg', text: 'Power Team' },
+  { image: 'images/fol/1000253886.jpg', text: 'Exhibit Night' }
 ];
 
 function bootCircularGallery() {
