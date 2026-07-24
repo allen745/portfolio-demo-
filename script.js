@@ -38,7 +38,6 @@ if (hasLenis) {
   var starsCanvas = document.getElementById('preloaderStars');
   var nebulaEl = pre.querySelector('.preloader-nebula');
   var titleEl = pre.querySelector('.preloader-title-line');
-  var hero = document.getElementById('hero');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var starRaf = 0;
   var starField = null;
@@ -56,9 +55,22 @@ if (hasLenis) {
     var ctx = starsCanvas.getContext('2d');
     if(!ctx) return null;
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var stars = [];
+    var far = [];
+    var mid = [];
+    var near = [];
+    var dust = [];
     var w = 0;
     var h = 0;
+
+    function rand(a, b){ return a + Math.random() * (b - a); }
+
+    // Bias points toward a horizontal galactic band (Interstellar mid haze)
+    function bandY(){
+      var band = h * 0.5 + (Math.random() - 0.5) * h * 0.22;
+      // Soft falloff toward top/bottom with occasional outliers
+      if(Math.random() > 0.72) return Math.random() * h;
+      return band + (Math.random() - 0.5) * h * 0.12;
+    }
 
     function resize(){
       w = window.innerWidth;
@@ -68,16 +80,62 @@ if (hasLenis) {
       starsCanvas.style.width = w + 'px';
       starsCanvas.style.height = h + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var count = Math.min(280, Math.floor((w * h) / 4500));
-      stars = [];
-      for(var i = 0; i < count; i++){
-        stars.push({
+
+      var area = w * h;
+      far = [];
+      mid = [];
+      near = [];
+      dust = [];
+
+      var farN = Math.min(900, Math.floor(area / 1800));
+      var midN = Math.min(420, Math.floor(area / 4200));
+      var nearN = Math.min(90, Math.floor(area / 18000));
+      var dustN = Math.min(1400, Math.floor(area / 1100));
+
+      var i;
+      for(i = 0; i < farN; i++){
+        far.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          r: Math.random() * 1.35 + 0.2,
-          a: Math.random() * 0.55 + 0.25,
+          r: rand(0.35, 0.85),
+          a: rand(0.35, 0.75),
           tw: Math.random() * Math.PI * 2,
-          sp: 0.4 + Math.random() * 1.2
+          sp: rand(0.25, 0.9),
+          drift: rand(0.8, 2.2)
+        });
+      }
+      for(i = 0; i < midN; i++){
+        mid.push({
+          x: Math.random() * w,
+          y: bandY(),
+          r: rand(0.7, 1.45),
+          a: rand(0.45, 0.9),
+          tw: Math.random() * Math.PI * 2,
+          sp: rand(0.35, 1.15),
+          drift: rand(1.4, 3.2),
+          tint: Math.random() > 0.82 ? 'cool' : 'white'
+        });
+      }
+      for(i = 0; i < nearN; i++){
+        near.push({
+          x: Math.random() * w,
+          y: bandY(),
+          r: rand(1.2, 2.2),
+          a: rand(0.7, 1),
+          tw: Math.random() * Math.PI * 2,
+          sp: rand(0.5, 1.4),
+          drift: rand(2.2, 4.5),
+          glow: rand(3.5, 7)
+        });
+      }
+      for(i = 0; i < dustN; i++){
+        dust.push({
+          x: Math.random() * w,
+          y: h * 0.38 + Math.random() * h * 0.28 + (Math.random() - 0.5) * h * 0.08,
+          r: rand(0.2, 0.55),
+          a: rand(0.08, 0.28),
+          drift: rand(0.6, 1.8),
+          phase: Math.random() * Math.PI * 2
         });
       }
     }
@@ -89,22 +147,88 @@ if (hasLenis) {
     function draw(now){
       var t = (now - t0) / 1000;
       ctx.clearRect(0, 0, w, h);
-      // faint galactic band
-      var band = ctx.createLinearGradient(0, h * 0.35, 0, h * 0.65);
+
+      // Deep void plate
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, w, h);
+
+      // Soft purple-blue galactic haze (horizontal milky band)
+      var haze = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.72);
+      haze.addColorStop(0, 'rgba(70, 55, 110, 0.18)');
+      haze.addColorStop(0.35, 'rgba(45, 50, 95, 0.1)');
+      haze.addColorStop(0.7, 'rgba(15, 18, 40, 0.04)');
+      haze.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = haze;
+      ctx.fillRect(0, 0, w, h);
+
+      var band = ctx.createLinearGradient(0, h * 0.28, 0, h * 0.72);
       band.addColorStop(0, 'rgba(0,0,0,0)');
-      band.addColorStop(0.5, 'rgba(120,130,155,0.07)');
+      band.addColorStop(0.35, 'rgba(90, 85, 140, 0.09)');
+      band.addColorStop(0.5, 'rgba(140, 145, 180, 0.14)');
+      band.addColorStop(0.65, 'rgba(70, 75, 130, 0.08)');
       band.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = band;
       ctx.fillRect(0, 0, w, h);
 
-      for(var i = 0; i < stars.length; i++){
-        var s = stars[i];
-        var twinkle = 0.55 + 0.45 * Math.sin(t * s.sp + s.tw);
+      var i, s, twinkle, x, y, glow;
+
+      // Cosmic dust along the mid band
+      for(i = 0; i < dust.length; i++){
+        s = dust[i];
+        x = (s.x + t * s.drift) % w;
+        y = s.y + Math.sin(t * 0.15 + s.phase) * 2;
         ctx.beginPath();
-        ctx.fillStyle = 'rgba(230,235,245,' + (s.a * twinkle) + ')';
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(190,195,220,' + s.a + ')';
+        ctx.arc(x, y, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
+
+      // Distant dense field
+      for(i = 0; i < far.length; i++){
+        s = far[i];
+        twinkle = 0.65 + 0.35 * Math.sin(t * s.sp + s.tw);
+        x = (s.x + t * s.drift * 0.15) % w;
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(220,225,240,' + (s.a * twinkle) + ')';
+        ctx.arc(x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Mid layer — slightly cooler tones in the band
+      for(i = 0; i < mid.length; i++){
+        s = mid[i];
+        twinkle = 0.55 + 0.45 * Math.sin(t * s.sp + s.tw);
+        x = (s.x + t * s.drift * 0.28) % w;
+        ctx.beginPath();
+        if(s.tint === 'cool'){
+          ctx.fillStyle = 'rgba(185,195,235,' + (s.a * twinkle) + ')';
+        } else {
+          ctx.fillStyle = 'rgba(235,238,248,' + (s.a * twinkle) + ')';
+        }
+        ctx.arc(x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Near bright stars with soft bloom
+      for(i = 0; i < near.length; i++){
+        s = near[i];
+        twinkle = 0.6 + 0.4 * Math.sin(t * s.sp + s.tw);
+        x = (s.x + t * s.drift * 0.4) % w;
+        y = s.y;
+        glow = ctx.createRadialGradient(x, y, 0, x, y, s.glow);
+        glow.addColorStop(0, 'rgba(255,255,255,' + (0.28 * twinkle) + ')');
+        glow.addColorStop(0.4, 'rgba(200,210,240,' + (0.1 * twinkle) + ')');
+        glow.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(x, y, s.glow, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(255,255,255,' + (s.a * twinkle) + ')';
+        ctx.arc(x, y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
       starRaf = requestAnimationFrame(draw);
     }
     starRaf = requestAnimationFrame(draw);
