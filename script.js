@@ -38,6 +38,7 @@ if (hasLenis) {
   var starsCanvas = document.getElementById('preloaderStars');
   var nebulaEl = pre.querySelector('.preloader-nebula');
   var creditEl = pre.querySelector('.preloader-credit');
+  var ruleEl = pre.querySelector('.preloader-rule');
   var titleEl = pre.querySelector('.preloader-title-line');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var starRaf = 0;
@@ -246,6 +247,10 @@ if (hasLenis) {
 
   if(!hasGsap){
     if(creditEl) creditEl.style.opacity = '1';
+    if(ruleEl){
+      ruleEl.style.opacity = '1';
+      ruleEl.style.transform = 'scaleX(1)';
+    }
     if(titleEl) titleEl.style.opacity = '1';
     if(starsCanvas) starsCanvas.style.opacity = '1';
     if(nebulaEl) nebulaEl.style.opacity = '1';
@@ -266,7 +271,8 @@ if (hasLenis) {
   });
 
   if(reduceMotion){
-    gsap.set([starsCanvas, nebulaEl, creditEl, titleEl], { opacity: 1 });
+    gsap.set([starsCanvas, nebulaEl, creditEl, ruleEl, titleEl], { opacity: 1 });
+    if(ruleEl) gsap.set(ruleEl, { scaleX: 1 });
     tl.to(pre, { opacity: 0, duration: 0.35 }, 0.4);
   } else {
     // 1) Space awakens — slow Ken Burns on the starfield
@@ -288,7 +294,7 @@ if (hasLenis) {
       }, 0.15);
     }
 
-    // 2) Cinematic credit, then title — no scale grow; tracking settles wide → final
+    // 2) Cinematic credit, divider, then title — no scale grow; tracking settles wide → final
     if(creditEl){
       gsap.set(creditEl, { opacity: 0, y: 8 });
       tl.to(creditEl, {
@@ -297,6 +303,15 @@ if (hasLenis) {
         duration: 1.2,
         ease: 'power2.out'
       }, 0.45);
+    }
+    if(ruleEl){
+      gsap.set(ruleEl, { opacity: 0, scaleX: 0.35 });
+      tl.to(ruleEl, {
+        opacity: 1,
+        scaleX: 1,
+        duration: 1.35,
+        ease: 'power2.out'
+      }, 0.7);
     }
     if(titleEl){
       var wideTrack = window.matchMedia('(max-width: 700px)').matches ? '0.42em' : '0.72em';
@@ -312,7 +327,7 @@ if (hasLenis) {
         textIndent: finalTrack,
         duration: 2.6,
         ease: 'power2.out'
-      }, 0.7);
+      }, 0.85);
     }
 
     // 3) Hold on the title card, then soft cinematic dissolve
@@ -323,6 +338,14 @@ if (hasLenis) {
         duration: 1.0,
         ease: 'power2.inOut'
       }, '>-0.05');
+    }
+    if(ruleEl){
+      tl.to(ruleEl, {
+        opacity: 0,
+        scaleX: 0.55,
+        duration: 1.0,
+        ease: 'power2.inOut'
+      }, '<');
     }
     tl.to(titleEl, {
       opacity: 0,
