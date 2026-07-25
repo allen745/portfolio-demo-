@@ -2326,8 +2326,26 @@
   text-indent: 0.62em;
   text-transform: uppercase;
   color: rgba(210, 218, 230, 0.72);
-  margin: 0 0 1.1rem;
+  margin: 0 0 0.95rem;
   opacity: 0;
+  will-change: opacity, transform;
+}
+.preloader-rule {
+  display: block;
+  width: min(52vw, 420px);
+  height: 1px;
+  margin: 0 auto 1.15rem;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(210, 218, 230, 0.12) 12%,
+    rgba(230, 234, 242, 0.55) 50%,
+    rgba(210, 218, 230, 0.12) 88%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: scaleX(0.35);
+  transform-origin: center;
   will-change: opacity, transform;
 }
 .preloader-title-line {
@@ -2362,7 +2380,11 @@
   .preloader-credit {
     letter-spacing: 0.4em;
     text-indent: 0.4em;
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+  .preloader-rule {
+    width: min(68vw, 280px);
+    margin-bottom: 0.95rem;
   }
   .preloader-title-line {
     font-size: clamp(1.05rem, 5.6vw, 1.55rem);
@@ -2375,7 +2397,9 @@
   .preloader-nebula { animation: none; }
   .preloader-stars { opacity: 1; transform: none; }
   .preloader-credit,
+  .preloader-rule,
   .preloader-title-line { opacity: 1; }
+  .preloader-rule { transform: none; }
 }
 
 /* Hidden by default so there's no flash before GSAP takes over */
