@@ -1812,6 +1812,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 })();
 
 // Achievements + Experience — shared minimal cinematic runway.
+// Recognition — cinematic honors dossier over shared video runway.
 // Quiet full-bleed video plate continues from Recognition through Experience.
 (function(){
   var section = document.getElementById('achievements');
