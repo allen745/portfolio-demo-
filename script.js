@@ -1489,15 +1489,16 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   sections.forEach(function(s){ spy.observe(s.el); });
 })();
 
-// About — cinematic editorial reveal + refined signature path (no body-level SVG)
+// About — cinematic editorial reveal + neural code stream
 (function(){
   var section = document.getElementById('about');
   if(!section) return;
 
   var path = document.getElementById('aboutPath');
   var dot = document.getElementById('aboutPathDot');
-  var photoMask = section.querySelector('.about-photo-mask');
-  var photo = section.querySelector('.about-photo');
+  var codeCinema = section.querySelector('.about-code-cinema');
+  var codeCanvas = document.getElementById('aboutCodeRain');
+  var codeStream = document.getElementById('aboutCodeStream');
   var headingLines = section.querySelectorAll('.about-heading-line');
   var house = section.querySelector('.about-house-mark');
   var eyebrow = section.querySelector('.about-eyebrow');
@@ -1508,6 +1509,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var connect = section.querySelectorAll('.about-connect-item');
   var video = document.getElementById('aboutBgVideo');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var codeActive = false;
+  var rainRaf = 0;
+  var typeTimer = 0;
 
   function playAboutVideo(){
     if(!video || reduceMotion) return;
@@ -1534,6 +1538,208 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     } else {
       playAboutVideo();
     }
+  }
+
+  // --- Neural code rain + typing stream ---
+  function startCodeCinema(){
+    if(!codeCinema || !codeCanvas || !codeStream || codeActive) return;
+    codeActive = true;
+
+    var ctx = codeCanvas.getContext('2d');
+    if(!ctx) return;
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = 0;
+    var h = 0;
+    var cols = [];
+    var glyphs = '01アイウエオカキクケコΣλΔπ{}[]<>/=*+#αβγ¥$&@';
+    var fontSize = 13;
+
+    function resizeRain(){
+      w = codeCinema.clientWidth;
+      h = codeCinema.clientHeight;
+      codeCanvas.width = Math.floor(w * dpr);
+      codeCanvas.height = Math.floor(h * dpr);
+      codeCanvas.style.width = w + 'px';
+      codeCanvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      fontSize = Math.max(11, Math.floor(w / 28));
+      var colCount = Math.ceil(w / fontSize);
+      cols = [];
+      for(var i = 0; i < colCount; i++){
+        cols.push({
+          y: Math.random() * h,
+          speed: 0.55 + Math.random() * 1.45,
+          warm: Math.random() > 0.78
+        });
+      }
+    }
+
+    function drawRain(){
+      if(!codeActive) return;
+      ctx.fillStyle = 'rgba(2, 5, 12, 0.18)';
+      ctx.fillRect(0, 0, w, h);
+      ctx.font = fontSize + 'px "Space Mono", monospace';
+      ctx.textBaseline = 'top';
+
+      for(var i = 0; i < cols.length; i++){
+        var col = cols[i];
+        var x = i * fontSize;
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        if(col.warm){
+          ctx.fillStyle = 'rgba(240,184,110,' + (0.28 + Math.random() * 0.45) + ')';
+        } else {
+          ctx.fillStyle = 'rgba(126,200,212,' + (0.22 + Math.random() * 0.5) + ')';
+        }
+        ctx.fillText(ch, x, col.y);
+        col.y += col.speed * fontSize * 0.35;
+        if(col.y > h + fontSize * 4){
+          col.y = -Math.random() * h * 0.4;
+          col.speed = 0.55 + Math.random() * 1.45;
+          col.warm = Math.random() > 0.78;
+        }
+      }
+      rainRaf = requestAnimationFrame(drawRain);
+    }
+
+    resizeRain();
+    window.addEventListener('resize', resizeRain);
+    if(!reduceMotion){
+      rainRaf = requestAnimationFrame(drawRain);
+    } else {
+      ctx.fillStyle = '#02050c';
+      ctx.fillRect(0, 0, w, h);
+      ctx.font = fontSize + 'px "Space Mono", monospace';
+      ctx.fillStyle = 'rgba(126,200,212,0.35)';
+      for(var r = 0; r < 40; r++){
+        ctx.fillText(
+          glyphs.charAt(Math.floor(Math.random() * glyphs.length)),
+          Math.random() * w,
+          Math.random() * h
+        );
+      }
+    }
+
+    var snippets = [
+      [
+        '# mission: ship models that hold up',
+        'pipe = Pipeline([',
+        "  ('scale', StandardScaler()),",
+        "  ('clf', RandomForestClassifier(n=200))",
+        '])',
+        'score = pipe.fit(X_tr, y).score(X_te, y)',
+        'print(f"accuracy → {score:.3f}")'
+      ],
+      [
+        '# fastapi route — real systems',
+        '@app.post("/predict")',
+        'async def predict(payload: Schema):',
+        '    feats = encode(payload)',
+        '    pred = model.predict(feats)',
+        '    return {"label": pred, "ok": True}'
+      ],
+      [
+        '# from patent → product → ship',
+        'features = clean(df).select(cols)',
+        'X, y = features.drop("y"), features["y"]',
+        'model.fit(X, y)',
+        'deploy(model, env="prod")',
+        '# status: online'
+      ]
+    ];
+
+    var snippetIndex = 0;
+    var lineIndex = 0;
+    var charIndex = 0;
+    var displayLines = [];
+    var typing = true;
+    var pauseLeft = 0;
+
+    function renderTyped(){
+      var html = displayLines.map(function(line, idx){
+        var isCurrent = typing && idx === displayLines.length - 1;
+        var safe = line
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        if(line.trim().indexOf('#') === 0){
+          return '<span style="color:rgba(240,184,110,0.72)">' + safe + '</span>';
+        }
+        if(isCurrent) return safe;
+        return '<span style="color:rgba(210,220,232,0.78)">' + safe + '</span>';
+      }).join('\n');
+      codeStream.innerHTML = html;
+    }
+
+    function typeTick(){
+      if(!codeActive) return;
+      if(pauseLeft > 0){
+        pauseLeft -= 1;
+        typeTimer = window.setTimeout(typeTick, 40);
+        return;
+      }
+
+      var snippet = snippets[snippetIndex];
+      if(lineIndex >= snippet.length){
+        typing = false;
+        pauseLeft = 36;
+        snippetIndex = (snippetIndex + 1) % snippets.length;
+        lineIndex = 0;
+        charIndex = 0;
+        displayLines = [];
+        typeTimer = window.setTimeout(function(){
+          typing = true;
+          typeTick();
+        }, 900);
+        return;
+      }
+
+      var target = snippet[lineIndex];
+      if(charIndex === 0) displayLines.push('');
+      displayLines[displayLines.length - 1] = target.slice(0, charIndex + 1);
+      charIndex += 1;
+      renderTyped();
+
+      if(charIndex >= target.length){
+        lineIndex += 1;
+        charIndex = 0;
+        pauseLeft = 8;
+      }
+
+      var delay = reduceMotion ? 0 : (18 + Math.floor(Math.random() * 28));
+      typeTimer = window.setTimeout(typeTick, delay);
+    }
+
+    if(reduceMotion){
+      codeStream.textContent = snippets[0].join('\n');
+    } else {
+      typeTick();
+    }
+
+    startCodeCinema._cleanup = function(){
+      codeActive = false;
+      if(rainRaf) cancelAnimationFrame(rainRaf);
+      rainRaf = 0;
+      if(typeTimer) clearTimeout(typeTimer);
+      typeTimer = 0;
+      window.removeEventListener('resize', resizeRain);
+    };
+  }
+
+  function stopCodeCinema(){
+    if(startCodeCinema._cleanup) startCodeCinema._cleanup();
+  }
+
+  if(codeCinema && 'IntersectionObserver' in window){
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) startCodeCinema();
+        else stopCodeCinema();
+      });
+    }, { threshold: 0.15 });
+    cio.observe(codeCinema);
+  } else if(codeCinema){
+    startCodeCinema();
   }
 
   // Prepare signature path length for draw-on
@@ -1573,34 +1779,14 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     });
   }
 
-  // Portrait plate reveal — cinematic wipe, no tech HUD
-  if(photoMask){
-    gsap.set(photoMask, { clipPath: 'inset(0% 0% 100% 0%)' });
-    gsap.to(photoMask, {
-      clipPath: 'inset(0% 0% 0% 0%)',
-      duration: 1.45, ease: 'power3.inOut',
-      scrollTrigger: { trigger: photoMask, start: 'top 82%', toggleActions: 'play none none reverse' }
-    });
-  }
-  if(photo){
-    gsap.fromTo(photo,
-      { scale: 1.12, filter: 'contrast(1.15) saturate(0.7) brightness(0.75)' },
+  // Code cinema reveal
+  if(codeCinema){
+    gsap.fromTo(codeCinema,
+      { opacity: 0, y: 28, clipPath: 'inset(8% 6% 8% 6%)' },
       {
-        scale: 1.05,
-        filter: 'contrast(1.08) saturate(0.88) brightness(0.92)',
-        duration: 1.9, ease: 'power2.out',
-        scrollTrigger: { trigger: photo, start: 'top 82%', toggleActions: 'play none none reverse' }
-      }
-    );
-  }
-  var portrait = section.querySelector('.about-portrait');
-  var caption = section.querySelector('.about-frame-caption');
-  if(caption){
-    gsap.fromTo(caption,
-      { opacity: 0, y: 14 },
-      {
-        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: portrait || caption, start: 'top 78%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, clipPath: 'inset(0% 0% 0% 0%)',
+        duration: 1.35, ease: 'power3.out',
+        scrollTrigger: { trigger: codeCinema, start: 'top 82%', toggleActions: 'play none none reverse' }
       }
     );
   }
@@ -1717,20 +1903,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         scrollTrigger: { trigger: connect[0], start: 'top 94%', toggleActions: 'play none none reverse' }
       }
     );
-  }
-
-  // Soft parallax on photo while the section is in view
-  if(photo){
-    gsap.to(photo, {
-      yPercent: 6,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: true
-      }
-    });
   }
 })();
 
