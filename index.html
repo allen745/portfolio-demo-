@@ -413,84 +413,66 @@
     <div class="ach-video-vignette"></div>
   </div>
 
-<!-- ACHIEVEMENTS — minimal cinematic recognition -->
-<section id="achievements">
+<!-- ACHIEVEMENTS — cinematic honors dossier -->
+<section id="achievements" aria-labelledby="ach-heading">
   <div class="ach-content">
-    <div class="ach-header">
-      <div class="ach-eyebrow">Recognition</div>
-      <h2 class="ach-heading">
+    <header class="ach-header">
+      <p class="ach-eyebrow">The Record</p>
+      <h2 id="ach-heading" class="ach-heading">
         <span class="ach-heading-line">Recognition</span>
-        <span class="ach-heading-line ach-heading-accent">That Held Up</span>
       </h2>
-      <p class="ach-lede">A short list of wins that meant something &mdash; patents, awards, and placements.</p>
-    </div>
+      <p class="ach-lede">
+        Patents, awards, and placements that held up &mdash; logged like end credits.
+      </p>
+    </header>
 
-    <div class="phase-grid">
-    <article class="phase-card">
-      <div class="phase-index">01</div>
-      <div class="phase-card-top"><span class="phase-org">Government of India</span></div>
-      <h3 class="phase-title">Spring-Loaded Piezoelectric Generating Striker Device</h3>
-      <p class="phase-desc">Officially registered design patent for a spring-loaded piezoelectric energy-harvesting striker device, Class 13-01.</p>
-      <div class="phase-divider"></div>
-      <div class="phase-stats">
-        <div><div class="phase-stat-label">Issued</div><div class="phase-stat-value">Jul 2025</div></div>
-        <div><div class="phase-stat-label">Level</div><div class="phase-stat-value">Design Patent</div></div>
-        <div><div class="phase-stat-label">Verified</div><div class="phase-stat-value">Patent Office</div></div>
-      </div>
-    </article>
-
-    <article class="phase-card">
-      <div class="phase-index">02</div>
-      <div class="phase-card-top"><span class="phase-org">InAmigos Foundation</span></div>
-      <h3 class="phase-title">Best / Top Intern</h3>
-      <p class="phase-desc">Awarded Top 5 Performer during the AI Web Development internship (SI85).</p>
-      <div class="phase-divider"></div>
-      <div class="phase-stats">
-        <div><div class="phase-stat-label">Issued</div><div class="phase-stat-value">May 2026</div></div>
-        <div><div class="phase-stat-label">Level</div><div class="phase-stat-value">Top Intern</div></div>
-        <div><div class="phase-stat-label">Verified</div><div class="phase-stat-value">InAmigos</div></div>
-      </div>
-    </article>
-
-    <article class="phase-card">
-      <div class="phase-index">03</div>
-      <div class="phase-card-top"><span class="phase-org">Techfest AIKYAM</span></div>
-      <h3 class="phase-title">SPEC Innovation Award</h3>
-      <p class="phase-desc">Recognised at National Level Techfest AIKYAM 1.0.</p>
-      <div class="phase-divider"></div>
-      <div class="phase-stats">
-        <div><div class="phase-stat-label">Issued</div><div class="phase-stat-value">Feb 2024</div></div>
-        <div><div class="phase-stat-label">Level</div><div class="phase-stat-value">National</div></div>
-        <div><div class="phase-stat-label">Verified</div><div class="phase-stat-value">AIKYAM</div></div>
-      </div>
-    </article>
-
-    <article class="phase-card">
-      <div class="phase-index">04</div>
-      <div class="phase-card-top"><span class="phase-org">Charotar Education Society</span></div>
-      <h3 class="phase-title">Chatkaro 2024 — 2nd Position</h3>
-      <p class="phase-desc">2nd position in Model Presentation, Chatkaro 2024.</p>
-      <div class="phase-divider"></div>
-      <div class="phase-stats">
-        <div><div class="phase-stat-label">Issued</div><div class="phase-stat-value">2024</div></div>
-        <div><div class="phase-stat-label">Level</div><div class="phase-stat-value">2nd Place</div></div>
-        <div><div class="phase-stat-label">Verified</div><div class="phase-stat-value">CES</div></div>
-      </div>
-    </article>
-
-    <article class="phase-card">
-      <div class="phase-index">05</div>
-      <div class="phase-card-top"><span class="phase-org">TCS</span></div>
-      <h3 class="phase-title">TCS Rural IT Quiz 2024</h3>
-      <p class="phase-desc">National level quiz by TCS &amp; Dept. of Electronics &amp; IT, Karnataka.</p>
-      <div class="phase-divider"></div>
-      <div class="phase-stats">
-        <div><div class="phase-stat-label">Issued</div><div class="phase-stat-value">2024</div></div>
-        <div><div class="phase-stat-label">Level</div><div class="phase-stat-value">National</div></div>
-        <div><div class="phase-stat-label">Verified</div><div class="phase-stat-value">TCS</div></div>
-      </div>
-    </article>
-  </div>
+    <ol class="ach-dossier" role="list">
+      <li class="ach-entry" data-honor="01">
+        <span class="ach-entry-num" aria-hidden="true">01</span>
+        <div class="ach-entry-body">
+          <p class="ach-entry-org">Government of India</p>
+          <h3 class="ach-entry-title">Spring-Loaded Piezoelectric Generating Striker Device</h3>
+          <p class="ach-entry-desc">Officially registered design patent for a spring-loaded piezoelectric energy-harvesting striker device, Class 13-01.</p>
+          <p class="ach-entry-meta">Jul 2025 · Design Patent · Patent Office</p>
+        </div>
+      </li>
+      <li class="ach-entry" data-honor="02">
+        <span class="ach-entry-num" aria-hidden="true">02</span>
+        <div class="ach-entry-body">
+          <p class="ach-entry-org">InAmigos Foundation</p>
+          <h3 class="ach-entry-title">Best / Top Intern</h3>
+          <p class="ach-entry-desc">Awarded Top 5 Performer during the AI Web Development internship (SI85).</p>
+          <p class="ach-entry-meta">May 2026 · Top Intern · InAmigos</p>
+        </div>
+      </li>
+      <li class="ach-entry" data-honor="03">
+        <span class="ach-entry-num" aria-hidden="true">03</span>
+        <div class="ach-entry-body">
+          <p class="ach-entry-org">Techfest AIKYAM</p>
+          <h3 class="ach-entry-title">SPEC Innovation Award</h3>
+          <p class="ach-entry-desc">Recognised at National Level Techfest AIKYAM 1.0.</p>
+          <p class="ach-entry-meta">Feb 2024 · National · AIKYAM</p>
+        </div>
+      </li>
+      <li class="ach-entry" data-honor="04">
+        <span class="ach-entry-num" aria-hidden="true">04</span>
+        <div class="ach-entry-body">
+          <p class="ach-entry-org">Charotar Education Society</p>
+          <h3 class="ach-entry-title">Chatkaro 2024 — 2nd Position</h3>
+          <p class="ach-entry-desc">2nd position in Model Presentation, Chatkaro 2024.</p>
+          <p class="ach-entry-meta">2024 · 2nd Place · CES</p>
+        </div>
+      </li>
+      <li class="ach-entry" data-honor="05">
+        <span class="ach-entry-num" aria-hidden="true">05</span>
+        <div class="ach-entry-body">
+          <p class="ach-entry-org">TCS</p>
+          <h3 class="ach-entry-title">TCS Rural IT Quiz 2024</h3>
+          <p class="ach-entry-desc">National level quiz by TCS &amp; Dept. of Electronics &amp; IT, Karnataka.</p>
+          <p class="ach-entry-meta">2024 · National · TCS</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </section>
 
