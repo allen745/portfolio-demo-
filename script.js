@@ -1711,56 +1711,22 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Skills — cinematic corkboard pin-drop + thread draw
+// Skills — cinematic dossier reveal
 (function(){
   var section = document.getElementById('skills');
   if(!section) return;
 
-  var path = document.getElementById('skillsThreadPath') || section.querySelector('.corkboard-path');
-  var dot = document.getElementById('skillsThreadDot');
-  var anchors = section.querySelector('.corkboard-anchors');
-  var cork = section.querySelector('.corkboard');
-  var house = section.querySelector('.skills-house-mark');
   var eyebrow = section.querySelector('.skills-eyebrow');
   var headingLines = section.querySelectorAll('.skills-heading-line');
   var lede = section.querySelector('.skills-lede');
-  var cards = section.querySelectorAll('.pin-card');
+  var dossier = section.querySelector('.skills-dossier');
+  var entries = section.querySelectorAll('.skills-entry');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var pathLen = 0;
-  if(path){
-    pathLen = path.getTotalLength();
-    path.style.strokeDasharray = String(pathLen);
-    path.style.strokeDashoffset = String(pathLen);
-  }
-  if(dot && path){
-    var start = path.getPointAtLength(0);
-    dot.setAttribute('cx', start.x);
-    dot.setAttribute('cy', start.y);
-  }
-
-  function settlePose(card){
-    var rot = getComputedStyle(card).getPropertyValue('--pin-rot').trim() || '0deg';
-    var y = getComputedStyle(card).getPropertyValue('--pin-y').trim() || '0px';
-    return { rotation: parseFloat(rot) || 0, y: parseFloat(y) || 0 };
-  }
-
   if(reduceMotion || !window.gsap || !window.ScrollTrigger){
-    if(path) path.style.strokeDashoffset = '0';
-    if(anchors) anchors.style.opacity = '0.5';
-    cards.forEach(function(card){ card.classList.add('is-settled'); });
     return;
   }
 
-  if(house){
-    gsap.fromTo(house,
-      { opacity: 0, y: 18 },
-      {
-        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
-        scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' }
-      }
-    );
-  }
   if(eyebrow){
     gsap.fromTo(eyebrow,
       { opacity: 0, x: -26 },
@@ -1794,134 +1760,55 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     );
   }
 
-  // Thread draw with trailing focus pin
-  if(path && cork){
-    var draw = { v: 0 };
-    gsap.to(draw, {
-      v: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: cork,
-        start: 'top 78%',
-        end: 'bottom 48%',
-        scrub: 0.7,
-        onUpdate: function(){
-          path.style.strokeDashoffset = String(pathLen * (1 - draw.v));
-          if(dot){
-            var pt = path.getPointAtLength(pathLen * draw.v);
-            dot.setAttribute('cx', pt.x);
-            dot.setAttribute('cy', pt.y);
-          }
-        }
-      }
-    });
-  }
-  if(anchors){
-    gsap.fromTo(anchors,
-      { opacity: 0 },
+  if(dossier){
+    gsap.fromTo(dossier,
+      { opacity: 0.35 },
       {
-        opacity: 0.5, duration: 1.1, ease: 'power2.out',
-        scrollTrigger: { trigger: cork, start: 'top 72%', toggleActions: 'play none none reverse' }
+        opacity: 1, duration: 0.9, ease: 'power2.out',
+        scrollTrigger: { trigger: dossier, start: 'top 85%', toggleActions: 'play none none reverse' }
       }
     );
   }
 
-  // Pin-drop cascade — cards fall in and settle into corkboard tilt
-  cards.forEach(function(card, i){
-    var pose = settlePose(card);
-    var tags = card.querySelectorAll('.tag');
-    var mark = card.querySelector('.skill-mark');
-    var title = card.querySelector('.skill-title');
-    var badge = card.querySelector('.skill-new');
-    var pin = card.querySelector('.pin-head');
+  entries.forEach(function(entry, i){
+    var num = entry.querySelector('.skills-entry-num');
+    var title = entry.querySelector('.skills-entry-title');
+    var tags = entry.querySelector('.skills-entry-tags');
 
-    gsap.set(card, {
-      opacity: 0,
-      y: pose.y - 72,
-      rotation: pose.rotation - (i % 2 === 0 ? 8 : -8),
-      scale: 0.92,
-      transformOrigin: '50% 0%'
-    });
-    if(tags.length) gsap.set(tags, { opacity: 0, y: 10 });
-    if(mark) gsap.set(mark, { opacity: 0, y: 12 });
+    gsap.set(entry, { opacity: 0, y: 28 });
+    if(num) gsap.set(num, { opacity: 0, x: -12 });
     if(title) gsap.set(title, { opacity: 0, y: 14 });
-    if(badge) gsap.set(badge, { opacity: 0, scale: 0.7 });
-    if(pin) gsap.set(pin, { scale: 0, opacity: 0 });
+    if(tags) gsap.set(tags, { opacity: 0, y: 10 });
 
     var tl = gsap.timeline({
       scrollTrigger: {
-        trigger: card,
-        start: 'top 88%',
+        trigger: entry,
+        start: 'top 90%',
         toggleActions: 'play none none reverse'
-      }
+      },
+      delay: Math.min(i * 0.03, 0.18)
     });
 
-    tl.to(card, {
-      opacity: 1,
-      y: pose.y,
-      rotation: pose.rotation,
-      scale: 1,
-      duration: 1.05,
-      ease: 'power4.out'
+    tl.to(entry, {
+      opacity: 1, y: 0, duration: 0.85, ease: 'power3.out'
     }, 0);
 
-    if(pin){
-      tl.to(pin, {
-        scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(2.4)'
-      }, 0.18);
-    }
-    if(mark){
-      tl.to(mark, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.28);
+    if(num){
+      tl.to(num, {
+        opacity: 0.85, x: 0, duration: 0.6, ease: 'power3.out'
+      }, 0.08);
     }
     if(title){
-      tl.to(title, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.36);
+      tl.to(title, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out'
+      }, 0.14);
     }
-    if(badge){
-      tl.to(badge, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(1.8)' }, 0.4);
-    }
-    if(tags.length){
+    if(tags){
       tl.to(tags, {
-        opacity: 1, y: 0, duration: 0.45, stagger: 0.04, ease: 'power3.out'
-      }, 0.48);
+        opacity: 1, y: 0, duration: 0.65, ease: 'power3.out'
+      }, 0.22);
     }
-
-    // Soft lift on hover (desktop)
-    card.addEventListener('mouseenter', function(){
-      gsap.to(card, {
-        y: pose.y - 10,
-        scale: 1.03,
-        boxShadow: '0 26px 42px -16px rgba(20,15,10,0.4), 0 2px 6px rgba(20,15,10,0.08)',
-        duration: 0.45,
-        ease: 'power3.out',
-        overwrite: 'auto'
-      });
-    });
-    card.addEventListener('mouseleave', function(){
-      gsap.to(card, {
-        y: pose.y,
-        rotation: pose.rotation,
-        scale: 1,
-        boxShadow: '0 18px 34px -16px rgba(20,15,10,0.32), 0 2px 6px rgba(20,15,10,0.07)',
-        duration: 0.55,
-        ease: 'power3.out',
-        overwrite: 'auto'
-      });
-    });
   });
-
-  // Subtle board parallax while section is in view
-  if(cork){
-    gsap.to(cork, {
-      y: -18,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: true
-      }
-    });
-  }
 })();
 
 // Achievements + Experience — shared minimal cinematic runway.

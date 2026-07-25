@@ -687,17 +687,14 @@
     line-height: 1.2;
   }
 
-  /* SKILLS — cinematic corkboard toolkit */
+  /* SKILLS — cinematic mission brief / dossier (Nolan / Interstellar) */
   #skills {
-    --skills-ink: #1a1714;
-    --skills-muted: #6a6158;
-    --skills-accent: #9c3a30;
-    --skills-teal: #0b7f8f;
-    --skills-paper: #f7f3eb;
-    background:
-      radial-gradient(ellipse 50% 40% at 12% 18%, rgba(156,58,48,0.09) 0%, transparent 55%),
-      radial-gradient(ellipse 45% 42% at 90% 82%, rgba(11,127,143,0.08) 0%, transparent 52%),
-      linear-gradient(168deg, #ebe6db 0%, #e6e0d3 46%, #ddd5c6 100%);
+    --skills-ink: #f4efe6;
+    --skills-muted: #b9b0a4;
+    --skills-accent: #e8a078;
+    --skills-teal: #7ec8d4;
+    --skills-gold: #f0b86e;
+    background: #07090e;
     color: var(--skills-ink);
     position: relative;
     overflow: hidden;
@@ -706,20 +703,28 @@
   .skills-atmosphere {
     position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
   }
+  .skills-wash {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(105deg, rgba(6,14,28,0.55) 0%, transparent 46%, rgba(8,10,18,0.4) 100%),
+      linear-gradient(180deg, rgba(4,6,12,0.55) 0%, rgba(4,6,12,0.12) 40%, rgba(4,6,12,0.65) 100%),
+      radial-gradient(ellipse 50% 40% at 18% 20%, rgba(70,110,160,0.16) 0%, transparent 58%),
+      radial-gradient(ellipse 42% 38% at 86% 78%, rgba(232,160,120,0.08) 0%, transparent 55%);
+  }
   .skills-orb {
     position: absolute; border-radius: 50%; filter: blur(72px);
     will-change: transform, opacity;
   }
   .skills-orb-a {
     width: min(44vw, 440px); height: min(44vw, 440px);
-    top: 6%; left: -10%;
-    background: rgba(156,58,48,0.16);
+    top: 4%; left: -10%;
+    background: rgba(70, 110, 160, 0.16);
     animation: skillsOrbA 18s ease-in-out infinite;
   }
   .skills-orb-b {
     width: min(38vw, 380px); height: min(38vw, 380px);
-    right: -8%; bottom: 10%;
-    background: rgba(11,127,143,0.13);
+    right: -8%; bottom: 8%;
+    background: rgba(232, 160, 120, 0.1);
     animation: skillsOrbB 21s ease-in-out infinite;
   }
   @keyframes skillsOrbA {
@@ -727,38 +732,36 @@
     50% { transform: translate(9%, 12%) scale(1.14); opacity: 0.88; }
   }
   @keyframes skillsOrbB {
-    0%,100% { transform: translate(0,0) scale(1); opacity: 0.42; }
-    50% { transform: translate(-12%, -9%) scale(1.16); opacity: 0.78; }
+    0%,100% { transform: translate(0,0) scale(1); opacity: 0.38; }
+    50% { transform: translate(-12%, -9%) scale(1.16); opacity: 0.72; }
   }
   .skills-grain {
-    position: absolute; inset: 0; opacity: 0.22; mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    position: absolute; inset: 0; opacity: 0.2; mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   }
   .skills-grid-fade {
-    position: absolute; inset: 0; opacity: 0.28;
+    position: absolute; inset: 0; opacity: 0.2;
     background-image:
-      linear-gradient(rgba(26,23,20,0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(26,23,20,0.045) 1px, transparent 1px);
-    background-size: 52px 52px;
-    mask-image: radial-gradient(ellipse 68% 58% at 50% 42%, black 18%, transparent 78%);
+      linear-gradient(rgba(244,239,230,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244,239,230,0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 75%);
+  }
+  .skills-flare {
+    position: absolute; top: 12%; right: 8%;
+    width: min(28vw, 280px); height: min(28vw, 280px);
+    background: radial-gradient(circle, rgba(240,184,110,0.12) 0%, transparent 68%);
+    filter: blur(8px);
+    animation: skillsFlare 14s ease-in-out infinite;
+  }
+  @keyframes skillsFlare {
+    0%,100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.12); }
   }
 
-  .skills-shell { position: relative; z-index: 2; max-width: 1180px; margin: 0 auto; }
-  .skills-house-mark {
-    display: flex; align-items: center; justify-content: center; gap: 14px;
-    margin-bottom: 36px;
-  }
-  .skills-house-line {
-    display: block; width: 44px; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(156,58,48,0.7), transparent);
-  }
-  .skills-house-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--skills-accent);
-  }
+  .skills-shell { position: relative; z-index: 2; max-width: 920px; margin: 0 auto; }
 
-  .skills-header { margin-bottom: 56px; max-width: 720px; }
+  .skills-header { margin-bottom: 52px; max-width: 640px; }
   .skills-eyebrow {
     font-family: var(--font-credit);
     font-weight: 400;
@@ -772,12 +775,12 @@
   .skills-heading {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(1.7rem, 3.8vw, 3rem);
-    letter-spacing: 0.1em;
+    font-size: clamp(2.2rem, 5.2vw, 3.6rem);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--skills-ink);
-    margin-bottom: 16px;
-    line-height: 1.2;
+    margin-bottom: 18px;
+    line-height: 1.1;
   }
   .skills-heading-line {
     display: block; overflow: hidden;
@@ -786,118 +789,89 @@
     display: block;
     will-change: transform;
   }
-  .skills-heading-accent {
-    color: var(--skills-teal);
-    letter-spacing: 0.08em;
-  }
   .skills-lede {
+    font-family: var(--font-body);
     font-size: 1.02rem; line-height: 1.7; color: var(--skills-muted);
-    max-width: 540px;
+    max-width: 520px;
   }
 
-  .corkboard { position: relative; perspective: 1200px; }
-  .corkboard-thread {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; z-index: 0; overflow: visible;
+  .skills-dossier {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgba(244,239,230,0.12);
   }
-  .corkboard-path { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0.9; }
-  .corkboard-anchors { opacity: 0; }
-  .skills-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 70px 28px; position: relative; z-index: 1;
-  }
-  .pin-card {
-    background: linear-gradient(165deg, #fffcf7 0%, var(--skills-paper) 100%);
-    border-radius: 2px; padding: 28px 20px 26px;
-    border: 1px solid rgba(26,23,20,0.06);
-    box-shadow:
-      0 18px 34px -16px rgba(20,15,10,0.32),
-      0 2px 6px rgba(20,15,10,0.07),
-      inset 0 1px 0 rgba(255,255,255,0.75);
+  .skills-entry {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: clamp(16px, 3vw, 28px);
+    align-items: baseline;
+    padding: clamp(22px, 3vw, 28px) 0;
+    border-bottom: 1px solid rgba(244,239,230,0.1);
     position: relative;
-    transform-style: preserve-3d;
     will-change: transform, opacity;
-    --pin-rot: 0deg;
-    --pin-y: 0px;
+    transition: background 0.35s ease;
   }
-  .pin-head {
-    position: absolute; top: -10px; left: 50%;
-    width: 17px; height: 17px; border-radius: 50%;
-    transform: translateX(-50%);
-    background:
-      radial-gradient(circle at 32% 28%, #f87171, #b91c1c 55%, #7f1d1d);
-    box-shadow:
-      0 3px 7px rgba(0,0,0,0.38),
-      0 0 0 1px rgba(127,29,29,0.25);
-    z-index: 3;
+  .skills-entry::before {
+    content: '';
+    position: absolute;
+    left: -12px; top: 18%; bottom: 18%;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--skills-gold), transparent);
+    opacity: 0;
+    transform: scaleY(0.6);
+    transition: opacity 0.35s ease, transform 0.4s ease;
   }
-  .pin-head::after {
-    content: ''; position: absolute; inset: 4px 5px auto auto;
-    width: 4px; height: 4px; border-radius: 50%;
-    background: rgba(255,255,255,0.55);
+  .skills-entry:hover::before,
+  .skills-entry:focus-within::before {
+    opacity: 1;
+    transform: scaleY(1);
   }
-  .pin-card:nth-child(4n+1) { --pin-rot: -3deg; --pin-y: -16px; }
-  .pin-card:nth-child(4n+2) { --pin-rot: 2.2deg; --pin-y: 16px; }
-  .pin-card:nth-child(4n+3) { --pin-rot: -2deg; --pin-y: -10px; }
-  .pin-card:nth-child(4n+4) { --pin-rot: 3deg; --pin-y: 18px; }
-  .pin-card.is-settled {
-    transform: rotate(var(--pin-rot)) translateY(var(--pin-y));
+  .skills-entry-num {
+    font-family: var(--font-credit);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    color: var(--skills-gold);
+    opacity: 0.85;
+    padding-top: 0.35em;
   }
-  .skill-mark {
-    display: inline-flex; align-items: center; justify-content: center;
-    min-width: 42px; height: 28px; padding: 0 10px; margin-bottom: 14px;
-    font-family: 'Space Mono', monospace; font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.08em; color: var(--skills-teal);
-    background: rgba(11,127,143,0.08);
-    border: 1px solid rgba(11,127,143,0.22);
-    border-radius: 2px;
+  .skills-entry-body { min-width: 0; }
+  .skills-entry-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1rem, 2.1vw, 1.35rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--skills-ink);
+    margin-bottom: 8px;
+    line-height: 1.3;
+    transition: color 0.3s ease;
   }
-  .skill-mark-green { color: #0a8a63; background: rgba(16,150,110,0.08); border-color: rgba(16,150,110,0.25); }
-  .skill-mark-yellow { color: #a15c00; background: rgba(217,150,10,0.1); border-color: rgba(217,150,10,0.25); }
-  .skill-mark-purple { color: #6d28d9; background: rgba(124,58,237,0.08); border-color: rgba(124,58,237,0.22); }
-  .skill-title {
-    font-family: var(--font-display); font-size: 0.95rem; font-weight: 500;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--skills-ink); margin-bottom: 14px; line-height: 1.35;
+  .skills-entry:hover .skills-entry-title,
+  .skills-entry:focus-within .skills-entry-title {
+    color: #fff8ef;
   }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .skill-new {
-    position: absolute; top: 12px; right: 12px;
-    font-family: 'Space Mono', monospace; font-size: 0.58rem;
-    padding: 3px 8px;
-    background: rgba(16,185,129,0.12); color: #0a8a63;
-    border: 1px solid rgba(16,185,129,0.3); border-radius: 3px; z-index: 2;
+  .skills-entry-tags {
+    font-family: var(--font-credit);
+    font-size: clamp(0.78rem, 1.2vw, 0.9rem);
+    letter-spacing: 0.06em;
+    line-height: 1.55;
+    color: var(--skills-muted);
   }
-  .tag {
-    font-family: 'Space Mono', monospace; font-size: 0.68rem;
-    padding: 4px 10px; border-radius: 3px;
-    background: rgba(0,145,168,0.08); color: #0091a8;
-    border: 1px solid rgba(0,145,168,0.2);
-  }
-  .tag-green { background: rgba(16,150,110,0.08); color: #0a8a63; border-color: rgba(16,150,110,0.25); }
-  .tag-purple { background: rgba(124,58,237,0.08); color: #6d28d9; border-color: rgba(124,58,237,0.22); }
-  .tag-yellow { background: rgba(217,150,10,0.1); color: #a15c00; border-color: rgba(217,150,10,0.25); }
 
-  @media (max-width: 900px) {
-    .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 50px 20px; }
-    .pin-card:nth-child(4n+1),
-    .pin-card:nth-child(4n+2),
-    .pin-card:nth-child(4n+3),
-    .pin-card:nth-child(4n+4) { --pin-rot: -1.2deg; --pin-y: 0; }
-    .pin-card:nth-child(2n) { --pin-rot: 1.2deg; }
-  }
   @media (max-width: 640px) {
-    .skills-grid { grid-template-columns: 1fr; gap: 36px; }
-    .pin-card,
-    .pin-card:nth-child(4n+1),
-    .pin-card:nth-child(4n+2),
-    .pin-card:nth-child(4n+3),
-    .pin-card:nth-child(4n+4) { --pin-rot: 0deg; --pin-y: 0; }
-    .corkboard-thread { display: none; }
-    .skills-header { margin-bottom: 40px; }
+    #skills { padding: 90px 5% 100px; }
+    .skills-header { margin-bottom: 36px; }
+    .skills-entry {
+      grid-template-columns: 3rem 1fr;
+      gap: 14px;
+      padding: 20px 0;
+    }
+    .skills-entry::before { left: -6px; }
+    .skills-entry-num { letter-spacing: 0.18em; font-size: 0.66rem; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .skills-orb-a, .skills-orb-b { animation: none; }
+    .skills-orb-a, .skills-orb-b, .skills-flare { animation: none; }
   }
 
   /* PROJECTS — cinematic close-up rain on leaves (Pexels) */
@@ -2224,11 +2198,11 @@
   }
   #skills .cinematic-veil {
     background: linear-gradient(180deg,
-      rgba(232,224,210,0.85) 0%,
-      rgba(245,241,234,0.25) 28%,
+      rgba(7,9,14,0.75) 0%,
+      rgba(7,9,14,0.22) 28%,
       transparent 48%,
       transparent 60%,
-      rgba(20,15,10,0.1) 100%);
+      rgba(7,9,14,0.35) 100%);
   }
   #experience .cinematic-veil {
     background: linear-gradient(180deg,
