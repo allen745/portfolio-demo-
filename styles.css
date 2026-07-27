@@ -500,14 +500,11 @@
       #04060c url('images/hero-hogwarts-cinematic-hq.jpg') center 46% / cover no-repeat;
   }
   .hero-plate {
-    /* force sharper sampling when browsers upscale */
+    z-index: 1;
+    opacity: 0;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     transform: translateZ(0) scale(1.02);
-  }
-  .hero-plate {
-    z-index: 1;
-    opacity: 0;
   }
   .hero-plate.is-ready {
     opacity: 1;
@@ -525,7 +522,7 @@
     height: 100%;
     display: block;
     pointer-events: none;
-    opacity: 0.85;
+    opacity: 0.55;
   }
   .hero-aurora {
     position: absolute;
