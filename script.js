@@ -2247,6 +2247,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         child.id === 'project-detail' ||
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('ty-stage') ||
+        child.classList.contains('end-credits-stage') ||
         child.classList.contains('about-atmosphere') ||
         child.classList.contains('about-stage') ||
         child.classList.contains('projects-stage') ||
