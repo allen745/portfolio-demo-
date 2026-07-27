@@ -384,7 +384,7 @@ if (hasLenis) {
   }, '-=0.55');
   tl.fromTo('.hb-role', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.7');
   tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.35');
-  tl.fromTo('.hero-plate', { scale: 1.14 }, { scale: 1.08, duration: 2.2, ease: 'power1.out' }, '-=1.6');
+  tl.fromTo('.hero-plate', { scale: 1.06 }, { scale: 1.02, duration: 2.2, ease: 'power1.out' }, '-=1.6');
 })();
 
 // Make nav-links work with Lenis instead of native scroll
@@ -2837,8 +2837,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
 
   gsap.to(plate, {
-    scale: 1.16,
-    yPercent: 3,
+    scale: 1.08,
+    yPercent: 2,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
@@ -2849,8 +2849,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 
   gsap.to('.hero-mist', {
-    opacity: 0.75,
-    yPercent: -6,
+    opacity: 0.7,
+    yPercent: -4,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,

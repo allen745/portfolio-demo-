@@ -482,24 +482,29 @@
   .hero-plate,
   .hero-plate-fallback {
     position: absolute;
-    inset: -4%;
-    width: 108%;
-    height: 108%;
+    inset: -1%;
+    width: 102%;
+    height: 102%;
     object-fit: cover;
-    object-position: center 48%;
-    transform: scale(1.06);
-    filter: contrast(1.08) saturate(0.92) brightness(0.78);
+    object-position: center 46%;
+    transform: scale(1.02);
+    /* Keep the plate sharp — avoid heavy blur/brightness wash */
+    filter: contrast(1.12) saturate(1.02) brightness(0.9);
+    image-rendering: auto;
     will-change: transform;
   }
   .hero-plate-fallback {
     z-index: 0;
     background:
-      radial-gradient(ellipse 55% 40% at 50% 42%, rgba(180,140,70,0.18) 0%, transparent 58%),
-      #04060c url('images/hero-hogwarts-cinematic.png') center 48% / cover no-repeat;
+      radial-gradient(ellipse 55% 40% at 50% 42%, rgba(180,140,70,0.12) 0%, transparent 58%),
+      #04060c url('images/hero-hogwarts-cinematic-hq.jpg') center 46% / cover no-repeat;
   }
   .hero-plate {
     z-index: 1;
     opacity: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0) scale(1.02);
   }
   .hero-plate.is-ready {
     opacity: 1;
@@ -517,42 +522,43 @@
     height: 100%;
     display: block;
     pointer-events: none;
-    opacity: 0.85;
+    opacity: 0.55;
   }
   .hero-aurora {
     position: absolute;
     inset: -10% 0 auto;
-    height: 55%;
+    height: 48%;
     z-index: 2;
     background:
-      radial-gradient(ellipse 55% 45% at 50% 20%, rgba(70, 130, 90, 0.16) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 35% at 72% 30%, rgba(232, 194, 122, 0.1) 0%, transparent 65%),
-      radial-gradient(ellipse 35% 30% at 28% 35%, rgba(90, 140, 180, 0.1) 0%, transparent 60%);
-    filter: blur(18px);
+      radial-gradient(ellipse 55% 45% at 50% 18%, rgba(70, 130, 90, 0.1) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 35% at 72% 28%, rgba(232, 194, 122, 0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 30% at 28% 32%, rgba(90, 140, 180, 0.07) 0%, transparent 60%);
+    filter: blur(10px);
+    opacity: 0.65;
     animation: heroAurora 16s ease-in-out infinite alternate;
     pointer-events: none;
   }
   @keyframes heroAurora {
-    0% { opacity: 0.55; transform: translateY(0) scale(1); }
-    100% { opacity: 0.9; transform: translateY(2%) scale(1.04); }
+    0% { opacity: 0.4; transform: translateY(0) scale(1); }
+    100% { opacity: 0.7; transform: translateY(1.5%) scale(1.03); }
   }
   .hero-mist {
     position: absolute;
     left: -10%;
     right: -10%;
-    top: 42%;
-    height: 48%;
+    top: 58%;
+    height: 38%;
     z-index: 3;
     background:
       linear-gradient(180deg,
         transparent 0%,
-        rgba(120, 150, 180, 0.08) 18%,
-        rgba(8, 12, 20, 0.45) 48%,
-        rgba(6, 10, 16, 0.55) 68%,
+        rgba(120, 150, 180, 0.05) 18%,
+        rgba(8, 12, 20, 0.28) 52%,
+        rgba(6, 10, 16, 0.42) 78%,
         transparent 100%),
-      radial-gradient(ellipse 100% 55% at 50% 55%, rgba(200, 180, 120, 0.1) 0%, transparent 72%);
-    filter: blur(18px);
-    opacity: 1;
+      radial-gradient(ellipse 100% 55% at 50% 70%, rgba(200, 180, 120, 0.06) 0%, transparent 72%);
+    filter: blur(10px);
+    opacity: 0.85;
     pointer-events: none;
     animation: heroMistDrift 22s ease-in-out infinite alternate;
   }
@@ -565,15 +571,15 @@
     inset: 0;
     z-index: 4;
     background:
-      linear-gradient(180deg, rgba(8, 14, 28, 0.45) 0%, rgba(8, 14, 28, 0.12) 30%, transparent 48%, rgba(4, 6, 12, 0.72) 100%),
-      radial-gradient(ellipse 70% 40% at 50% 35%, rgba(232, 194, 122, 0.08) 0%, transparent 60%),
-      linear-gradient(105deg, rgba(20, 40, 30, 0.18) 0%, transparent 45%, rgba(20, 30, 50, 0.2) 100%);
+      linear-gradient(180deg, rgba(8, 14, 28, 0.28) 0%, rgba(8, 14, 28, 0.06) 28%, transparent 50%, rgba(4, 6, 12, 0.55) 100%),
+      radial-gradient(ellipse 70% 40% at 50% 35%, rgba(232, 194, 122, 0.05) 0%, transparent 60%),
+      linear-gradient(105deg, rgba(20, 40, 30, 0.1) 0%, transparent 45%, rgba(20, 30, 50, 0.12) 100%);
   }
   .hero-grain {
     position: absolute;
     inset: 0;
     z-index: 5;
-    opacity: 0.26;
+    opacity: 0.14;
     mix-blend-mode: soft-light;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     animation: heroGrain 0.4s steps(2) infinite;
@@ -587,8 +593,8 @@
     inset: 0;
     z-index: 6;
     background:
-      radial-gradient(ellipse 74% 64% at 50% 46%, transparent 10%, rgba(0, 0, 0, 0.35) 58%, rgba(0, 0, 0, 0.9) 100%),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, transparent 16%, transparent 84%, rgba(0, 0, 0, 0.5) 100%);
+      radial-gradient(ellipse 78% 68% at 50% 46%, transparent 18%, rgba(0, 0, 0, 0.22) 62%, rgba(0, 0, 0, 0.78) 100%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.35) 0%, transparent 14%, transparent 86%, rgba(0, 0, 0, 0.35) 100%);
   }
 
   @media (prefers-reduced-motion: reduce) {
