@@ -3037,7 +3037,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// Harry-style broomstick flyer — flies across the page as you scroll
+// Quidditch-style broomstick flyer — flies across the page as you scroll
 (function(){
   var root = document.getElementById('broomFlight');
   var rider = document.getElementById('broomRider');
@@ -3048,7 +3048,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   if(reduceMotion) return;
 
   var sparks = [];
-  var SPARK_COUNT = 14;
+  var SPARK_COUNT = 18;
   var lastSparkAt = 0;
   var sparkIdx = 0;
 
@@ -3062,11 +3062,11 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   function flightXY(p){
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    // Sweep left→right with a gentle Quidditch wave
-    var x = -0.12 * vw + p * 1.24 * vw;
-    var wave = Math.sin(p * Math.PI * 2.15) * (vh * 0.11);
-    var y = vh * 0.72 - p * vh * 0.42 + wave;
-    var tilt = -12 + Math.cos(p * Math.PI * 2.15) * 10;
+    // Sweep left→right with a Quidditch dive / climb wave
+    var x = -0.18 * vw + p * 1.32 * vw;
+    var wave = Math.sin(p * Math.PI * 2.35) * (vh * 0.12);
+    var y = vh * 0.68 - p * vh * 0.38 + wave;
+    var tilt = -8 + Math.cos(p * Math.PI * 2.35) * 9;
     return { x: x, y: y, tilt: tilt };
   }
 
@@ -3074,8 +3074,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     if(!sparks.length) return;
     var el = sparks[sparkIdx % sparks.length];
     sparkIdx++;
-    var driftX = -18 - Math.random() * 42;
-    var driftY = (Math.random() - 0.5) * 28;
+    var driftX = -24 - Math.random() * 56;
+    var driftY = (Math.random() - 0.5) * 34;
     el.style.left = x + 'px';
     el.style.top = y + 'px';
     el.style.opacity = '0.95';
@@ -3084,7 +3084,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       gsap.killTweensOf(el);
       gsap.fromTo(el,
         { opacity: 0.95, x: 0, y: 0, scale: 1 },
-        { opacity: 0, x: driftX, y: driftY, scale: 0.15, duration: 0.7 + Math.random() * 0.35, ease: 'power2.out' }
+        { opacity: 0, x: driftX, y: driftY, scale: 0.12, duration: 0.75 + Math.random() * 0.4, ease: 'power2.out' }
       );
     } else {
       el.style.opacity = '0';
@@ -3094,8 +3094,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   function applyProgress(p){
     var pose = flightXY(p);
     // Fade in after a little scroll, fade out near the finale
-    var fadeIn = Math.min(1, Math.max(0, (p - 0.02) / 0.06));
-    var fadeOut = Math.min(1, Math.max(0, (0.96 - p) / 0.06));
+    var fadeIn = Math.min(1, Math.max(0, (p - 0.015) / 0.05));
+    var fadeOut = Math.min(1, Math.max(0, (0.97 - p) / 0.05));
     var opacity = fadeIn * fadeOut;
 
     root.style.opacity = String(opacity);
@@ -3104,9 +3104,10 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
     if(opacity > 0.15){
       var now = performance.now();
-      if(now - lastSparkAt > 55){
+      if(now - lastSparkAt > 45){
         lastSparkAt = now;
-        spawnSpark(pose.x - 36, pose.y + 6);
+        spawnSpark(pose.x - 70, pose.y + 18);
+        if(Math.random() > 0.45) spawnSpark(pose.x - 95, pose.y + 8);
       }
     }
   }
@@ -3119,7 +3120,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       trigger: document.body,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 0.45,
+      scrub: 0.4,
       onUpdate: function(self){
         applyProgress(self.progress);
       }
