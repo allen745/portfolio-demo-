@@ -2188,7 +2188,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if(!window.gsap || !window.ScrollTrigger) return;
 
-  var sectionIds = ['about', 'skills', 'projects', 'achievements', 'experience', 'contact'];
+  var sectionIds = ['about', 'skills', 'projects', 'achievements', 'experience', 'contact', 'credits'];
 
   sectionIds.forEach(function(id){
     var section = document.getElementById(id);
@@ -2247,6 +2247,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         child.id === 'project-detail' ||
         child.classList.contains('ach-sticky-bg') ||
         child.classList.contains('ty-stage') ||
+        child.classList.contains('end-credits-stage') ||
         child.classList.contains('about-atmosphere') ||
         child.classList.contains('about-stage') ||
         child.classList.contains('projects-stage') ||
@@ -2773,4 +2774,55 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       scrub: true
     }
   });
+})();
+
+// End credits — movie-style pinned scroll roll after Thank You
+(function(){
+  var section = document.getElementById('credits');
+  if(!section) return;
+
+  var pin = section.querySelector('.end-credits-pin');
+  var roll = document.getElementById('endCreditsRoll');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if(!pin || !roll) return;
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+
+  var distance = function(){
+    return Math.max(roll.scrollHeight - window.innerHeight * 0.35, window.innerHeight * 1.8);
+  };
+
+  gsap.set(roll, { y: 0 });
+
+  gsap.to(roll, {
+    y: function(){ return -distance(); },
+    ease: 'none',
+    scrollTrigger: {
+      trigger: section,
+      start: 'top top',
+      end: function(){ return '+=' + distance(); },
+      pin: pin,
+      scrub: 0.65,
+      anticipatePin: 1,
+      invalidateOnRefresh: true
+    }
+  });
+
+  // Soft fade-in of the first title block as credits begin
+  var firstBlock = roll.querySelector('.end-credits-block--title');
+  if(firstBlock){
+    gsap.fromTo(firstBlock,
+      { opacity: 0.35 },
+      {
+        opacity: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=20%',
+          scrub: true
+        }
+      }
+    );
+  }
 })();
