@@ -2856,7 +2856,10 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 
   function resumeCredits(){
-    if(finished) return;
+    if(finished){
+      playCredits(true);
+      return;
+    }
     if(tween){
       tween.resume();
       section.classList.add('is-rolling');
