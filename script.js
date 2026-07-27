@@ -2837,8 +2837,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
 
   gsap.to(plate, {
-    scale: 1.16,
-    yPercent: 3,
+    scale: 1.08,
+    yPercent: 2,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
@@ -2849,8 +2849,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 
   gsap.to('.hero-mist', {
-    opacity: 0.75,
-    yPercent: -6,
+    opacity: 0.7,
+    yPercent: -4,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,
