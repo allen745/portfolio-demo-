@@ -3164,7 +3164,7 @@ nav > * { pointer-events: auto; }
   .nav-panel.open .nav-panel-list li { animation: none; }
 }
 
-/* ── Harry-style broomstick flyer (scroll-scrubbed) ── */
+/* ── Quidditch broomstick flyer (scroll-scrubbed) ── */
 .broom-flight {
   --broom-gold: #e8c27a;
   position: fixed;
@@ -3182,40 +3182,47 @@ nav > * { pointer-events: auto; }
   visibility: visible;
 }
 body.pd-open .broom-flight,
-body.preloader-lock .broom-flight {
+body:has(#preloader) .broom-flight {
   opacity: 0 !important;
   visibility: hidden;
 }
 .broom-flight-rider {
   position: absolute;
-  width: clamp(140px, 18vw, 220px);
+  width: clamp(220px, 34vw, 420px);
   height: auto;
   transform: translate(-50%, -50%);
   filter:
-    drop-shadow(0 0 10px rgba(232, 194, 122, 0.45))
-    drop-shadow(0 8px 18px rgba(0, 0, 0, 0.55));
+    drop-shadow(0 0 18px rgba(232, 194, 122, 0.28))
+    drop-shadow(0 14px 28px rgba(0, 0, 0, 0.55));
 }
-.broom-svg {
+.broom-flyer-art {
   display: block;
   width: 100%;
   height: auto;
-  overflow: visible;
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: broomFlyerBob 2.8s ease-in-out infinite alternate;
 }
-.broom-bristles {
-  transform-origin: 28px 52px;
-  animation: broomBristle 0.55s ease-in-out infinite alternate;
+.broom-flyer-wake {
+  position: absolute;
+  left: 8%;
+  top: 48%;
+  width: 42%;
+  height: 28%;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(232,194,122,0.22), transparent 70%);
+  filter: blur(10px);
+  opacity: 0.55;
+  pointer-events: none;
+  animation: broomWakePulse 1.4s ease-in-out infinite alternate;
 }
-.broom-wand-spark {
-  transform-origin: 148px 32px;
-  animation: broomWandPulse 1.1s ease-in-out infinite;
+@keyframes broomFlyerBob {
+  from { transform: translateY(0) rotate(0deg); }
+  to { transform: translateY(-4px) rotate(-1.2deg); }
 }
-@keyframes broomBristle {
-  from { transform: rotate(-2deg); opacity: 0.75; }
-  to { transform: rotate(3deg); opacity: 1; }
-}
-@keyframes broomWandPulse {
-  0%, 100% { opacity: 0.55; transform: scale(0.85); }
-  50% { opacity: 1; transform: scale(1.2); }
+@keyframes broomWakePulse {
+  from { opacity: 0.3; transform: translateY(-50%) scaleX(0.92); }
+  to { opacity: 0.65; transform: translateY(-50%) scaleX(1.05); }
 }
 .broom-flight-trail {
   position: absolute;
@@ -3225,23 +3232,23 @@ body.preloader-lock .broom-flight {
 }
 .broom-spark {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   margin: -2px 0 0 -2px;
   border-radius: 50%;
   background: radial-gradient(circle, #fff8e0 0%, #e8c27a 45%, transparent 75%);
-  box-shadow: 0 0 8px rgba(232, 194, 122, 0.8);
+  box-shadow: 0 0 10px rgba(232, 194, 122, 0.85);
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
 }
 @media (max-width: 700px) {
   .broom-flight-rider {
-    width: clamp(110px, 28vw, 160px);
+    width: clamp(170px, 58vw, 280px);
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .broom-flight { display: none; }
-  .broom-bristles,
-  .broom-wand-spark { animation: none; }
+  .broom-flyer-art,
+  .broom-flyer-wake { animation: none; }
 }
