@@ -2176,7 +2176,7 @@
     .ty-video { display: none; }
   }
 
-  /* END CREDITS — movie-style scrolling roll after Thank You */
+  /* END CREDITS — auto-rolling film finale after Thank You */
   #credits.end-credits {
     --ec-ink: #f4efe6;
     --ec-muted: rgba(244, 239, 230, 0.62);
@@ -2186,7 +2186,9 @@
     background: #02040a;
     color: var(--ec-ink);
     overflow: hidden;
+    height: 100vh;
     min-height: 100vh;
+    max-height: 100vh;
   }
   .end-credits-stage {
     position: absolute;
@@ -2255,7 +2257,7 @@
   .end-credits-pin {
     position: relative;
     z-index: 2;
-    height: 100vh;
+    height: 100%;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -2263,10 +2265,32 @@
   }
   .end-credits-roll {
     width: min(720px, 88vw);
-    padding: 110vh 0 55vh;
+    padding: 0 0 35vh;
     text-align: center;
     will-change: transform;
+    transform: translate3d(0, 70vh, 0);
   }
+  .end-credits-roll.is-autoplaying {
+    transition: none;
+  }
+  .end-credits-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 4.5vh;
+    z-index: 5;
+    text-align: center;
+    font-family: var(--font-credit);
+    font-size: 0.62rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: rgba(244, 239, 230, 0.38);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  #credits.is-rolling .end-credits-hint { opacity: 1; }
+  #credits.is-finished .end-credits-hint { opacity: 0; }
 
   .end-credits-block {
     margin: 0 0 clamp(52px, 8vh, 88px);
@@ -2403,7 +2427,7 @@
   }
 
   @media (max-width: 640px) {
-    .end-credits-roll { width: min(92vw, 520px); padding: 105vh 0 48vh; }
+    .end-credits-roll { width: min(92vw, 520px); padding: 0 0 30vh; }
     .end-credits-cast li {
       grid-template-columns: 1fr;
       gap: 4px;
@@ -2415,12 +2439,22 @@
     .end-credits-dots { display: none; }
     .end-credits-name { letter-spacing: 0.12em; text-indent: 0; }
     .end-credits-name--hero { letter-spacing: 0.16em; text-indent: 0; }
+    .end-credits-hint { letter-spacing: 0.22em; font-size: 0.58rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .end-credits-stars { animation: none; }
+    #credits.end-credits {
+      height: auto;
+      max-height: none;
+      min-height: 100vh;
+    }
     .end-credits-pin { height: auto; overflow: visible; }
-    .end-credits-roll { padding: 110px 0 100px; transform: none !important; }
-    .end-credits-mask { display: none; }
+    .end-credits-roll {
+      padding: 110px 0 100px;
+      transform: none !important;
+    }
+    .end-credits-mask,
+    .end-credits-hint { display: none; }
   }
 
   .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
