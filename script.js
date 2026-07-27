@@ -1446,7 +1446,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     if(label) label.textContent = 'Menu';
   }
   function openPanel(){
-    // Retrigger Marvel web draw / item swing each open
+    // Retrigger Avengers HUD scan / item swing each open
     panel.classList.remove('open');
     void panel.offsetWidth;
     panel.classList.add('open');
