@@ -2776,7 +2776,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// End credits — movie-style pinned scroll roll after Thank You
+// End credits — auto-rolling film finale after Thank You (video-like)
 (function(){
   var section = document.getElementById('credits');
   if(!section) return;
@@ -2784,45 +2784,167 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var pin = section.querySelector('.end-credits-pin');
   var roll = document.getElementById('endCreditsRoll');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tween = null;
+  var playing = false;
+  var finished = false;
 
   if(!pin || !roll) return;
-  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
 
-  var distance = function(){
-    return Math.max(roll.scrollHeight - window.innerHeight * 0.35, window.innerHeight * 1.8);
-  };
-
-  gsap.set(roll, { y: 0 });
-
-  gsap.to(roll, {
-    y: function(){ return -distance(); },
-    ease: 'none',
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: function(){ return '+=' + distance(); },
-      pin: pin,
-      scrub: 0.65,
-      anticipatePin: 1,
-      invalidateOnRefresh: true
-    }
-  });
-
-  // Soft fade-in of the first title block as credits begin
-  var firstBlock = roll.querySelector('.end-credits-block--title');
-  if(firstBlock){
-    gsap.fromTo(firstBlock,
-      { opacity: 0.35 },
-      {
-        opacity: 1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: '+=20%',
-          scrub: true
-        }
-      }
-    );
+  function startY(){
+    return Math.round(pin.clientHeight * 0.72);
   }
+
+  function endY(){
+    var finale = roll.querySelector('.end-credits-block--finale');
+    var pinH = pin.clientHeight;
+    // Leave the finale roughly centered when the roll finishes
+    var finaleOffset = finale ? finale.offsetTop : roll.scrollHeight;
+    var target = -(finaleOffset - pinH * 0.28);
+    var minTravel = -(roll.scrollHeight - pinH * 0.55);
+    return Math.min(target, minTravel);
+  }
+
+  function stopCredits(){
+    if(tween){
+      tween.kill();
+      tween = null;
+    }
+    playing = false;
+    section.classList.remove('is-rolling');
+  }
+
+  function playCredits(fromStart){
+    if(reduceMotion) return;
+    if(!window.gsap) return;
+
+    if(playing && !fromStart) return;
+
+    stopCredits();
+    finished = false;
+    section.classList.remove('is-finished');
+    section.classList.add('is-rolling');
+    roll.classList.add('is-autoplaying');
+    playing = true;
+
+    var from = startY();
+    var to = endY();
+    // Slow cinematic pace — roughly movie end-credit speed
+    var travel = Math.abs(to - from);
+    var duration = Math.max(42, Math.min(70, travel / 28));
+
+    gsap.set(roll, { y: from });
+    tween = gsap.to(roll, {
+      y: to,
+      duration: duration,
+      ease: 'none',
+      overwrite: true,
+      onComplete: function(){
+        playing = false;
+        finished = true;
+        tween = null;
+        section.classList.remove('is-rolling');
+        section.classList.add('is-finished');
+      }
+    });
+  }
+
+  function pauseCredits(){
+    if(tween && playing){
+      tween.pause();
+      section.classList.remove('is-rolling');
+    }
+  }
+
+  function resumeCredits(){
+    if(finished){
+      playCredits(true);
+      return;
+    }
+    if(tween){
+      tween.resume();
+      section.classList.add('is-rolling');
+      playing = true;
+      return;
+    }
+    playCredits(true);
+  }
+
+  if(reduceMotion){
+    gsap && gsap.set(roll, { clearProps: 'transform' });
+    roll.style.transform = 'none';
+    section.classList.add('is-finished');
+    return;
+  }
+
+  // Fallback without GSAP: CSS-free JS interval
+  if(!window.gsap){
+    var y = startY();
+    var to = endY();
+    var step = (y - to) / 1800;
+    roll.style.transform = 'translate3d(0,' + y + 'px,0)';
+    var raf = 0;
+    function tick(){
+      y -= step;
+      if(y <= to){
+        y = to;
+        roll.style.transform = 'translate3d(0,' + y + 'px,0)';
+        section.classList.add('is-finished');
+        return;
+      }
+      roll.style.transform = 'translate3d(0,' + y + 'px,0)';
+      raf = requestAnimationFrame(tick);
+    }
+    if('IntersectionObserver' in window){
+      var ioFallback = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            section.classList.add('is-rolling');
+            if(!raf) raf = requestAnimationFrame(tick);
+          }
+        });
+      }, { threshold: 0.45 });
+      ioFallback.observe(section);
+    } else {
+      section.classList.add('is-rolling');
+      raf = requestAnimationFrame(tick);
+    }
+    return;
+  }
+
+  gsap.set(roll, { y: startY() });
+
+  if(window.ScrollTrigger){
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 75%',
+      end: 'bottom top',
+      onEnter: function(){ resumeCredits(); },
+      onEnterBack: function(){ resumeCredits(); },
+      onLeave: function(){ pauseCredits(); },
+      onLeaveBack: function(){ pauseCredits(); }
+    });
+  } else if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) resumeCredits();
+        else pauseCredits();
+      });
+    }, { threshold: 0.4 });
+    io.observe(section);
+  } else {
+    playCredits(true);
+  }
+
+  window.addEventListener('resize', function(){
+    if(!playing && !finished){
+      gsap.set(roll, { y: startY() });
+      return;
+    }
+    if(finished){
+      gsap.set(roll, { y: endY() });
+      return;
+    }
+    // Restart at current cinematic pace after resize so end position stays correct
+    if(playing) playCredits(true);
+  });
 })();
