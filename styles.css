@@ -751,7 +751,11 @@
     .hb-kicker {
       letter-spacing: 0.4em;
       text-indent: 0.4em;
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .hb-rule {
+      width: min(58vw, 220px);
+      margin-bottom: 0.95rem;
     }
     .hb-ash { height: 100px; top: 48%; }
   }
