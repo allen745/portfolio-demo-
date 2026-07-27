@@ -3163,3 +3163,85 @@ nav > * { pointer-events: auto; }
   .nav-panel.open .nav-panel-scan,
   .nav-panel.open .nav-panel-list li { animation: none; }
 }
+
+/* ── Harry-style broomstick flyer (scroll-scrubbed) ── */
+.broom-flight {
+  --broom-gold: #e8c27a;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 180;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.broom-flight.is-live {
+  visibility: visible;
+}
+body.pd-open .broom-flight,
+body.preloader-lock .broom-flight {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+.broom-flight-rider {
+  position: absolute;
+  width: clamp(140px, 18vw, 220px);
+  height: auto;
+  transform: translate(-50%, -50%);
+  filter:
+    drop-shadow(0 0 10px rgba(232, 194, 122, 0.45))
+    drop-shadow(0 8px 18px rgba(0, 0, 0, 0.55));
+}
+.broom-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.broom-bristles {
+  transform-origin: 28px 52px;
+  animation: broomBristle 0.55s ease-in-out infinite alternate;
+}
+.broom-wand-spark {
+  transform-origin: 148px 32px;
+  animation: broomWandPulse 1.1s ease-in-out infinite;
+}
+@keyframes broomBristle {
+  from { transform: rotate(-2deg); opacity: 0.75; }
+  to { transform: rotate(3deg); opacity: 1; }
+}
+@keyframes broomWandPulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+.broom-flight-trail {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.broom-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff8e0 0%, #e8c27a 45%, transparent 75%);
+  box-shadow: 0 0 8px rgba(232, 194, 122, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+@media (max-width: 700px) {
+  .broom-flight-rider {
+    width: clamp(110px, 28vw, 160px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .broom-flight { display: none; }
+  .broom-bristles,
+  .broom-wand-spark { animation: none; }
+}

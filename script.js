@@ -3036,3 +3036,101 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     if(playing) playCredits(true);
   });
 })();
+
+// Harry-style broomstick flyer — flies across the page as you scroll
+(function(){
+  var root = document.getElementById('broomFlight');
+  var rider = document.getElementById('broomRider');
+  var trail = document.getElementById('broomTrail');
+  if(!root || !rider) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion) return;
+
+  var sparks = [];
+  var SPARK_COUNT = 14;
+  var lastSparkAt = 0;
+  var sparkIdx = 0;
+
+  for(var i = 0; i < SPARK_COUNT; i++){
+    var s = document.createElement('span');
+    s.className = 'broom-spark';
+    if(trail) trail.appendChild(s);
+    sparks.push(s);
+  }
+
+  function flightXY(p){
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    // Sweep left→right with a gentle Quidditch wave
+    var x = -0.12 * vw + p * 1.24 * vw;
+    var wave = Math.sin(p * Math.PI * 2.15) * (vh * 0.11);
+    var y = vh * 0.72 - p * vh * 0.42 + wave;
+    var tilt = -12 + Math.cos(p * Math.PI * 2.15) * 10;
+    return { x: x, y: y, tilt: tilt };
+  }
+
+  function spawnSpark(x, y){
+    if(!sparks.length) return;
+    var el = sparks[sparkIdx % sparks.length];
+    sparkIdx++;
+    var driftX = -18 - Math.random() * 42;
+    var driftY = (Math.random() - 0.5) * 28;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.opacity = '0.95';
+    el.style.transform = 'translate(0,0) scale(1)';
+    if(window.gsap){
+      gsap.killTweensOf(el);
+      gsap.fromTo(el,
+        { opacity: 0.95, x: 0, y: 0, scale: 1 },
+        { opacity: 0, x: driftX, y: driftY, scale: 0.15, duration: 0.7 + Math.random() * 0.35, ease: 'power2.out' }
+      );
+    } else {
+      el.style.opacity = '0';
+    }
+  }
+
+  function applyProgress(p){
+    var pose = flightXY(p);
+    // Fade in after a little scroll, fade out near the finale
+    var fadeIn = Math.min(1, Math.max(0, (p - 0.02) / 0.06));
+    var fadeOut = Math.min(1, Math.max(0, (0.96 - p) / 0.06));
+    var opacity = fadeIn * fadeOut;
+
+    root.style.opacity = String(opacity);
+    root.style.transform = 'translate3d(' + pose.x + 'px,' + pose.y + 'px,0)';
+    rider.style.transform = 'translate(-50%, -50%) rotate(' + pose.tilt + 'deg)';
+
+    if(opacity > 0.15){
+      var now = performance.now();
+      if(now - lastSparkAt > 55){
+        lastSparkAt = now;
+        spawnSpark(pose.x - 36, pose.y + 6);
+      }
+    }
+  }
+
+  root.classList.add('is-live');
+  applyProgress(0);
+
+  if(window.gsap && window.ScrollTrigger){
+    ScrollTrigger.create({
+      trigger: document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.45,
+      onUpdate: function(self){
+        applyProgress(self.progress);
+      }
+    });
+  } else {
+    function onScroll(){
+      var doc = document.documentElement;
+      var max = Math.max(1, doc.scrollHeight - window.innerHeight);
+      applyProgress(window.scrollY / max);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+})();
