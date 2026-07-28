@@ -387,7 +387,7 @@ if (hasLenis) {
   tl.fromTo('.hero-plate', { scale: 1.06 }, { scale: 1.02, duration: 2.2, ease: 'power1.out' }, '-=1.6');
 })();
 
-// Make nav-links work with Lenis instead of native scroll
+// Smooth in-page anchors with Lenis when available
 document.querySelectorAll('a[href^="#"]').forEach(function(a){
   a.addEventListener('click', function(e){
     var target = document.querySelector(a.getAttribute('href'));
@@ -1498,13 +1498,10 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var section = document.getElementById('about');
   if(!section) return;
 
-  var path = document.getElementById('aboutPath');
-  var dot = document.getElementById('aboutPathDot');
   var codeCinema = section.querySelector('.about-code-cinema');
   var codeCanvas = document.getElementById('aboutCodeRain');
   var codeStream = document.getElementById('aboutCodeStream');
   var headingLines = section.querySelectorAll('.about-heading-line');
-  var house = section.querySelector('.about-house-mark');
   var eyebrow = section.querySelector('.about-eyebrow');
   var script = section.querySelector('.about-script');
   var descs = section.querySelectorAll('.about-desc');
@@ -1746,21 +1743,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     startCodeCinema();
   }
 
-  // Prepare signature path length for draw-on
-  var pathLen = 0;
-  if(path){
-    pathLen = path.getTotalLength();
-    path.style.strokeDasharray = String(pathLen);
-    path.style.strokeDashoffset = String(pathLen);
-  }
-  if(dot && path){
-    var start = path.getPointAtLength(0);
-    dot.setAttribute('cx', start.x);
-    dot.setAttribute('cy', start.y);
-  }
-
   if(reduceMotion || !window.gsap || !window.ScrollTrigger){
-    if(path) path.style.strokeDashoffset = '0';
     stats.forEach(function(el){
       var n = parseInt(el.getAttribute('data-count'), 10) || 0;
       el.textContent = el.getAttribute('data-count') === '7' ? '7+' : String(n);
@@ -1795,15 +1778,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     );
   }
 
-  if(house){
-    gsap.fromTo(house,
-      { opacity: 0, y: 16 },
-      {
-        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: house, start: 'top 90%', toggleActions: 'play none none reverse' }
-      }
-    );
-  }
   if(eyebrow){
     gsap.fromTo(eyebrow,
       { opacity: 0, x: -24 },
@@ -1844,29 +1818,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         scrollTrigger: { trigger: descs[0], start: 'top 90%', toggleActions: 'play none none reverse' }
       }
     );
-  }
-
-  // Signature path draw + trailing focus dot
-  if(path){
-    var draw = { v: 0 };
-    gsap.to(draw, {
-      v: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section.querySelector('.about-media'),
-        start: 'top 75%',
-        end: 'bottom 45%',
-        scrub: 0.65,
-        onUpdate: function(){
-          path.style.strokeDashoffset = String(pathLen * (1 - draw.v));
-          if(dot){
-            var pt = path.getPointAtLength(pathLen * draw.v);
-            dot.setAttribute('cx', pt.x);
-            dot.setAttribute('cy', pt.y);
-          }
-        }
-      }
-    });
   }
 
   // Count-up stats
@@ -2471,7 +2422,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var stage = section.querySelector('.ty-stage');
-  var mark = section.querySelector('.ty-house-mark');
   var title = section.querySelector('.thank-you');
   var sub = section.querySelector('.ty-subcopy');
   var lights = section.querySelectorAll('.ty-light');
@@ -2525,16 +2475,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     });
   }
 
-  // Production-house end-card reveal
-  if(mark){
-    gsap.fromTo(mark,
-      { opacity: 0, y: 18 },
-      {
-        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: mark, start: 'top 88%', toggleActions: 'play none none reverse' }
-      }
-    );
-  }
+  // Production end-card reveal
   if(title){
     gsap.fromTo(title,
       { opacity: 0, y: 56, clipPath: 'inset(110% 0 0 0)' },
