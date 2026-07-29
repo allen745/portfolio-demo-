@@ -1782,11 +1782,12 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 
   var video = document.getElementById('achBgVideo') || stickyBg.querySelector('.ach-bg-video');
-  var eyebrow = content.querySelector('.ach-eyebrow');
+  var top = content.querySelector('.ach-top');
   var headingLines = content.querySelectorAll('.ach-heading-line');
   var lede = content.querySelector('.ach-lede');
-  var dossier = content.querySelector('.ach-dossier');
   var entries = content.querySelectorAll('.ach-entry');
+  var ledger = content.querySelector('.ach-ledger');
+  var cta = content.querySelector('.ach-cta');
 
   function playBg(){
     if(!video || reduceMotion) return;
@@ -1820,7 +1821,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   if(video){
     gsap.to(video, {
-      scale: 1.12,
+      scale: 1.1,
       yPercent: 4,
       ease: 'none',
       scrollTrigger: {
@@ -1832,11 +1833,13 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     });
   }
 
-  if(eyebrow){
-    gsap.fromTo(eyebrow,
-      { opacity: 0, x: -26 },
-      { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' } }
+  if(top){
+    gsap.fromTo(top,
+      { opacity: 0, y: 16 },
+      {
+        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: top, start: 'top 90%', toggleActions: 'play none none reverse' }
+      }
     );
   }
   headingLines.forEach(function(line){
@@ -1844,82 +1847,56 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     line.innerHTML = '<span class="ach-heading-inner">' + text + '</span>';
     var inner = line.querySelector('.ach-heading-inner');
     gsap.fromTo(inner,
-      { yPercent: 115 },
-      { yPercent: 0, duration: 1.1, ease: 'power4.out',
-        scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' } }
+      { yPercent: 110 },
+      {
+        yPercent: 0, duration: 1.15, ease: 'power4.out',
+        scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
     );
   });
   if(lede){
     gsap.fromTo(lede,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
-        scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' } }
-    );
-  }
-
-  if(dossier){
-    gsap.fromTo(dossier,
-      { opacity: 0.35 },
+      { opacity: 0, y: 18 },
       {
-        opacity: 1, duration: 0.9, ease: 'power2.out',
-        scrollTrigger: { trigger: dossier, start: 'top 85%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' }
       }
     );
   }
 
   entries.forEach(function(entry, i){
-    var num = entry.querySelector('.ach-entry-num');
-    var org = entry.querySelector('.ach-entry-org');
-    var title = entry.querySelector('.ach-entry-title');
-    var desc = entry.querySelector('.ach-entry-desc');
-    var meta = entry.querySelector('.ach-entry-meta');
-
-    gsap.set(entry, { opacity: 0, y: 28 });
-    if(num) gsap.set(num, { opacity: 0, x: -12 });
-    if(org) gsap.set(org, { opacity: 0, y: 10 });
-    if(title) gsap.set(title, { opacity: 0, y: 14 });
-    if(desc) gsap.set(desc, { opacity: 0, y: 12 });
-    if(meta) gsap.set(meta, { opacity: 0, y: 10 });
-
-    var tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: entry,
-        start: 'top 90%',
-        toggleActions: 'play none none reverse'
-      },
-      delay: Math.min(i * 0.03, 0.15)
-    });
-
-    tl.to(entry, {
-      opacity: 1, y: 0, duration: 0.85, ease: 'power3.out'
-    }, 0);
-
-    if(num){
-      tl.to(num, {
-        opacity: 0.85, x: 0, duration: 0.6, ease: 'power3.out'
-      }, 0.08);
-    }
-    if(org){
-      tl.to(org, {
-        opacity: 1, y: 0, duration: 0.55, ease: 'power3.out'
-      }, 0.12);
-    }
-    if(title){
-      tl.to(title, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out'
-      }, 0.16);
-    }
-    if(desc){
-      tl.to(desc, {
-        opacity: 1, y: 0, duration: 0.65, ease: 'power3.out'
-      }, 0.22);
-    }
-    if(meta){
-      tl.to(meta, {
-        opacity: 1, y: 0, duration: 0.6, ease: 'power3.out'
-      }, 0.28);
-    }
+    gsap.fromTo(entry,
+      { opacity: 0, y: 22 },
+      {
+        opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
+        delay: Math.min(i * 0.04, 0.2),
+        scrollTrigger: {
+          trigger: entry,
+          start: 'top 92%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
   });
+
+  if(ledger){
+    gsap.fromTo(ledger,
+      { opacity: 0, x: 22 },
+      {
+        opacity: 1, x: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: ledger, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(cta){
+    gsap.fromTo(cta,
+      { opacity: 0, y: 12 },
+      {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: cta, start: 'top 94%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
 })();
 
 // Cinematic high-professional transitions between every major section while scrolling.
