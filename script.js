@@ -984,9 +984,19 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var panels = [];
   var track = document.getElementById('pdTrack');
   var detailEl = document.getElementById('project-detail');
+  var chapterEl = document.getElementById('pdChapter');
+  var chapterTimer = null;
   var projectOrder = Array.prototype.map.call(document.querySelectorAll('.proj-card[data-project]'), function(card){ return card.dataset.project; });
   var currentProjectId = null;
   var isChaining = false;
+
+  function hideChapter(){
+    if(chapterTimer){ clearTimeout(chapterTimer); chapterTimer = null; }
+    if(chapterEl){
+      chapterEl.classList.remove('is-on');
+      chapterEl.setAttribute('aria-hidden', 'true');
+    }
+  }
 
   // Lift overlay to <body> so it isn't trapped under section stacking / site nav
   if(detailEl && detailEl.parentElement !== document.body){
@@ -1246,6 +1256,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   function openProject(id){
     var data = projects[id];
     if(!data) return;
+    hideChapter();
     currentProjectId = id;
     isChaining = false;
     buildTrack(data);
@@ -1271,6 +1282,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     if(closeBtn) closeBtn.focus();
   }
   function closeProject(){
+    hideChapter();
     detailEl.classList.remove('open');
     detailEl.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('pd-open');
@@ -1313,24 +1325,46 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   function chainToProject(id, overflow, direction){
     isChaining = true;
+    hideChapter();
     track.style.opacity = '0';
 
     setTimeout(function(){
       var data = projects[id];
+      if(!data){ isChaining = false; return; }
       currentProjectId = id;
       buildTrack(data);
-
       themeFromCover(data);
 
       updateMax();
-      targetX = direction === 1 ? Math.max(0, Math.min(maxX, overflow)) : Math.max(0, maxX - overflow);
-      trackX = targetX;
+      // Land on a clear project boundary — intro for next, last panel for previous.
+      // Do not carry overflow into mid-story (that felt like a continuous scroll).
+      if(direction === 1){
+        targetX = 0;
+        trackX = 0;
+      } else {
+        targetX = maxX;
+        trackX = maxX;
+      }
       track.style.transform = 'translateX(' + (-trackX) + 'px)';
 
-      requestAnimationFrame(function(){
+      var kicker = document.getElementById('pdChapterKicker');
+      var numEl = document.getElementById('pdChapterNum');
+      var titleEl = document.getElementById('pdChapterTitle');
+      if(kicker) kicker.textContent = direction === 1 ? 'Next project' : 'Previous project';
+      if(numEl) numEl.textContent = data.num || '';
+      if(titleEl) titleEl.textContent = data.title || '';
+
+      if(chapterEl){
+        chapterEl.classList.add('is-on');
+        chapterEl.setAttribute('aria-hidden', 'false');
+      }
+
+      var hold = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 380 : 1150;
+      chapterTimer = setTimeout(function(){
+        hideChapter();
         track.style.opacity = '1';
-        setTimeout(function(){ isChaining = false; }, 380);
-      });
+        setTimeout(function(){ isChaining = false; }, 400);
+      }, hold);
     }, 350);
   }
   function exitToPortfolio(){
