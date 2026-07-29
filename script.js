@@ -799,7 +799,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// Gallery — memory-reel cinematic background (built from fol stills)
+// Gallery — Moments field-reel cinematic background
 (function(){
   var section = document.getElementById('gallery');
   var video = document.getElementById('galleryBgVideo');

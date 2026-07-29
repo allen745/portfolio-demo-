@@ -441,8 +441,8 @@
   </div>
 </section>
 
-<!-- Circular gallery — memory reel background + curved image strip -->
-<section id="gallery" class="cg-section">
+<!-- Moments — field stills + curved scroll reel -->
+<section id="gallery" class="cg-section gallery--legend" aria-labelledby="gallery-heading">
   <div class="cg-stage-bg" aria-hidden="true">
     <video
       class="cg-video"
@@ -458,22 +458,49 @@
     <div class="cg-video-fallback"></div>
     <div class="cg-video-wash"></div>
     <div class="cg-video-grain"></div>
-    <div class="cg-memory-veil"></div>
+  </div>
+
+  <div class="cg-atmosphere" aria-hidden="true">
+    <span class="cg-orb cg-orb-a"></span>
+    <span class="cg-orb cg-orb-b"></span>
+    <span class="cg-rule-fade"></span>
   </div>
 
   <div class="cg-shell">
-    <div class="cg-copy fade-in">
-      <div class="cg-eyebrow">Gallery</div>
-      <h2 class="cg-heading">Moments from the Build</h2>
-      <p class="cg-lead">A memory reel of the work — it drifts on its own; drag or scroll sideways to take over.</p>
+    <header class="cg-top">
+      <p class="cg-index"><span>05</span> Moments</p>
+      <p class="cg-role-line">Labs · Exhibits · Builds · Field notes</p>
+    </header>
+
+    <div class="cg-intro fade-in">
+      <h2 id="gallery-heading" class="cg-heading">
+        <span class="cg-heading-line">Evidence of the</span>
+        <span class="cg-heading-line">work in progress.</span>
+      </h2>
+      <p class="cg-lede">
+        Stills from the benches, pitches, and late builds behind the systems.
+        The reel drifts on its own — drag or scroll sideways to scrub.
+      </p>
     </div>
+  </div>
+
+  <div class="cg-stage-wrap">
     <div
       class="cg-stage"
       id="circularGallery"
       role="region"
-      aria-label="Circular project gallery"
+      aria-label="Scrolling moments gallery"
     ></div>
-    <p class="cg-hint fade-in">Auto-spinning &middot; Drag to take over</p>
+    <div class="cg-stage-edge cg-stage-edge--left" aria-hidden="true"></div>
+    <div class="cg-stage-edge cg-stage-edge--right" aria-hidden="true"></div>
+  </div>
+
+  <div class="cg-shell cg-shell--meta">
+    <div class="cg-meta fade-in">
+      <span class="cg-meta-key">Reel</span>
+      <span class="cg-meta-rule" aria-hidden="true"></span>
+      <span class="cg-meta-val">Auto-spinning · Drag to take over</span>
+    </div>
   </div>
 </section>
 
