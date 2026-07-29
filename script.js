@@ -1500,6 +1500,41 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     }
   }
 
+  function resetPillVisuals(){
+    if(window.gsap){
+      gsap.killTweensOf(bubbles.concat(labels.filter(Boolean)));
+      gsap.set(bubbles, { scale: 0 });
+      gsap.set(labels, { y: 12, autoAlpha: 0 });
+    } else {
+      bubbles.forEach(function(b, i){
+        b.style.transform = 'scale(0)';
+        if(labels[i]){ labels[i].style.opacity = '0'; labels[i].style.transform = 'translateY(12px)'; }
+      });
+    }
+  }
+
+  function scrollToSection(target){
+    if(!target) return;
+    if(window.lenis){
+      // Lenis must be running — scrollTo is a no-op while stopped
+      if(typeof lenis.start === 'function') lenis.start();
+      requestAnimationFrame(function(){
+        lenis.scrollTo(target, { offset: -70 });
+      });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  /** Close menu immediately, then navigate — used by pill clicks */
+  function closeMenuThenScroll(target){
+    isOpen = false;
+    showOverlay = false;
+    resetPillVisuals();
+    setOpenChrome(false);
+    scrollToSection(target);
+  }
+
   var menuBg = overlay.querySelector('.bubble-menu-bg');
   if(menuBg){
     menuBg.addEventListener('click', function(){ closeMenu(); });
@@ -1518,7 +1553,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     }
     gsap.killTweensOf(bubbles.concat(labels.filter(Boolean)));
     gsap.set(bubbles, { scale: 0, transformOrigin: '50% 50%' });
-    gsap.set(labels, { y: 24, autoAlpha: 0 });
+    gsap.set(labels, { y: 12, autoAlpha: 0 });
     bubbles.forEach(function(bubble, i){
       var rot = desktopRot(bubble);
       gsap.set(bubble, { rotation: rot });
@@ -1546,13 +1581,13 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     if(!window.gsap || reduceMotion || !showOverlay){
       bubbles.forEach(function(b, i){
         b.style.transform = 'scale(0)';
-        if(labels[i]){ labels[i].style.opacity = '0'; labels[i].style.transform = 'translateY(24px)'; }
+        if(labels[i]){ labels[i].style.opacity = '0'; labels[i].style.transform = 'translateY(12px)'; }
       });
       finish();
       return;
     }
     gsap.killTweensOf(bubbles.concat(labels.filter(Boolean)));
-    gsap.to(labels, { y: 24, autoAlpha: 0, duration: 0.18, ease: 'power3.in' });
+    gsap.to(labels, { y: 12, autoAlpha: 0, duration: 0.18, ease: 'power3.in' });
     gsap.to(bubbles, {
       scale: 0,
       duration: 0.2,
@@ -1580,7 +1615,14 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 
   bubbles.forEach(function(a){
-    a.addEventListener('click', function(){ closeMenu(); });
+    // Capture phase so we own navigation before the global Lenis anchor handler
+    // (which would call scrollTo while Lenis is still stopped).
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var target = document.querySelector(a.getAttribute('href'));
+      closeMenuThenScroll(target);
+    }, true);
     a.addEventListener('mouseenter', function(){
       if(!isOpen || !window.gsap || reduceMotion) return;
       gsap.to(a, { scale: 1.06, duration: 0.28, ease: 'power2.out', overwrite: 'auto' });
