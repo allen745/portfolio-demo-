@@ -2057,6 +2057,12 @@
     }
     .exp-stage-grid { grid-template-columns: 1fr; gap: 36px; }
     .exp-meta { max-width: none; }
+    .exp-college {
+      left: -4%;
+      top: -4%;
+      width: min(78%, 420px);
+      height: min(38vh, 260px);
+    }
     .exp-chapter { min-height: 0; }
     .exp-chapter-copy { min-height: 0; }
     .exp-canvas { height: auto; min-height: 0; display: block; }
@@ -2075,6 +2081,11 @@
   @media (max-width: 640px) {
     .exp-title { font-size: clamp(2.1rem, 10vw, 2.8rem); }
     .exp-chapter-num { font-size: clamp(3.6rem, 18vw, 5rem); }
+    .exp-college {
+      width: 92%;
+      height: 200px;
+      left: -2%;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .exp-scroll-line { animation: none; }
