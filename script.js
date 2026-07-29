@@ -1749,6 +1749,56 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
+// Skills — warm light worm hover (cursor-linked bloom)
+(function(){
+  var section = document.getElementById('skills');
+  if(!section) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(window.matchMedia('(pointer: coarse)').matches) return;
+
+  var entries = section.querySelectorAll('.skills-entry');
+  entries.forEach(function(entry){
+    if(!entry.querySelector('.skills-entry-glow')){
+      var glow = document.createElement('span');
+      glow.className = 'skills-entry-glow';
+      glow.setAttribute('aria-hidden', 'true');
+      entry.insertBefore(glow, entry.firstChild);
+    }
+    if(!entry.querySelector('.skills-entry-worm')){
+      var worm = document.createElement('span');
+      worm.className = 'skills-entry-worm';
+      worm.setAttribute('aria-hidden', 'true');
+      entry.insertBefore(worm, entry.firstChild);
+    }
+
+    var wormEl = entry.querySelector('.skills-entry-worm');
+
+    function replayWorm(){
+      if(!wormEl) return;
+      entry.classList.add('is-warm-replay');
+      void wormEl.offsetWidth;
+      entry.classList.remove('is-warm-replay');
+    }
+
+    entry.addEventListener('mouseenter', function(){
+      entry.classList.add('is-warm');
+      replayWorm();
+    });
+    entry.addEventListener('mousemove', function(e){
+      var rect = entry.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / Math.max(rect.width, 1)) * 100;
+      var y = ((e.clientY - rect.top) / Math.max(rect.height, 1)) * 100;
+      entry.style.setProperty('--skills-warm-x', x.toFixed(2) + '%');
+      entry.style.setProperty('--skills-warm-y', y.toFixed(2) + '%');
+    });
+    entry.addEventListener('mouseleave', function(){
+      entry.classList.remove('is-warm');
+      entry.style.setProperty('--skills-warm-x', '50%');
+      entry.style.setProperty('--skills-warm-y', '50%');
+    });
+  });
+})();
+
 // Achievements + Experience — shared minimal cinematic runway.
 // Recognition — cinematic honors dossier over shared video runway.
 // Quiet full-bleed video plate continues from Recognition through Experience.
