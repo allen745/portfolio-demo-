@@ -1493,11 +1493,16 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     document.body.classList.toggle('bubble-open', open);
     overlay.classList.toggle('is-open', open);
     overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+    // Soft-lock scroll so the menu stays centered on the current page view
     if(window.lenis){
       if(open) lenis.stop();
       else if(!document.body.classList.contains('pd-open')) lenis.start();
     }
-    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  var menuBg = overlay.querySelector('.bubble-menu-bg');
+  if(menuBg){
+    menuBg.addEventListener('click', function(){ closeMenu(); });
   }
 
   function playOpen(){

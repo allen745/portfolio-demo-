@@ -3341,7 +3341,7 @@ nav > * { pointer-events: auto; }
 }
 
 .nav-pill-menu {
-  --bubble-size: 48px;
+  --bubble-size: 40px;
   width: var(--bubble-size);
   height: var(--bubble-size);
   min-width: var(--bubble-size);
@@ -3354,7 +3354,7 @@ nav > * { pointer-events: auto; }
   box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.55);
 }
 @media (min-width: 768px) {
-  .nav-pill-menu { --bubble-size: 52px; }
+  .nav-pill-menu { --bubble-size: 42px; }
 }
 .nav-pill-menu:hover {
   transform: scale(1.06);
@@ -3366,49 +3366,32 @@ nav > * { pointer-events: auto; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  width: 22px;
+  gap: 5px;
+  width: 16px;
 }
 .nav-pill-menu .menu-line {
   display: block;
-  width: 22px;
-  height: 2px;
+  width: 16px;
+  height: 1.5px;
   border-radius: 2px;
   background: currentColor;
   transform-origin: center;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .nav-pill-menu.is-open {
-  background: #fff;
-  border-color: #fff;
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 255, 255, 0.92);
   color: #111;
+  backdrop-filter: blur(8px);
 }
 .nav-pill-menu.is-open .menu-line:first-child {
-  transform: translateY(4px) rotate(45deg);
+  transform: translateY(3.25px) rotate(45deg);
 }
 .nav-pill-menu.is-open .menu-line:last-child {
-  transform: translateY(-4px) rotate(-45deg);
+  transform: translateY(-3.25px) rotate(-45deg);
 }
 
-/* When bubble menu is open — logo + toggle match React Bits chrome */
-body.bubble-open .nav-logo {
-  background: #fff;
-  color: #111;
-  border-color: transparent;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-body.bubble-open .nav-logo:hover {
-  color: #111;
-  border-color: transparent;
-}
-body.bubble-open .nav-pill-sound,
-body.bubble-open .nav-pill-cta {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.92);
-}
-
-/* Full-screen Bubble Menu overlay */
+/* Bubble Menu — floats on the current page (no separate page plate) */
 .bubble-menu-overlay {
   position: fixed;
   inset: 0;
@@ -3423,22 +3406,13 @@ body.bubble-open .nav-pill-cta {
 .bubble-menu-bg {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 45%, rgba(40, 48, 62, 0.35) 0%, transparent 70%),
-    #07080c;
+  /* Keep the live page visible — only a light dim so pills read clearly */
+  background: rgba(6, 8, 13, 0.28);
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 .bubble-menu-overlay.is-open .bubble-menu-bg { opacity: 1; }
-.bubble-menu-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
-  background-size: 22px 22px;
-  opacity: 0.22;
-  pointer-events: none;
-}
 
 .bubble-menu-items {
   position: absolute;
@@ -3448,59 +3422,61 @@ body.bubble-open .nav-pill-cta {
   justify-content: center;
   z-index: 1;
   pointer-events: none;
+  padding: 88px 16px 32px;
 }
 .pill-list {
   list-style: none;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
-  row-gap: 6px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 12px;
   width: 100%;
-  max-width: 1600px;
+  max-width: 560px;
   pointer-events: auto;
-  justify-content: stretch;
 }
 .pill-spacer {
-  width: 100%;
-  height: 0;
-  pointer-events: none;
-  list-style: none;
+  display: none;
 }
 .pill-col {
   display: flex;
   justify-content: center;
-  align-items: stretch;
-  flex: 0 0 calc(100% / 3);
+  align-items: center;
+  flex: 0 0 auto;
   box-sizing: border-box;
 }
 .pill-link {
-  --pill-bg: #ffffff;
+  --pill-bg: rgba(255, 255, 255, 0.94);
   --pill-color: #111;
   --item-rot: 0deg;
-  --pill-min-h: 140px;
+  --pill-min-h: 44px;
   --hover-bg: #f3f4f6;
   --hover-color: #111;
-  width: 100%;
+  width: auto;
+  min-width: 7.25rem;
   min-height: var(--pill-min-h);
-  height: 10px;
-  padding: clamp(1.4rem, 2.8vw, 6rem) 0;
+  height: auto;
+  padding: 0.65rem 1.25rem;
   font-family: var(--font-body);
-  font-size: clamp(1.2rem, 3.1vw, 2.85rem);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0;
+  font-size: clamp(0.88rem, 1.35vw, 1.05rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
   border-radius: 999px;
   background: var(--pill-bg);
   color: var(--pill-color);
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 10px 28px -12px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  transition: background 0.25s ease, color 0.25s ease;
   will-change: transform;
   box-sizing: border-box;
   white-space: nowrap;
@@ -3511,10 +3487,9 @@ body.bubble-open .nav-pill-cta {
 .pill-link .pill-label {
   display: inline-block;
   will-change: transform, opacity;
-  height: 1.2em;
   line-height: 1.2;
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(12px);
 }
 .pill-link.is-active {
   background: var(--hover-bg);
@@ -3531,20 +3506,23 @@ body.bubble-open .nav-pill-cta {
 }
 @media (max-width: 899px) {
   .bubble-menu-items {
-    align-items: flex-start;
-    padding-top: 110px;
+    align-items: center;
+    padding-top: 96px;
     overflow-y: auto;
   }
-  .pill-list { row-gap: 14px; padding-bottom: 40px; }
+  .pill-list {
+    max-width: 320px;
+    gap: 10px;
+  }
   .pill-col {
-    flex: 0 0 100%;
+    flex: 0 0 auto;
   }
   .pill-link {
-    font-size: clamp(1.25rem, 6vw, 2rem);
-    padding: clamp(1rem, 3vw, 1.6rem) 0;
-    min-height: 72px;
+    min-width: 9.5rem;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.3rem;
+    min-height: 46px;
   }
-  .pill-spacer { display: none; }
 }
 
 @media (max-width: 600px) {
