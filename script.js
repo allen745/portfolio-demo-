@@ -1576,6 +1576,14 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   bubbles.forEach(function(a){
     a.addEventListener('click', function(){ closeMenu(); });
+    a.addEventListener('mouseenter', function(){
+      if(!isOpen || !window.gsap || reduceMotion) return;
+      gsap.to(a, { scale: 1.06, duration: 0.28, ease: 'power2.out', overwrite: 'auto' });
+    });
+    a.addEventListener('mouseleave', function(){
+      if(!isOpen || !window.gsap || reduceMotion) return;
+      gsap.to(a, { scale: 1, duration: 0.28, ease: 'power2.out', overwrite: 'auto' });
+    });
   });
 
   window.addEventListener('resize', function(){
