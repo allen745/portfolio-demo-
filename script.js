@@ -401,7 +401,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 // Magnetic hover — buttons pull toward cursor
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var magnetic = document.querySelectorAll('.btn, .contact-pill, .about-connect-item');
+  var magnetic = document.querySelectorAll('.btn, .contact-pill, .about-cta');
   magnetic.forEach(function(el){
     el.addEventListener('mousemove', function(e){
       var rect = el.getBoundingClientRect();
@@ -1493,26 +1493,22 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   sections.forEach(function(s){ spy.observe(s.el); });
 })();
 
-// About — cinematic editorial reveal + neural code stream
+// About — legendary systems-builder reveal
 (function(){
   var section = document.getElementById('about');
   if(!section) return;
 
-  var codeCinema = section.querySelector('.about-code-cinema');
-  var codeCanvas = document.getElementById('aboutCodeRain');
-  var codeStream = document.getElementById('aboutCodeStream');
   var headingLines = section.querySelectorAll('.about-heading-line');
-  var eyebrow = section.querySelector('.about-eyebrow');
-  var script = section.querySelector('.about-script');
-  var descs = section.querySelectorAll('.about-desc');
+  var top = section.querySelector('.about-top');
+  var lede = section.querySelector('.about-lede');
+  var desc = section.querySelector('.about-desc');
+  var proof = section.querySelector('.about-proof');
   var stats = section.querySelectorAll('.about-stat-num');
-  var pill = section.querySelector('.about-approach-pill');
-  var connect = section.querySelectorAll('.about-connect-item');
+  var cta = section.querySelector('.about-cta');
+  var ledger = section.querySelector('.about-ledger');
+  var links = section.querySelectorAll('.about-links a');
   var video = document.getElementById('aboutBgVideo');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var codeActive = false;
-  var rainRaf = 0;
-  var typeTimer = 0;
 
   function playAboutVideo(){
     if(!video || reduceMotion) return;
@@ -1541,249 +1537,38 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     }
   }
 
-  // --- Neural code rain + typing stream ---
-  function startCodeCinema(){
-    if(!codeCinema || !codeCanvas || !codeStream || codeActive) return;
-    codeActive = true;
-
-    var ctx = codeCanvas.getContext('2d');
-    if(!ctx) return;
-
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = 0;
-    var h = 0;
-    var cols = [];
-    var glyphs = '01アイウエオカキクケコΣλΔπ{}[]<>/=*+#αβγ¥$&@';
-    var fontSize = 13;
-
-    function resizeRain(){
-      w = codeCinema.clientWidth;
-      h = codeCinema.clientHeight;
-      codeCanvas.width = Math.floor(w * dpr);
-      codeCanvas.height = Math.floor(h * dpr);
-      codeCanvas.style.width = w + 'px';
-      codeCanvas.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      fontSize = Math.max(11, Math.floor(w / 28));
-      var colCount = Math.ceil(w / fontSize);
-      cols = [];
-      for(var i = 0; i < colCount; i++){
-        cols.push({
-          y: Math.random() * h,
-          speed: 0.55 + Math.random() * 1.45,
-          warm: Math.random() > 0.78
-        });
-      }
-    }
-
-    function drawRain(){
-      if(!codeActive) return;
-      ctx.fillStyle = 'rgba(2, 5, 12, 0.18)';
-      ctx.fillRect(0, 0, w, h);
-      ctx.font = fontSize + 'px "Space Mono", monospace';
-      ctx.textBaseline = 'top';
-
-      for(var i = 0; i < cols.length; i++){
-        var col = cols[i];
-        var x = i * fontSize;
-        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
-        if(col.warm){
-          ctx.fillStyle = 'rgba(240,184,110,' + (0.28 + Math.random() * 0.45) + ')';
-        } else {
-          ctx.fillStyle = 'rgba(126,200,212,' + (0.22 + Math.random() * 0.5) + ')';
-        }
-        ctx.fillText(ch, x, col.y);
-        col.y += col.speed * fontSize * 0.35;
-        if(col.y > h + fontSize * 4){
-          col.y = -Math.random() * h * 0.4;
-          col.speed = 0.55 + Math.random() * 1.45;
-          col.warm = Math.random() > 0.78;
-        }
-      }
-      rainRaf = requestAnimationFrame(drawRain);
-    }
-
-    resizeRain();
-    window.addEventListener('resize', resizeRain);
-    if(!reduceMotion){
-      rainRaf = requestAnimationFrame(drawRain);
-    } else {
-      ctx.fillStyle = '#02050c';
-      ctx.fillRect(0, 0, w, h);
-      ctx.font = fontSize + 'px "Space Mono", monospace';
-      ctx.fillStyle = 'rgba(126,200,212,0.35)';
-      for(var r = 0; r < 40; r++){
-        ctx.fillText(
-          glyphs.charAt(Math.floor(Math.random() * glyphs.length)),
-          Math.random() * w,
-          Math.random() * h
-        );
-      }
-    }
-
-    var snippets = [
-      [
-        '# mission: ship models that hold up',
-        'pipe = Pipeline([',
-        "  ('scale', StandardScaler()),",
-        "  ('clf', RandomForestClassifier(n=200))",
-        '])',
-        'score = pipe.fit(X_tr, y).score(X_te, y)',
-        'print(f"accuracy → {score:.3f}")'
-      ],
-      [
-        '# fastapi route — real systems',
-        '@app.post("/predict")',
-        'async def predict(payload: Schema):',
-        '    feats = encode(payload)',
-        '    pred = model.predict(feats)',
-        '    return {"label": pred, "ok": True}'
-      ],
-      [
-        '# from patent → product → ship',
-        'features = clean(df).select(cols)',
-        'X, y = features.drop("y"), features["y"]',
-        'model.fit(X, y)',
-        'deploy(model, env="prod")',
-        '# status: online'
-      ]
-    ];
-
-    var snippetIndex = 0;
-    var lineIndex = 0;
-    var charIndex = 0;
-    var displayLines = [];
-    var typing = true;
-    var pauseLeft = 0;
-
-    function renderTyped(){
-      var html = displayLines.map(function(line, idx){
-        var isCurrent = typing && idx === displayLines.length - 1;
-        var safe = line
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
-        if(line.trim().indexOf('#') === 0){
-          return '<span style="color:rgba(240,184,110,0.72)">' + safe + '</span>';
-        }
-        if(isCurrent) return safe;
-        return '<span style="color:rgba(210,220,232,0.78)">' + safe + '</span>';
-      }).join('\n');
-      codeStream.innerHTML = html;
-    }
-
-    function typeTick(){
-      if(!codeActive) return;
-      if(pauseLeft > 0){
-        pauseLeft -= 1;
-        typeTimer = window.setTimeout(typeTick, 40);
-        return;
-      }
-
-      var snippet = snippets[snippetIndex];
-      if(lineIndex >= snippet.length){
-        typing = false;
-        pauseLeft = 36;
-        snippetIndex = (snippetIndex + 1) % snippets.length;
-        lineIndex = 0;
-        charIndex = 0;
-        displayLines = [];
-        typeTimer = window.setTimeout(function(){
-          typing = true;
-          typeTick();
-        }, 900);
-        return;
-      }
-
-      var target = snippet[lineIndex];
-      if(charIndex === 0) displayLines.push('');
-      displayLines[displayLines.length - 1] = target.slice(0, charIndex + 1);
-      charIndex += 1;
-      renderTyped();
-
-      if(charIndex >= target.length){
-        lineIndex += 1;
-        charIndex = 0;
-        pauseLeft = 8;
-      }
-
-      var delay = reduceMotion ? 0 : (18 + Math.floor(Math.random() * 28));
-      typeTimer = window.setTimeout(typeTick, delay);
-    }
-
-    if(reduceMotion){
-      codeStream.textContent = snippets[0].join('\n');
-    } else {
-      typeTick();
-    }
-
-    startCodeCinema._cleanup = function(){
-      codeActive = false;
-      if(rainRaf) cancelAnimationFrame(rainRaf);
-      rainRaf = 0;
-      if(typeTimer) clearTimeout(typeTimer);
-      typeTimer = 0;
-      window.removeEventListener('resize', resizeRain);
-    };
-  }
-
-  function stopCodeCinema(){
-    if(startCodeCinema._cleanup) startCodeCinema._cleanup();
-  }
-
-  if(codeCinema && 'IntersectionObserver' in window){
-    var cio = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting) startCodeCinema();
-        else stopCodeCinema();
-      });
-    }, { threshold: 0.15 });
-    cio.observe(codeCinema);
-  } else if(codeCinema){
-    startCodeCinema();
-  }
-
-  if(reduceMotion || !window.gsap || !window.ScrollTrigger){
+  function fillStats(){
     stats.forEach(function(el){
       var n = parseInt(el.getAttribute('data-count'), 10) || 0;
       el.textContent = el.getAttribute('data-count') === '7' ? '7+' : String(n);
     });
+  }
+
+  if(reduceMotion || !window.gsap || !window.ScrollTrigger){
+    fillStats();
     return;
   }
 
-  // Soft parallax on the about video plate
   if(video){
     gsap.to(video, {
-      scale: 1.16,
-      yPercent: 6,
+      scale: 1.1,
+      yPercent: 5,
       ease: 'none',
       scrollTrigger: {
         trigger: section,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: 0.85
+        scrub: 0.9
       }
     });
   }
 
-  // Code cinema reveal
-  if(codeCinema){
-    gsap.fromTo(codeCinema,
-      { opacity: 0, y: 28, clipPath: 'inset(8% 6% 8% 6%)' },
+  if(top){
+    gsap.fromTo(top,
+      { opacity: 0, y: 16 },
       {
-        opacity: 1, y: 0, clipPath: 'inset(0% 0% 0% 0%)',
-        duration: 1.35, ease: 'power3.out',
-        scrollTrigger: { trigger: codeCinema, start: 'top 82%', toggleActions: 'play none none reverse' }
-      }
-    );
-  }
-
-  if(eyebrow){
-    gsap.fromTo(eyebrow,
-      { opacity: 0, x: -24 },
-      {
-        opacity: 1, x: 0, duration: 0.75, ease: 'power3.out',
-        scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: top, start: 'top 90%', toggleActions: 'play none none reverse' }
       }
     );
   }
@@ -1795,32 +1580,41 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     gsap.fromTo(inner,
       { yPercent: 110 },
       {
-        yPercent: 0, duration: 1.05, ease: 'power4.out',
+        yPercent: 0, duration: 1.15, ease: 'power4.out',
         scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' }
       }
     );
   });
 
-  if(script){
-    gsap.fromTo(script,
-      { opacity: 0, y: 18 },
+  if(lede){
+    gsap.fromTo(lede,
+      { opacity: 0, y: 20 },
       {
-        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: script, start: 'top 90%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' }
       }
     );
   }
-  if(descs.length){
-    gsap.fromTo(descs,
-      { opacity: 0, y: 22 },
+  if(desc){
+    gsap.fromTo(desc,
+      { opacity: 0, y: 18 },
       {
-        opacity: 1, y: 0, duration: 0.85, stagger: 0.12, ease: 'power3.out',
-        scrollTrigger: { trigger: descs[0], start: 'top 90%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out', delay: 0.05,
+        scrollTrigger: { trigger: desc, start: 'top 90%', toggleActions: 'play none none reverse' }
       }
     );
   }
 
-  // Count-up stats
+  if(proof){
+    gsap.fromTo(proof,
+      { opacity: 0, y: 22 },
+      {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: proof, start: 'top 92%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+
   stats.forEach(function(el){
     var target = parseInt(el.getAttribute('data-count'), 10) || 0;
     var isPlus = el.getAttribute('data-count') === '7';
@@ -1841,21 +1635,30 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     });
   });
 
-  if(pill){
-    gsap.fromTo(pill,
-      { opacity: 0, y: 18 },
+  if(cta){
+    gsap.fromTo(cta,
+      { opacity: 0, y: 14 },
       {
         opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
-        scrollTrigger: { trigger: pill, start: 'top 92%', toggleActions: 'play none none reverse' }
+        scrollTrigger: { trigger: cta, start: 'top 94%', toggleActions: 'play none none reverse' }
       }
     );
   }
-  if(connect.length){
-    gsap.fromTo(connect,
-      { opacity: 0, y: 14 },
+  if(ledger){
+    gsap.fromTo(ledger,
+      { opacity: 0, x: 24 },
       {
-        opacity: 1, y: 0, duration: 0.55, stagger: 0.06, ease: 'power3.out',
-        scrollTrigger: { trigger: connect[0], start: 'top 94%', toggleActions: 'play none none reverse' }
+        opacity: 1, x: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: ledger, start: 'top 88%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
+  if(links.length){
+    gsap.fromTo(links,
+      { opacity: 0, y: 10 },
+      {
+        opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: 'power3.out',
+        scrollTrigger: { trigger: links[0], start: 'top 95%', toggleActions: 'play none none reverse' }
       }
     );
   }
@@ -2226,7 +2029,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       .to(veil, { opacity: 0.28, duration: 0.22, ease: 'none' }, 0.78);
 
     // --- Header tag + title cinematic reveal ---
-    var tag = section.querySelector('.section-tag, .about-eyebrow, .collab-tag');
+    var tag = section.querySelector('.section-tag, .about-index, .collab-tag');
     var title = section.querySelector('.section-header h2, .thank-you, .exp-title');
 
     if(tag){

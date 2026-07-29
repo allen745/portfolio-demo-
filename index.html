@@ -127,7 +127,7 @@
   </div>
 </section>
 
-<section id="about">
+<section id="about" class="about--legend" aria-labelledby="about-heading">
   <div class="about-stage" aria-hidden="true">
     <video
       class="about-video"
@@ -148,68 +148,84 @@
   <div class="about-atmosphere" aria-hidden="true">
     <span class="about-orb about-orb-a"></span>
     <span class="about-orb about-orb-b"></span>
-    <span class="about-grid-fade"></span>
+    <span class="about-rule-fade"></span>
   </div>
 
   <div class="about-shell">
-    <div class="about-grid">
-      <div class="about-media">
-        <div class="about-code-cinema" role="img" aria-label="Cinematic coding animation stream">
-          <canvas class="about-code-rain" id="aboutCodeRain" aria-hidden="true"></canvas>
-          <div class="about-code-stage" aria-hidden="true">
-            <div class="about-code-hud">
-              <span class="about-code-hud-tag">Neural Stream</span>
-              <span class="about-code-hud-meta">Live // Python</span>
-            </div>
-            <pre class="about-code-stream"><code id="aboutCodeStream"></code><span class="about-code-cursor">▌</span></pre>
-          </div>
-          <div class="about-code-scan" aria-hidden="true"></div>
-          <div class="about-code-grade" aria-hidden="true"></div>
-          <div class="about-code-grain" aria-hidden="true"></div>
-          <div class="about-code-vignette" aria-hidden="true"></div>
-          <span class="about-code-corner about-code-corner--tl" aria-hidden="true"></span>
-          <span class="about-code-corner about-code-corner--tr" aria-hidden="true"></span>
-          <span class="about-code-corner about-code-corner--bl" aria-hidden="true"></span>
-          <span class="about-code-corner about-code-corner--br" aria-hidden="true"></span>
-        </div>
-      </div>
+    <header class="about-top">
+      <p class="about-index"><span>02</span> About</p>
+      <p class="about-role-line">Allen Christian · AI &amp; Data Science · Systems that ship</p>
+    </header>
 
-      <div class="about-copy">
-        <div class="about-eyebrow">About</div>
-        <h2 class="about-heading">
-          <span class="about-heading-line">Built to Ship,</span>
-          <span class="about-heading-line">Not Just to Show</span>
+    <div class="about-layout">
+      <div class="about-main">
+        <h2 id="about-heading" class="about-heading">
+          <span class="about-heading-line">Built to ship,</span>
+          <span class="about-heading-line">not just to show.</span>
         </h2>
-        <p class="about-script">Hi there, I'm Allen</p>
-        <p class="about-desc">I'm a B.Tech AI &amp; Data Science student at ADIT, CVM University. I hold a Government of India design patent for a piezoelectric energy-harvesting device &mdash; my first real proof that a raw idea can become something registered, tangible, and lasting.</p>
-        <p class="about-desc">That same instinct drives my software work. I've trained ML models across a few domains, shipped student and internship projects end-to-end, and I'm currently building CA.OS &mdash; a SaaS platform for India's Chartered Accountants. Long-term, I'm aiming for a Machine Learning Engineer role.</p>
 
-        <div class="about-stats">
-          <div class="about-stat">
-            <div class="about-stat-num" data-count="1">0</div>
-            <div class="about-stat-label">Patent Granted</div>
-          </div>
-          <div class="about-stat">
-            <div class="about-stat-num" data-count="7">0</div>
-            <div class="about-stat-label">Projects Built</div>
-          </div>
-          <div class="about-stat">
-            <div class="about-stat-num" data-count="5">0</div>
-            <div class="about-stat-label">Recognitions</div>
-          </div>
-        </div>
+        <p class="about-lede">
+          B.Tech AI &amp; Data Science at ADIT, CVM University. I design, train, and deploy —
+          from a Government of India design patent to production ML tools.
+        </p>
+        <p class="about-desc">
+          That same instinct drives the software: end-to-end student and internship builds,
+          live developer tools, and <strong>CA SaaS</strong> — a B2B platform for India's Chartered Accountants.
+          Long-term track: Machine Learning Engineer.
+        </p>
 
-        <a href="#projects" class="about-approach-pill"><span class="about-approach-dot"></span>My Projects</a>
+        <dl class="about-proof">
+          <div class="about-proof-item">
+            <dt class="about-stat-num" data-count="1">0</dt>
+            <dd class="about-stat-label">Patent granted</dd>
+          </div>
+          <div class="about-proof-item">
+            <dt class="about-stat-num" data-count="7">0</dt>
+            <dd class="about-stat-label">Projects built</dd>
+          </div>
+          <div class="about-proof-item">
+            <dt class="about-stat-num" data-count="5">0</dt>
+            <dd class="about-stat-label">Recognitions</dd>
+          </div>
+        </dl>
 
-        <div class="about-connect-label">Let's Connect</div>
-        <div class="about-connect-row">
-          <a class="about-connect-item" href="mailto:allenschristian07@gmail.com"><span class="about-connect-ico">@</span>Email</a>
-          <a class="about-connect-item" href="tel:+916355941155"><span class="about-connect-ico">#</span>Call</a>
-          <a class="about-connect-item" href="https://www.linkedin.com/in/allen-christian-708545409/" target="_blank" rel="noopener noreferrer"><span class="about-connect-ico">in</span>LinkedIn</a>
-          <a class="about-connect-item" href="https://github.com/allen745" target="_blank" rel="noopener noreferrer"><span class="about-connect-ico">gh</span>GitHub</a>
-          <a class="about-connect-item" href="https://www.instagram.com/msd7_allen1405" target="_blank" rel="noopener noreferrer"><span class="about-connect-ico">ig</span>Instagram</a>
-        </div>
+        <a href="#projects" class="about-cta">
+          <span>View the work</span>
+          <span class="about-cta-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
+
+      <aside class="about-rail" aria-label="Focus and contact">
+        <div class="about-ledger">
+          <p class="about-ledger-kicker">Focus</p>
+          <ul class="about-ledger-list">
+            <li>
+              <span class="about-ledger-key">Building</span>
+              <span class="about-ledger-val">CA SaaS</span>
+            </li>
+            <li>
+              <span class="about-ledger-key">Aim</span>
+              <span class="about-ledger-val">ML Engineer</span>
+            </li>
+            <li>
+              <span class="about-ledger-key">School</span>
+              <span class="about-ledger-val">ADIT · CVM</span>
+            </li>
+            <li>
+              <span class="about-ledger-key">Proof</span>
+              <span class="about-ledger-val">GoI design patent</span>
+            </li>
+          </ul>
+        </div>
+
+        <nav class="about-links" aria-label="Connect">
+          <a href="mailto:allenschristian07@gmail.com">Email</a>
+          <a href="https://github.com/allen745" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/allen-christian-708545409/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="tel:+916355941155">Call</a>
+          <a href="https://www.instagram.com/msd7_allen1405" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </nav>
+      </aside>
     </div>
   </div>
 </section>
@@ -733,7 +749,7 @@
       <div class="end-credits-block">
         <p class="end-credits-role">Featured Productions</p>
         <ul class="end-credits-cast">
-          <li><span>CA.OS</span><span class="end-credits-dots" aria-hidden="true"></span><span>SaaS Platform</span></li>
+          <li><span>CA SaaS</span><span class="end-credits-dots" aria-hidden="true"></span><span>SaaS Platform</span></li>
           <li><span>Piezoelectric Striker</span><span class="end-credits-dots" aria-hidden="true"></span><span>Design Patent</span></li>
           <li><span>Portfolio Demo</span><span class="end-credits-dots" aria-hidden="true"></span><span>This Film</span></li>
         </ul>
