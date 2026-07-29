@@ -516,14 +516,14 @@ function bootCircularGallery() {
     if (app) return;
     app = new App(stage, {
       items: items,
-      bend: 1,
-      textColor: '#f4efe6',
-      borderRadius: 0.05,
-      font: '500 28px Cinzel, serif',
-      scrollSpeed: 1.6,
+      bend: 0.92,
+      textColor: '#f2f0ea',
+      borderRadius: 0.018,
+      font: '500 26px Cinzel, serif',
+      scrollSpeed: 1.55,
       scrollEase: 0.045,
-      autoScrollSpeed: 0.048,
-      autoResumeMs: 1600
+      autoScrollSpeed: 0.042,
+      autoResumeMs: 1800
     });
   }
 
