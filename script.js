@@ -401,7 +401,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 // Magnetic hover — buttons pull toward cursor
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var magnetic = document.querySelectorAll('.btn, .contact-pill, .about-connect-item');
+  var magnetic = document.querySelectorAll('.btn, .contact-pill, .about-cta');
   magnetic.forEach(function(el){
     el.addEventListener('mousemove', function(e){
       var rect = el.getBoundingClientRect();
@@ -2029,7 +2029,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       .to(veil, { opacity: 0.28, duration: 0.22, ease: 'none' }, 0.78);
 
     // --- Header tag + title cinematic reveal ---
-    var tag = section.querySelector('.section-tag, .about-eyebrow, .collab-tag');
+    var tag = section.querySelector('.section-tag, .about-index, .collab-tag');
     var title = section.querySelector('.section-header h2, .thank-you, .exp-title');
 
     if(tag){
