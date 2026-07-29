@@ -1256,6 +1256,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   function openProject(id){
     var data = projects[id];
     if(!data) return;
+    hideChapter();
     currentProjectId = id;
     isChaining = false;
     buildTrack(data);
