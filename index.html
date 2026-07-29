@@ -230,86 +230,111 @@
   </div>
 </section>
 
-<!-- SKILLS — cinematic mission brief / dossier -->
-<section id="skills" aria-labelledby="skills-heading">
+<!-- SKILLS — legendary systems stack -->
+<section id="skills" class="skills--legend" aria-labelledby="skills-heading">
   <div class="skills-atmosphere" aria-hidden="true">
     <span class="skills-wash"></span>
     <span class="skills-orb skills-orb-a"></span>
     <span class="skills-orb skills-orb-b"></span>
     <span class="skills-grain"></span>
-    <span class="skills-grid-fade"></span>
-    <span class="skills-flare"></span>
+    <span class="skills-rule-fade"></span>
   </div>
 
   <div class="skills-shell">
-    <header class="skills-header">
-      <p class="skills-eyebrow">The Craft</p>
-      <h2 id="skills-heading" class="skills-heading">
-        <span class="skills-heading-line">Skills</span>
-      </h2>
-      <p class="skills-lede">
-        A focused stack for backend systems, data pipelines, and ML &mdash; logged like a mission brief.
-      </p>
+    <header class="skills-top">
+      <p class="skills-index"><span>03</span> Skills</p>
+      <p class="skills-role-line">Backend · Data · Machine Learning</p>
     </header>
 
-    <ol class="skills-dossier" role="list">
-      <li class="skills-entry" data-skill="01">
-        <span class="skills-entry-num" aria-hidden="true">01</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">Python &amp; Data Libraries</h3>
-          <p class="skills-entry-tags">Python · NumPy · Pandas · Scikit-learn</p>
+    <div class="skills-layout">
+      <div class="skills-main">
+        <h2 id="skills-heading" class="skills-heading">
+          <span class="skills-heading-line">The stack</span>
+          <span class="skills-heading-line">I ship with.</span>
+        </h2>
+        <p class="skills-lede">
+          A focused toolkit for APIs, pipelines, and models &mdash; chosen to build,
+          measure, and put systems in production.
+        </p>
+
+        <ol class="skills-list" role="list">
+          <li class="skills-entry" data-skill="01">
+            <span class="skills-entry-num" aria-hidden="true">01</span>
+            <div class="skills-entry-body">
+              <h3 class="skills-entry-title">Python &amp; Data</h3>
+              <p class="skills-entry-tags">Python · NumPy · Pandas · Scikit-learn</p>
+            </div>
+          </li>
+          <li class="skills-entry" data-skill="02">
+            <span class="skills-entry-num" aria-hidden="true">02</span>
+            <div class="skills-entry-body">
+              <h3 class="skills-entry-title">Backend APIs</h3>
+              <p class="skills-entry-tags">FastAPI · REST · Pydantic · Async · JWT</p>
+            </div>
+          </li>
+          <li class="skills-entry" data-skill="03">
+            <span class="skills-entry-num" aria-hidden="true">03</span>
+            <div class="skills-entry-body">
+              <h3 class="skills-entry-title">Databases</h3>
+              <p class="skills-entry-tags">SQL · MySQL · SQLite · SQLAlchemy</p>
+            </div>
+          </li>
+          <li class="skills-entry" data-skill="04">
+            <span class="skills-entry-num" aria-hidden="true">04</span>
+            <div class="skills-entry-body">
+              <h3 class="skills-entry-title">Machine Learning</h3>
+              <p class="skills-entry-tags">Classification · Regression · Clustering · Pipelines</p>
+            </div>
+          </li>
+          <li class="skills-entry" data-skill="05">
+            <span class="skills-entry-num" aria-hidden="true">05</span>
+            <div class="skills-entry-body">
+              <h3 class="skills-entry-title">Analysis &amp; Viz</h3>
+              <p class="skills-entry-tags">EDA · Statistics · Matplotlib · Seaborn</p>
+            </div>
+          </li>
+          <li class="skills-entry" data-skill="06">
+            <span class="skills-entry-num" aria-hidden="true">06</span>
+            <div class="skills-entry-body">
+              <h3 class="skills-entry-title">Delivery</h3>
+              <p class="skills-entry-tags">Git · GitHub · Version Control · CI/CD basics</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <aside class="skills-rail" aria-label="Stack domains">
+        <div class="skills-ledger">
+          <p class="skills-ledger-kicker">Domains</p>
+          <ul class="skills-ledger-list">
+            <li>
+              <span class="skills-ledger-key">Language</span>
+              <span class="skills-ledger-val">Python</span>
+            </li>
+            <li>
+              <span class="skills-ledger-key">APIs</span>
+              <span class="skills-ledger-val">FastAPI</span>
+            </li>
+            <li>
+              <span class="skills-ledger-key">Data</span>
+              <span class="skills-ledger-val">SQL · EDA</span>
+            </li>
+            <li>
+              <span class="skills-ledger-key">ML</span>
+              <span class="skills-ledger-val">Pipelines</span>
+            </li>
+            <li>
+              <span class="skills-ledger-key">Ship</span>
+              <span class="skills-ledger-val">Git · CI</span>
+            </li>
+          </ul>
         </div>
-      </li>
-      <li class="skills-entry" data-skill="02">
-        <span class="skills-entry-num" aria-hidden="true">02</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">FastAPI &amp; Python Backend</h3>
-          <p class="skills-entry-tags">FastAPI · REST API · Pydantic · Uvicorn · Async</p>
-        </div>
-      </li>
-      <li class="skills-entry" data-skill="03">
-        <span class="skills-entry-num" aria-hidden="true">03</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">SQL &amp; Databases</h3>
-          <p class="skills-entry-tags">SQL · MySQL · SQLite · Joins &amp; Aggregates</p>
-        </div>
-      </li>
-      <li class="skills-entry" data-skill="04">
-        <span class="skills-entry-num" aria-hidden="true">04</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">Python Backend Systems</h3>
-          <p class="skills-entry-tags">Backend Design · SQLAlchemy · Auth / JWT</p>
-        </div>
-      </li>
-      <li class="skills-entry" data-skill="05">
-        <span class="skills-entry-num" aria-hidden="true">05</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">Data Analysis &amp; EDA</h3>
-          <p class="skills-entry-tags">EDA · Statistics · Data Cleaning</p>
-        </div>
-      </li>
-      <li class="skills-entry" data-skill="06">
-        <span class="skills-entry-num" aria-hidden="true">06</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">Machine Learning</h3>
-          <p class="skills-entry-tags">Classification · Regression · Clustering · Pipelines</p>
-        </div>
-      </li>
-      <li class="skills-entry" data-skill="07">
-        <span class="skills-entry-num" aria-hidden="true">07</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">Data Visualization</h3>
-          <p class="skills-entry-tags">Matplotlib · Seaborn · Dashboards</p>
-        </div>
-      </li>
-      <li class="skills-entry" data-skill="08">
-        <span class="skills-entry-num" aria-hidden="true">08</span>
-        <div class="skills-entry-body">
-          <h3 class="skills-entry-title">Git &amp; GitHub</h3>
-          <p class="skills-entry-tags">Git · GitHub · Version Control · CI/CD basics</p>
-        </div>
-      </li>
-    </ol>
+        <a href="#projects" class="skills-cta">
+          <span>See it applied</span>
+          <span class="skills-cta-arrow" aria-hidden="true">→</span>
+        </a>
+      </aside>
+    </div>
   </div>
 </section>
 

@@ -1664,28 +1664,29 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   }
 })();
 
-// Skills — cinematic dossier reveal
+// Skills — legendary systems stack reveal
 (function(){
   var section = document.getElementById('skills');
   if(!section) return;
 
-  var eyebrow = section.querySelector('.skills-eyebrow');
+  var top = section.querySelector('.skills-top');
   var headingLines = section.querySelectorAll('.skills-heading-line');
   var lede = section.querySelector('.skills-lede');
-  var dossier = section.querySelector('.skills-dossier');
   var entries = section.querySelectorAll('.skills-entry');
+  var ledger = section.querySelector('.skills-ledger');
+  var cta = section.querySelector('.skills-cta');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if(reduceMotion || !window.gsap || !window.ScrollTrigger){
     return;
   }
 
-  if(eyebrow){
-    gsap.fromTo(eyebrow,
-      { opacity: 0, x: -26 },
+  if(top){
+    gsap.fromTo(top,
+      { opacity: 0, y: 16 },
       {
-        opacity: 1, x: 0, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: eyebrow, start: 'top 88%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: top, start: 'top 90%', toggleActions: 'play none none reverse' }
       }
     );
   }
@@ -1695,9 +1696,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     line.innerHTML = '<span class="skills-heading-inner">' + text + '</span>';
     var inner = line.querySelector('.skills-heading-inner');
     gsap.fromTo(inner,
-      { yPercent: 115 },
+      { yPercent: 110 },
       {
-        yPercent: 0, duration: 1.1, ease: 'power4.out',
+        yPercent: 0, duration: 1.15, ease: 'power4.out',
         scrollTrigger: { trigger: line, start: 'top 88%', toggleActions: 'play none none reverse' }
       }
     );
@@ -1705,7 +1706,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   if(lede){
     gsap.fromTo(lede,
-      { opacity: 0, y: 20 },
+      { opacity: 0, y: 18 },
       {
         opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
         scrollTrigger: { trigger: lede, start: 'top 90%', toggleActions: 'play none none reverse' }
@@ -1713,55 +1714,39 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     );
   }
 
-  if(dossier){
-    gsap.fromTo(dossier,
-      { opacity: 0.35 },
+  entries.forEach(function(entry, i){
+    gsap.fromTo(entry,
+      { opacity: 0, y: 22 },
       {
-        opacity: 1, duration: 0.9, ease: 'power2.out',
-        scrollTrigger: { trigger: dossier, start: 'top 85%', toggleActions: 'play none none reverse' }
+        opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
+        delay: Math.min(i * 0.04, 0.2),
+        scrollTrigger: {
+          trigger: entry,
+          start: 'top 92%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
+  });
+
+  if(ledger){
+    gsap.fromTo(ledger,
+      { opacity: 0, x: 22 },
+      {
+        opacity: 1, x: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: ledger, start: 'top 88%', toggleActions: 'play none none reverse' }
       }
     );
   }
-
-  entries.forEach(function(entry, i){
-    var num = entry.querySelector('.skills-entry-num');
-    var title = entry.querySelector('.skills-entry-title');
-    var tags = entry.querySelector('.skills-entry-tags');
-
-    gsap.set(entry, { opacity: 0, y: 28 });
-    if(num) gsap.set(num, { opacity: 0, x: -12 });
-    if(title) gsap.set(title, { opacity: 0, y: 14 });
-    if(tags) gsap.set(tags, { opacity: 0, y: 10 });
-
-    var tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: entry,
-        start: 'top 90%',
-        toggleActions: 'play none none reverse'
-      },
-      delay: Math.min(i * 0.03, 0.18)
-    });
-
-    tl.to(entry, {
-      opacity: 1, y: 0, duration: 0.85, ease: 'power3.out'
-    }, 0);
-
-    if(num){
-      tl.to(num, {
-        opacity: 0.85, x: 0, duration: 0.6, ease: 'power3.out'
-      }, 0.08);
-    }
-    if(title){
-      tl.to(title, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out'
-      }, 0.14);
-    }
-    if(tags){
-      tl.to(tags, {
-        opacity: 1, y: 0, duration: 0.65, ease: 'power3.out'
-      }, 0.22);
-    }
-  });
+  if(cta){
+    gsap.fromTo(cta,
+      { opacity: 0, y: 12 },
+      {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: cta, start: 'top 94%', toggleActions: 'play none none reverse' }
+      }
+    );
+  }
 })();
 
 // Achievements + Experience — shared minimal cinematic runway.
