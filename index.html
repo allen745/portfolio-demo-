@@ -59,40 +59,70 @@
       <span class="nav-pill-label sound-label">Sound</span>
     </button>
     <a href="#contact" class="nav-pill nav-pill-cta">Say Hello</a>
-    <button type="button" class="nav-pill nav-pill-menu" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
-      <span class="nav-pill-reactor" aria-hidden="true"></span>
-      <span class="nav-pill-label">Menu</span>
+    <button type="button" class="nav-pill nav-pill-menu" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="bubbleMenu">
+      <span class="menu-lines" aria-hidden="true">
+        <i class="menu-line"></i>
+        <i class="menu-line"></i>
+      </span>
     </button>
   </div>
-  <div class="nav-panel nav-panel--avengers" id="navPanel" role="navigation" aria-label="Site sections">
-    <div class="nav-panel-fx" aria-hidden="true">
-      <div class="nav-panel-plate"></div>
-      <div class="nav-panel-plate-wash"></div>
-      <div class="nav-panel-scan"></div>
-      <div class="nav-panel-corners">
-        <i class="nav-panel-corner nav-panel-corner--tl"></i>
-        <i class="nav-panel-corner nav-panel-corner--tr"></i>
-        <i class="nav-panel-corner nav-panel-corner--bl"></i>
-        <i class="nav-panel-corner nav-panel-corner--br"></i>
-      </div>
-    </div>
-    <div class="nav-panel-head">
-      <span class="nav-panel-eyebrow">Assemble</span>
-      <span class="nav-panel-tag">Arc Reactor</span>
-    </div>
-    <ul class="nav-panel-list">
-      <li><a href="#hero"><span>Home</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#about"><span>About</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#skills"><span>Skills</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#projects"><span>Projects</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#gallery"><span>Moments</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#achievements"><span>Recognition</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#experience"><span>Experience</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#contact"><span>Contact</span><span class="nav-panel-dot"></span></a></li>
-      <li><a href="#credits"><span>Credits</span><span class="nav-panel-dot"></span></a></li>
-    </ul>
-  </div>
 </nav>
+
+<!-- Bubble Menu — full-screen floating pills (replaces Arc Reactor panel) -->
+<div class="bubble-menu-overlay" id="bubbleMenu" aria-hidden="true">
+  <div class="bubble-menu-bg" aria-hidden="true"></div>
+  <nav class="bubble-menu-items" aria-label="Site sections">
+    <ul class="pill-list" id="bubblePillList">
+      <li class="pill-col">
+        <a class="pill-link" href="#hero" data-rot="-8" style="--item-rot:-8deg;--hover-bg:#3b82f6;--hover-color:#fff" aria-label="Home">
+          <span class="pill-label">home</span>
+        </a>
+      </li>
+      <li class="pill-col">
+        <a class="pill-link" href="#about" data-rot="8" style="--item-rot:8deg;--hover-bg:#10b981;--hover-color:#fff" aria-label="About">
+          <span class="pill-label">about</span>
+        </a>
+      </li>
+      <li class="pill-col">
+        <a class="pill-link" href="#skills" data-rot="-5" style="--item-rot:-5deg;--hover-bg:#8b5cf6;--hover-color:#fff" aria-label="Skills">
+          <span class="pill-label">skills</span>
+        </a>
+      </li>
+      <li class="pill-spacer" aria-hidden="true"></li>
+      <li class="pill-col">
+        <a class="pill-link" href="#projects" data-rot="8" style="--item-rot:8deg;--hover-bg:#f59e0b;--hover-color:#fff" aria-label="Projects">
+          <span class="pill-label">projects</span>
+        </a>
+      </li>
+      <li class="pill-col">
+        <a class="pill-link" href="#gallery" data-rot="-7" style="--item-rot:-7deg;--hover-bg:#ef4444;--hover-color:#fff" aria-label="Moments">
+          <span class="pill-label">moments</span>
+        </a>
+      </li>
+      <li class="pill-col">
+        <a class="pill-link" href="#achievements" data-rot="6" style="--item-rot:6deg;--hover-bg:#06b6d4;--hover-color:#fff" aria-label="Recognition">
+          <span class="pill-label">recognition</span>
+        </a>
+      </li>
+      <li class="pill-spacer" aria-hidden="true"></li>
+      <li class="pill-col">
+        <a class="pill-link" href="#experience" data-rot="-6" style="--item-rot:-6deg;--hover-bg:#ec4899;--hover-color:#fff" aria-label="Experience">
+          <span class="pill-label">experience</span>
+        </a>
+      </li>
+      <li class="pill-col">
+        <a class="pill-link" href="#contact" data-rot="5" style="--item-rot:5deg;--hover-bg:#84cc16;--hover-color:#111" aria-label="Contact">
+          <span class="pill-label">contact</span>
+        </a>
+      </li>
+      <li class="pill-col">
+        <a class="pill-link" href="#credits" data-rot="-8" style="--item-rot:-8deg;--hover-bg:#a78bfa;--hover-color:#fff" aria-label="Credits">
+          <span class="pill-label">credits</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
 
 <!-- HERO — cinematic Hogwarts-inspired first page -->
 <section id="hero" class="hero--hogwarts">

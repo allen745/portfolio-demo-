@@ -1465,66 +1465,145 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   requestAnimationFrame(raf);
   window.addEventListener('resize', updateMax);
 })();
-// Lusion-style pill nav — menu flips to close, panel scroll-spies the active section
+// Bubble Menu — full-screen floating pills (React Bits–style)
 (function(){
   var menuBtn = document.getElementById('menuToggle');
-  var panel = document.getElementById('navPanel');
-  if(!menuBtn || !panel) return;
-  var label = menuBtn.querySelector('.nav-pill-label');
+  var overlay = document.getElementById('bubbleMenu');
+  if(!menuBtn || !overlay) return;
 
-  function closePanel(){
-    panel.classList.remove('open');
-    menuBtn.classList.remove('is-open');
-    menuBtn.setAttribute('aria-expanded', 'false');
-    menuBtn.setAttribute('aria-label', 'Open menu');
-    if(label) label.textContent = 'Menu';
-  }
-  function openPanel(){
-    // Retrigger Avengers HUD scan / item swing each open
-    panel.classList.remove('open');
-    void panel.offsetWidth;
-    panel.classList.add('open');
-    menuBtn.classList.add('is-open');
-    menuBtn.setAttribute('aria-expanded', 'true');
-    menuBtn.setAttribute('aria-label', 'Close menu');
-    if(label) label.textContent = 'Close';
-  }
-  menuBtn.addEventListener('click', function(){
-    panel.classList.contains('open') ? closePanel() : openPanel();
-  });
+  var bubbles = Array.prototype.slice.call(overlay.querySelectorAll('.pill-link'));
+  var labels = bubbles.map(function(b){ return b.querySelector('.pill-label'); });
+  var isOpen = false;
+  var showOverlay = false;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var animEase = 'back.out(1.5)';
+  var animDuration = 0.5;
+  var staggerDelay = 0.1;
 
-  document.addEventListener('click', function(e){
-    if(panel.classList.contains('open') && !panel.contains(e.target) && !menuBtn.contains(e.target)){
-      closePanel();
+  function desktopRot(bubble){
+    if(window.innerWidth < 900) return 0;
+    var n = parseFloat(bubble.getAttribute('data-rot') || '0');
+    return isNaN(n) ? 0 : n;
+  }
+
+  function setOpenChrome(open){
+    menuBtn.classList.toggle('is-open', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.classList.toggle('bubble-open', open);
+    overlay.classList.toggle('is-open', open);
+    overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if(window.lenis){
+      if(open) lenis.stop();
+      else if(!document.body.classList.contains('pd-open')) lenis.start();
     }
-  });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closePanel();
-  });
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
 
-  // Clicking a link inside the panel closes it (actual scrolling is already handled
-  // by your existing Lenis nav-link handler above)
-  document.querySelectorAll('.nav-panel-list a').forEach(function(a){
-    a.addEventListener('click', function(){ closePanel(); });
-  });
-
-  // Scroll-spy: light up the dot next to whichever section is actually in view
-  var sections = [];
-  document.querySelectorAll('.nav-panel-list a').forEach(function(a){
-    var sec = document.querySelector(a.getAttribute('href'));
-    if(sec) sections.push({ li: a.closest('li'), el: sec });
-  });
-
-  var spy = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      var match = sections.find(function(s){ return s.el === entry.target; });
-      if(!match || !entry.isIntersecting) return;
-      sections.forEach(function(s){ s.li.classList.remove('active'); });
-      match.li.classList.add('active');
+  function playOpen(){
+    showOverlay = true;
+    setOpenChrome(true);
+    if(!window.gsap || reduceMotion){
+      bubbles.forEach(function(b, i){
+        var rot = desktopRot(b);
+        b.style.transform = 'rotate(' + rot + 'deg) scale(1)';
+        if(labels[i]){ labels[i].style.opacity = '1'; labels[i].style.transform = 'translateY(0)'; }
+      });
+      return;
+    }
+    gsap.killTweensOf(bubbles.concat(labels.filter(Boolean)));
+    gsap.set(bubbles, { scale: 0, transformOrigin: '50% 50%' });
+    gsap.set(labels, { y: 24, autoAlpha: 0 });
+    bubbles.forEach(function(bubble, i){
+      var rot = desktopRot(bubble);
+      gsap.set(bubble, { rotation: rot });
+      var delay = i * staggerDelay + gsap.utils.random(-0.04, 0.04);
+      var tl = gsap.timeline({ delay: delay });
+      tl.to(bubble, { scale: 1, duration: animDuration, ease: animEase });
+      if(labels[i]){
+        tl.to(labels[i], {
+          y: 0,
+          autoAlpha: 1,
+          duration: animDuration,
+          ease: 'power3.out'
+        }, '-=' + (animDuration * 0.9));
+      }
     });
-  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+  }
 
-  sections.forEach(function(s){ spy.observe(s.el); });
+  function playClose(){
+    if(!isOpen && !showOverlay) return;
+    isOpen = false;
+    function finish(){
+      setOpenChrome(false);
+      showOverlay = false;
+    }
+    if(!window.gsap || reduceMotion || !showOverlay){
+      bubbles.forEach(function(b, i){
+        b.style.transform = 'scale(0)';
+        if(labels[i]){ labels[i].style.opacity = '0'; labels[i].style.transform = 'translateY(24px)'; }
+      });
+      finish();
+      return;
+    }
+    gsap.killTweensOf(bubbles.concat(labels.filter(Boolean)));
+    gsap.to(labels, { y: 24, autoAlpha: 0, duration: 0.18, ease: 'power3.in' });
+    gsap.to(bubbles, {
+      scale: 0,
+      duration: 0.2,
+      ease: 'power3.in',
+      onComplete: finish
+    });
+  }
+
+  function openMenu(){
+    isOpen = true;
+    playOpen();
+  }
+  function closeMenu(){
+    if(!isOpen && !showOverlay) return;
+    playClose();
+  }
+
+  menuBtn.addEventListener('click', function(){
+    if(isOpen) closeMenu();
+    else openMenu();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  bubbles.forEach(function(a){
+    a.addEventListener('click', function(){ closeMenu(); });
+  });
+
+  window.addEventListener('resize', function(){
+    if(!isOpen) return;
+    bubbles.forEach(function(bubble){
+      var rot = desktopRot(bubble);
+      if(window.gsap) gsap.set(bubble, { rotation: rot });
+      else bubble.style.transform = 'rotate(' + rot + 'deg) scale(1)';
+    });
+  });
+
+  // Scroll-spy: tint the pill for the section in view
+  var sections = [];
+  bubbles.forEach(function(a){
+    var sec = document.querySelector(a.getAttribute('href'));
+    if(sec) sections.push({ link: a, el: sec });
+  });
+  if('IntersectionObserver' in window && sections.length){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var match = sections.find(function(s){ return s.el === entry.target; });
+        if(!match || !entry.isIntersecting) return;
+        sections.forEach(function(s){ s.link.classList.remove('is-active'); });
+        match.link.classList.add('is-active');
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    sections.forEach(function(s){ spy.observe(s.el); });
+  }
 })();
 
 // About — legendary systems-builder reveal
