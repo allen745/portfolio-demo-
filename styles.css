@@ -410,7 +410,7 @@
     .about-video { display: none; }
   }
 
-  /* HERO — Hogwarts-inspired cinematic first page */
+  /* HERO — cinematic orbit first page */
   #hero {
     --hero-gold: #e8c27a;
     --hero-ember: #f0b86e;
@@ -446,8 +446,8 @@
   .hero-plate-fallback {
     z-index: 0;
     background:
-      radial-gradient(ellipse 55% 40% at 50% 42%, rgba(180,140,70,0.12) 0%, transparent 58%),
-      #04060c url('images/hero-hogwarts-cinematic-hq.jpg') center 46% / cover no-repeat;
+      radial-gradient(ellipse 55% 40% at 50% 42%, rgba(90, 140, 200, 0.14) 0%, transparent 58%),
+      #04060c url('videos/about-orbit-poster.jpg') center 46% / cover no-repeat;
   }
   .hero-plate {
     z-index: 1;

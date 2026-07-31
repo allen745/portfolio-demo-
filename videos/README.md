@@ -2,8 +2,8 @@
 
 Keep these light. Prefer `preload="metadata"` and play only when in view.
 
-- `about-orbit-cinematic.mp4` — About spaceship orbit (~1.2MB)
-- `about-orbit-poster.jpg` — About poster
+- `about-orbit-cinematic.mp4` — About spaceship orbit (~1.2MB); poster also used as hero plate
+- `about-orbit-poster.jpg` — About / Hero poster
 - `projects-nature-cinematic.mp4` — Projects rain leaves (~1.0MB)
 - `projects-nature-poster.jpg` — Projects poster
 - `gallery-memories-cinematic.mp4` — Gallery memory reel from `fol` stills (~1.3MB)

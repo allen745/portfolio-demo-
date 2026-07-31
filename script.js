@@ -2310,7 +2310,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// Hero opening — Hogwarts plate + golden embers + magic sparks + Ken Burns
+// Hero opening — orbit plate + soft embers + atmospheric sparks + Ken Burns
 (function(){
   var hero = document.getElementById('hero');
   var plate = document.getElementById('heroPlate');
@@ -2329,7 +2329,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   if(plate.complete) showPlate();
   else plate.addEventListener('load', showPlate);
 
-  // Soft golden ember dissolve under the title
+  // Soft ember dissolve under the title
   function bootAsh(){
     if(!ash || reduceMotion) return;
     var ctx = ash.getContext('2d');
@@ -2395,7 +2395,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     ashRaf = requestAnimationFrame(draw);
   }
 
-  // Floating magical sparks across the castle night sky
+  // Floating atmospheric sparks across the orbit field
   function bootMagic(){
     if(!magic || reduceMotion) return;
     var ctx = magic.getContext('2d');
@@ -2501,7 +2501,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// End credits — auto-rolling film finale after Thank You (video-like)
+// Closing roll — auto-scrolling engineer finale after Thank You
 (function(){
   var section = document.getElementById('credits');
   if(!section) return;
@@ -2553,9 +2553,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
     var from = startY();
     var to = endY();
-    // Slow cinematic pace — roughly movie end-credit speed
+    // Steady scroll pace through the closing roll
     var travel = Math.abs(to - from);
-    var duration = Math.max(42, Math.min(70, travel / 28));
+    var duration = Math.max(36, Math.min(58, travel / 30));
 
     gsap.set(roll, { y: from });
     tween = gsap.to(roll, {
