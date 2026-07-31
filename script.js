@@ -31,233 +31,26 @@ if (hasLenis) {
   window.lenis = null;
 }
 
-// Page-load intro — Interstellar title card (starfield + cinematic fade)
+// Page-load intro — Nolan-style title card (Directed by / name)
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
-  var starsCanvas = document.getElementById('preloaderStars');
-  var nebulaEl = pre.querySelector('.preloader-nebula');
   var creditEl = pre.querySelector('.preloader-credit');
-  var ruleEl = pre.querySelector('.preloader-rule');
   var titleEl = pre.querySelector('.preloader-title-line');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var starRaf = 0;
-  var starField = null;
 
   function finishIntro(){
-    if(starRaf) cancelAnimationFrame(starRaf);
-    starRaf = 0;
     if(pre && pre.parentNode) pre.remove();
     if(window.lenis) lenis.start();
     if(hasGsap && hasScrollTrigger) ScrollTrigger.refresh();
   }
 
-  function buildStarfield(){
-    if(!starsCanvas || reduceMotion) return null;
-    var ctx = starsCanvas.getContext('2d');
-    if(!ctx) return null;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var far = [];
-    var mid = [];
-    var near = [];
-    var dust = [];
-    var w = 0;
-    var h = 0;
-
-    function rand(a, b){ return a + Math.random() * (b - a); }
-
-    // Bias points toward a horizontal galactic band (Interstellar mid haze)
-    function bandY(){
-      var band = h * 0.5 + (Math.random() - 0.5) * h * 0.22;
-      // Soft falloff toward top/bottom with occasional outliers
-      if(Math.random() > 0.72) return Math.random() * h;
-      return band + (Math.random() - 0.5) * h * 0.12;
-    }
-
-    function resize(){
-      w = window.innerWidth;
-      h = window.innerHeight;
-      starsCanvas.width = Math.floor(w * dpr);
-      starsCanvas.height = Math.floor(h * dpr);
-      starsCanvas.style.width = w + 'px';
-      starsCanvas.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      var area = w * h;
-      far = [];
-      mid = [];
-      near = [];
-      dust = [];
-
-      var farN = Math.min(900, Math.floor(area / 1800));
-      var midN = Math.min(420, Math.floor(area / 4200));
-      var nearN = Math.min(90, Math.floor(area / 18000));
-      var dustN = Math.min(1400, Math.floor(area / 1100));
-
-      var i;
-      for(i = 0; i < farN; i++){
-        far.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          r: rand(0.35, 0.85),
-          a: rand(0.35, 0.75),
-          tw: Math.random() * Math.PI * 2,
-          sp: rand(0.25, 0.9),
-          drift: rand(0.8, 2.2)
-        });
-      }
-      for(i = 0; i < midN; i++){
-        mid.push({
-          x: Math.random() * w,
-          y: bandY(),
-          r: rand(0.7, 1.45),
-          a: rand(0.45, 0.9),
-          tw: Math.random() * Math.PI * 2,
-          sp: rand(0.35, 1.15),
-          drift: rand(1.4, 3.2),
-          tint: Math.random() > 0.82 ? 'cool' : 'white'
-        });
-      }
-      for(i = 0; i < nearN; i++){
-        near.push({
-          x: Math.random() * w,
-          y: bandY(),
-          r: rand(1.2, 2.2),
-          a: rand(0.7, 1),
-          tw: Math.random() * Math.PI * 2,
-          sp: rand(0.5, 1.4),
-          drift: rand(2.2, 4.5),
-          glow: rand(3.5, 7)
-        });
-      }
-      for(i = 0; i < dustN; i++){
-        dust.push({
-          x: Math.random() * w,
-          y: h * 0.38 + Math.random() * h * 0.28 + (Math.random() - 0.5) * h * 0.08,
-          r: rand(0.2, 0.55),
-          a: rand(0.08, 0.28),
-          drift: rand(0.6, 1.8),
-          phase: Math.random() * Math.PI * 2
-        });
-      }
-    }
-
-    resize();
-    window.addEventListener('resize', resize);
-
-    var t0 = performance.now();
-    function draw(now){
-      var t = (now - t0) / 1000;
-      ctx.clearRect(0, 0, w, h);
-
-      // Deep void plate
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, w, h);
-
-      // Soft purple-blue galactic haze (horizontal milky band)
-      var haze = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.72);
-      haze.addColorStop(0, 'rgba(70, 55, 110, 0.18)');
-      haze.addColorStop(0.35, 'rgba(45, 50, 95, 0.1)');
-      haze.addColorStop(0.7, 'rgba(15, 18, 40, 0.04)');
-      haze.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = haze;
-      ctx.fillRect(0, 0, w, h);
-
-      var band = ctx.createLinearGradient(0, h * 0.28, 0, h * 0.72);
-      band.addColorStop(0, 'rgba(0,0,0,0)');
-      band.addColorStop(0.35, 'rgba(90, 85, 140, 0.09)');
-      band.addColorStop(0.5, 'rgba(140, 145, 180, 0.14)');
-      band.addColorStop(0.65, 'rgba(70, 75, 130, 0.08)');
-      band.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = band;
-      ctx.fillRect(0, 0, w, h);
-
-      var i, s, twinkle, x, y, glow;
-
-      // Cosmic dust along the mid band
-      for(i = 0; i < dust.length; i++){
-        s = dust[i];
-        x = (s.x + t * s.drift) % w;
-        y = s.y + Math.sin(t * 0.15 + s.phase) * 2;
-        ctx.beginPath();
-        ctx.fillStyle = 'rgba(190,195,220,' + s.a + ')';
-        ctx.arc(x, y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Distant dense field
-      for(i = 0; i < far.length; i++){
-        s = far[i];
-        twinkle = 0.65 + 0.35 * Math.sin(t * s.sp + s.tw);
-        x = (s.x + t * s.drift * 0.15) % w;
-        ctx.beginPath();
-        ctx.fillStyle = 'rgba(220,225,240,' + (s.a * twinkle) + ')';
-        ctx.arc(x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Mid layer — slightly cooler tones in the band
-      for(i = 0; i < mid.length; i++){
-        s = mid[i];
-        twinkle = 0.55 + 0.45 * Math.sin(t * s.sp + s.tw);
-        x = (s.x + t * s.drift * 0.28) % w;
-        ctx.beginPath();
-        if(s.tint === 'cool'){
-          ctx.fillStyle = 'rgba(185,195,235,' + (s.a * twinkle) + ')';
-        } else {
-          ctx.fillStyle = 'rgba(235,238,248,' + (s.a * twinkle) + ')';
-        }
-        ctx.arc(x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Near bright stars with soft bloom
-      for(i = 0; i < near.length; i++){
-        s = near[i];
-        twinkle = 0.6 + 0.4 * Math.sin(t * s.sp + s.tw);
-        x = (s.x + t * s.drift * 0.4) % w;
-        y = s.y;
-        glow = ctx.createRadialGradient(x, y, 0, x, y, s.glow);
-        glow.addColorStop(0, 'rgba(255,255,255,' + (0.28 * twinkle) + ')');
-        glow.addColorStop(0.4, 'rgba(200,210,240,' + (0.1 * twinkle) + ')');
-        glow.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(x, y, s.glow, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.fillStyle = 'rgba(255,255,255,' + (s.a * twinkle) + ')';
-        ctx.arc(x, y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      starRaf = requestAnimationFrame(draw);
-    }
-    starRaf = requestAnimationFrame(draw);
-
-    return {
-      destroy: function(){
-        window.removeEventListener('resize', resize);
-        if(starRaf) cancelAnimationFrame(starRaf);
-      }
-    };
-  }
-
-  starField = buildStarfield();
-
   if(!hasGsap){
     if(creditEl) creditEl.style.opacity = '1';
-    if(ruleEl){
-      ruleEl.style.opacity = '1';
-      ruleEl.style.transform = 'scaleX(1)';
-    }
     if(titleEl) titleEl.style.opacity = '1';
-    if(starsCanvas) starsCanvas.style.opacity = '1';
-    if(nebulaEl) nebulaEl.style.opacity = '1';
     setTimeout(function(){
-      if(starField) starField.destroy();
       finishIntro();
-    }, reduceMotion ? 200 : 2200);
+    }, reduceMotion ? 200 : 1800);
     return;
   }
 
@@ -265,109 +58,29 @@ if (hasLenis) {
   var tl = gsap.timeline({
     defaults: { force3D: true, ease: 'power2.out' },
     onComplete: function(){
-      if(starField) starField.destroy();
       finishIntro();
     }
   });
 
   if(reduceMotion){
-    gsap.set([starsCanvas, nebulaEl, creditEl, ruleEl, titleEl], { opacity: 1 });
-    if(ruleEl) gsap.set(ruleEl, { scaleX: 1 });
-    tl.to(pre, { opacity: 0, duration: 0.35 }, 0.4);
+    gsap.set([creditEl, titleEl], { opacity: 1 });
+    tl.to(pre, { opacity: 0, duration: 0.35 }, 0.45);
   } else {
-    // 1) Space awakens — slow Ken Burns on the starfield
-    if(starsCanvas){
-      gsap.set(starsCanvas, { opacity: 0, scale: 1.12 });
-      tl.to(starsCanvas, {
-        opacity: 1,
-        scale: 1,
-        duration: 2.4,
-        ease: 'power1.out'
-      }, 0);
-    }
-    if(nebulaEl){
-      gsap.set(nebulaEl, { opacity: 0 });
-      tl.to(nebulaEl, {
-        opacity: 1,
-        duration: 2.2,
-        ease: 'power1.out'
-      }, 0.15);
-    }
-
-    // 2) Cinematic credit, divider, then title — no scale grow; tracking settles wide → final
+    // Fade in: "Directed by", then the name — hold — dissolve
     if(creditEl){
-      gsap.set(creditEl, { opacity: 0, y: 8 });
-      tl.to(creditEl, {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        ease: 'power2.out'
-      }, 0.45);
-    }
-    if(ruleEl){
-      gsap.set(ruleEl, { opacity: 0, scaleX: 0.35 });
-      tl.to(ruleEl, {
-        opacity: 1,
-        scaleX: 1,
-        duration: 1.35,
-        ease: 'power2.out'
-      }, 0.7);
+      gsap.set(creditEl, { opacity: 0 });
+      tl.to(creditEl, { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0.2);
     }
     if(titleEl){
-      var wideTrack = window.matchMedia('(max-width: 700px)').matches ? '0.42em' : '0.72em';
-      var finalTrack = window.matchMedia('(max-width: 700px)').matches ? '0.32em' : '0.55em';
-      gsap.set(titleEl, {
-        opacity: 0,
-        letterSpacing: wideTrack,
-        textIndent: wideTrack
-      });
-      tl.to(titleEl, {
-        opacity: 1,
-        letterSpacing: finalTrack,
-        textIndent: finalTrack,
-        duration: 2.6,
-        ease: 'power2.out'
-      }, 0.85);
+      gsap.set(titleEl, { opacity: 0 });
+      tl.to(titleEl, { opacity: 1, duration: 1.05, ease: 'power2.out' }, 0.45);
     }
-
-    // 3) Hold on the title card, then soft cinematic dissolve
-    tl.to({}, { duration: 1.15 });
+    tl.to({}, { duration: 1.35 });
     if(creditEl){
-      tl.to(creditEl, {
-        opacity: 0,
-        duration: 1.0,
-        ease: 'power2.inOut'
-      }, '>-0.05');
+      tl.to(creditEl, { opacity: 0, duration: 0.85, ease: 'power2.inOut' }, '>-0.05');
     }
-    if(ruleEl){
-      tl.to(ruleEl, {
-        opacity: 0,
-        scaleX: 0.55,
-        duration: 1.0,
-        ease: 'power2.inOut'
-      }, '<');
-    }
-    tl.to(titleEl, {
-      opacity: 0,
-      duration: 1.1,
-      ease: 'power2.inOut'
-    }, '<');
-    if(starsCanvas){
-      tl.to(starsCanvas, {
-        opacity: 0,
-        scale: 1.06,
-        duration: 1.25,
-        ease: 'power2.inOut'
-      }, '<');
-    }
-    if(nebulaEl){
-      tl.to(nebulaEl, { opacity: 0, duration: 1.1, ease: 'power2.inOut' }, '<');
-    }
-    tl.to(pre, {
-      opacity: 0,
-      duration: 0.85,
-      ease: 'power2.inOut'
-    }, '-=0.55');
+    tl.to(titleEl, { opacity: 0, duration: 0.9, ease: 'power2.inOut' }, '<');
+    tl.to(pre, { opacity: 0, duration: 0.7, ease: 'power2.inOut' }, '-=0.45');
   }
 
   // Hero type reveal after the title card dissolves
