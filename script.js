@@ -31,7 +31,7 @@ if (hasLenis) {
   window.lenis = null;
 }
 
-// Page-load intro — Nolan-style title card (Directed by / name)
+// Page-load intro — Nolan-style title card (Produced by / Cinzel name)
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;

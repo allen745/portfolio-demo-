@@ -3147,21 +3147,22 @@
   display: block;
   font-family: 'DM Sans', sans-serif;
   font-weight: 400;
-  font-size: clamp(0.85rem, 1.6vw, 1.05rem);
-  letter-spacing: 0.02em;
-  text-transform: none;
+  font-size: clamp(0.62rem, 1.05vw, 0.74rem);
+  letter-spacing: 0.62em;
+  text-indent: 0.62em;
+  text-transform: uppercase;
   color: #ffffff;
-  margin: 0 0 0.55rem;
+  margin: 0 0 0.95rem;
   opacity: 0;
   will-change: opacity;
 }
 .preloader-title-line {
   display: block;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(1.55rem, 4.8vw, 3.15rem);
-  letter-spacing: 0.18em;
-  text-indent: 0.18em;
+  font-size: clamp(1.55rem, 5.2vw, 3.6rem);
+  letter-spacing: 0.48em;
+  text-indent: 0.48em;
   text-transform: uppercase;
   line-height: 1.15;
   color: #ffffff;
@@ -3171,13 +3172,14 @@
 }
 @media (max-width: 700px) {
   .preloader-credit {
-    font-size: 0.8rem;
-    margin-bottom: 0.45rem;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+    margin-bottom: 0.75rem;
   }
   .preloader-title-line {
-    font-size: clamp(1.15rem, 6.2vw, 1.7rem);
-    letter-spacing: 0.12em;
-    text-indent: 0.12em;
+    font-size: clamp(1.15rem, 6.8vw, 1.65rem);
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
     white-space: normal;
   }
 }
