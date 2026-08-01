@@ -565,53 +565,20 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 // Project case-study system — click a card, scroll horizontally through the story
 (function(){
   const projects = {
-    vertex: {
-      num: "01", tag: "Career Intelligence · In Progress",
-      title: "Vertex — AI Career Intelligence Platform",
-      desc: "A student-built platform helping tech learners decide what to study next: salary signals across countries, demand trends, and an AI advisor grounded in where each student actually stands.",
-      highlights: [
-        "Phase-based roadmaps with 70+ curated resources per domain",
-        "Salary and demand data projected to 2036",
-        "Vertice AI reads a student's progress before responding, no generic answers"
-      ],
-      tech: ["FastAPI","React.js","Azure OpenAI","Recharts","Microsoft Auth"],
-      theme: { bg:"#1a120c", panel:"#2a1c14", text:"#f3e9dd", muted:"#c9b8a8", border:"rgba(255,255,255,0.14)", accent:"#e8a25c", accent2:"#60a5fa" },
-      images: ["images/projects/vertex/1.jpg","images/projects/vertex/2.jpg","images/projects/vertex/3.jpg","images/projects/vertex/4.jpg","images/projects/vertex/5.jpg"],
-      stories: [
-        { title: "The Reframe", sub: "Most platforms give you a list. We give you a moving picture." },
-        { title: "Pick Your Track", sub: "6 domains mapped, ML Engineer live first." },
-        { title: "The Roadmap", sub: "11 structured phases, zero guesswork." },
-        { title: "Vertice AI", sub: "A mentor grounded in your actual progress." }
-      ]
-    },
-    patent: {
-      num: "02", tag: "Government of India Patent",
-      title: "Spring-Loaded Piezoelectric Generating Striker Device",
-      desc: "A novel ambient energy harvesting device converting footstep mechanical energy into electrical power via a spring-loaded hammer striking a PZT piezoelectric disc. Built into a physical exhibit, 'Power Strikes,' showing the concept live.",
-      highlights: [
-        "Design No. 450815-001, registered with the Patent Office, Government of India",
-        "4-phase cycle: Loading, Release, Impact, Energy Output",
-        "Built as a hands-on exhibit installation, not just a spec sheet"
-      ],
-      tech: ["Piezoelectric","PZT-5A/5H","Mechanical Design"],
-      theme: { bg:"#0f2018", panel:"#183526", text:"#eaf4ec", muted:"#a9c6b1", border:"rgba(255,255,255,0.14)", accent:"#4ade80", accent2:"#fbbf24" },
-      images: ["images/projects/patent/1.jpg","images/projects/patent/2.jpg","images/projects/patent/3.jpeg","images/projects/patent/4.jpg"],
-      stories: [
-        { title: "The Engineering", sub: "7-view technical model, working principle mapped in 4 steps." },
-        { title: "Use It or Lose It", sub: "Hands-on energy generation, hit, charge, repeat." },
-        { title: "The Redesign", sub: "An alternate colorway built for the same exhibit." }
-      ]
-    },
     devmind: {
-      num: "03", tag: "Live Product · 2025–2026",
+      num: "01", tag: "Live Product",
       title: "DevMind AI — AI Developer Toolkit",
-      desc: "An AI-powered developer productivity platform with five tools for reviewing, fixing, documenting, and analyzing code, independently designed, deployed, and maintained end-to-end.",
+      desc: "An AI-powered developer productivity platform with five tools for reviewing, fixing, documenting, and analyzing code — designed, deployed, and maintained end-to-end.",
       highlights: [
         "5 tools: code review, bug fixing, docs generation, complexity analysis, commit messages",
-        "Direct GitHub file URL ingestion, no copy-paste required",
-        "Live at devmind-ai-topaz.vercel.app"
+        "Direct GitHub file URL ingestion — no copy-paste required",
+        "Live product with Google OAuth and a full dashboard"
       ],
       tech: ["FastAPI","Groq","React.js","Vercel"],
+      links: [
+        { label: "Live demo", href: "https://dev-mind-ai-isguu.vercel.app/" },
+        { label: "GitHub", href: "https://github.com/allen745/devmind-ai" }
+      ],
       theme: { bg:"#14102a", panel:"#221a3d", text:"#f0f0f0", muted:"#b4a8d4", border:"rgba(255,255,255,0.14)", accent:"#c084fc", accent2:"#5eead4" },
       images: ["images/projects/devmind/1.jpg","images/projects/devmind/2.png","images/projects/devmind/3.png","images/projects/devmind/4.png","images/projects/devmind/5.png","images/projects/devmind/6.png"],
       stories: [
@@ -622,16 +589,40 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         { title: "Complexity, Explained", sub: "Time complexity broken down function by function." }
       ]
     },
-    casaas: {
-      num: "04", tag: "B2B SaaS · In Progress",
-      title: "CA SaaS — B2B AI Platform for Chartered Accountants",
-      desc: "A full-stack B2B SaaS platform for India's 400,000+ practicing Chartered Accountants, combining client management with an AI layer that reads documents, drafts notices, and flags anomalies.",
+    devmindagent: {
+      num: "02", tag: "Reasoning Agent · Agents League",
+      title: "DevMind AI Agent — Autonomous Repository Intelligence Agent",
+      desc: "A 4-step reasoning agent that turns a public GitHub repo into a cited Project Health Report using a dual-model pipeline. Built for the Microsoft Agents League hackathon.",
       highlights: [
-        "JWT auth with full client management, PAN details included",
+        "Fetch → per-file analysis → cross-file patterns → Foundry IQ synthesis",
+        "Grounded 0–100 health score with top recommended fixes",
+        "Submitted to the Reasoning Agents track"
+      ],
+      tech: ["FastAPI","Groq/LLaMA-3.3-70b","Microsoft Foundry IQ","GitHub REST API"],
+      links: [
+        { label: "GitHub", href: "https://github.com/allen745/DEVMIND-AGENT" }
+      ],
+      theme: { bg:"#1a1442", panel:"#241b58", text:"#ece9ff", muted:"#b3a9e0", border:"rgba(255,255,255,0.14)", accent:"#8b7cf6", accent2:"#22d3ee" },
+      images: ["images/projects/devmindagent/1.png","images/projects/devmindagent/2.png","images/projects/devmindagent/3.png","images/projects/devmindagent/4.png"],
+      stories: [
+        { title: "Analysis Summary", sub: "A real repo scanned in seconds, health score 55/100." },
+        { title: "The Reasoning Pipeline", sub: "4 steps, 2 models: fetch, analyze, cross-reference, synthesize." },
+        { title: "File by File", sub: "Bugs, security, quality and severity, all cited." }
+      ]
+    },
+    casaas: {
+      num: "03", tag: "B2B SaaS · In Progress",
+      title: "CA SaaS — B2B AI Platform for Chartered Accountants",
+      desc: "A full-stack B2B SaaS platform for India's practicing Chartered Accountants — client management plus an AI layer that reads documents, drafts notices, and flags anomalies.",
+      highlights: [
+        "JWT auth with full client management",
         "AI-powered ITR summarization and notice reply drafting",
         "20+ REST API endpoints across auth, clients, documents, AI, and notices"
       ],
       tech: ["FastAPI","PostgreSQL","React.js","Groq/LLaMA-3.3"],
+      links: [
+        { label: "GitHub", href: "https://github.com/allen745/ca-saas" }
+      ],
       theme: { bg:"#101a14", panel:"#1c2a20", text:"#eaf4ec", muted:"#a9c6b1", border:"rgba(255,255,255,0.14)", accent:"#3d8b6e", accent2:"#d4a574" },
       images: ["images/projects/casaas/1.jpg","images/projects/casaas/2.png","images/projects/casaas/3.png","images/projects/casaas/4.png","images/projects/casaas/5.png"],
       stories: [
@@ -641,34 +632,97 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         { title: "AI Insights", sub: "Income mismatches and penalty risk, flagged automatically." }
       ]
     },
-    devmindagent: {
-      num: "05", tag: "Agent Build · Submitted 2026",
-      title: "DevMind AI Agent — Autonomous Repository Intelligence Agent",
-      desc: "A student-built 4-step reasoning agent that turns a public GitHub repo into a cited Project Health Report, using a dual-model pipeline instead of single-shot analysis. Entered in Microsoft Agents League 2026.",
+    vertex: {
+      num: "04", tag: "Career Intelligence · In Progress",
+      title: "Vertex — AI Career Intelligence Platform",
+      desc: "A student-built platform helping tech learners decide what to study next: salary signals, demand trends, and an AI advisor grounded in where each student actually stands.",
       highlights: [
-        "GitHub fetch, parallel per-file analysis, cross-file pattern detection, Foundry IQ synthesis",
-        "Grounded, cited 0 to 100 health score with top 5 recommended fixes",
-        "Submitted to the Reasoning Agents track — entry, not a placement"
+        "Phase-based roadmaps with curated resources per domain",
+        "Salary and demand signals projected forward",
+        "Vertice AI reads progress before responding — no generic answers"
       ],
-      tech: ["FastAPI","Groq/LLaMA-3.3-70b","Microsoft Foundry IQ","GitHub REST API"],
-      theme: { bg:"#1a1442", panel:"#241b58", text:"#ece9ff", muted:"#b3a9e0", border:"rgba(255,255,255,0.14)", accent:"#8b7cf6", accent2:"#22d3ee" },
-      images: ["images/projects/devmindagent/1.png","images/projects/devmindagent/2.png","images/projects/devmindagent/3.png","images/projects/devmindagent/4.png"],
+      tech: ["FastAPI","React.js","Azure OpenAI","Recharts","Microsoft Auth"],
+      links: [],
+      theme: { bg:"#1a120c", panel:"#2a1c14", text:"#f3e9dd", muted:"#c9b8a8", border:"rgba(255,255,255,0.14)", accent:"#e8a25c", accent2:"#60a5fa" },
+      images: ["images/projects/vertex/1.jpg","images/projects/vertex/2.jpg","images/projects/vertex/3.jpg","images/projects/vertex/4.jpg","images/projects/vertex/5.jpg"],
       stories: [
-        { title: "Analysis Summary", sub: "A real repo scanned in seconds, health score 55/100." },
-        { title: "The Reasoning Pipeline", sub: "4 steps, 2 models: fetch, analyze, cross-reference, synthesize." },
-        { title: "File by File", sub: "Bugs, security, quality and severity, all cited." }
+        { title: "The Reframe", sub: "Most platforms give you a list. We give you a moving picture." },
+        { title: "Pick Your Track", sub: "6 domains mapped, ML Engineer live first." },
+        { title: "The Roadmap", sub: "11 structured phases, zero guesswork." },
+        { title: "Vertice AI", sub: "A mentor grounded in your actual progress." }
+      ]
+    },
+    patent: {
+      num: "05", tag: "Design Patent · Government of India",
+      title: "Spring-Loaded Piezoelectric Generating Striker Device",
+      desc: "A design-patented ambient energy harvesting device that converts footstep force into electrical power via a spring-loaded hammer striking a PZT disc. Built as a physical exhibit, not just a drawing.",
+      highlights: [
+        "Design No. 450815-001 — Patent Office, Government of India (design patent)",
+        "4-phase cycle: Loading, Release, Impact, Energy Output",
+        "Hands-on Power Strikes exhibit installation"
+      ],
+      tech: ["Piezoelectric","PZT-5A/5H","Mechanical Design"],
+      links: [
+        { label: "GitHub", href: "https://github.com/allen745/power-strike-" }
+      ],
+      theme: { bg:"#0f2018", panel:"#183526", text:"#eaf4ec", muted:"#a9c6b1", border:"rgba(255,255,255,0.14)", accent:"#4ade80", accent2:"#fbbf24" },
+      images: ["images/projects/patent/1.jpg","images/projects/patent/2.jpg","images/projects/patent/3.jpeg","images/projects/patent/4.jpg"],
+      stories: [
+        { title: "The Engineering", sub: "7-view technical model, working principle mapped in 4 steps." },
+        { title: "Use It or Lose It", sub: "Hands-on energy generation, hit, charge, repeat." },
+        { title: "The Redesign", sub: "An alternate colorway built for the same exhibit." }
+      ]
+    },
+    mlportfolio: {
+      num: "06", tag: "Learning Series · Classical ML",
+      title: "ML Models Portfolio",
+      desc: "A curated set of foundational machine learning projects built while learning classical ML — classification, regression, fraud detection, health prediction, and more. Practice work, grouped honestly, not oversold as production systems.",
+      highlights: [
+        "16 foundational ML projects in one curated repo",
+        "Real problem domains: fraud, health, finance, NLP baselines",
+        "Built to learn pipelines, EDA, and model evaluation end to end"
+      ],
+      tech: ["Python","Scikit-learn","Pandas","NumPy"],
+      links: [
+        { label: "GitHub", href: "https://github.com/allen745/ml-models-portfolio" }
+      ],
+      theme: { bg:"#0c1218", panel:"#162230", text:"#e8eef4", muted:"#9aafc0", border:"rgba(255,255,255,0.14)", accent:"#64b5f6", accent2:"#80cbc4" },
+      images: ["images/projects/mlportfolio/1.jpg","images/projects/mlportfolio/2.jpg"],
+      stories: [
+        { title: "Foundations First", sub: "Classification, regression, and evaluation — practiced across real datasets." }
+      ]
+    },
+    dlportfolio: {
+      num: "07", tag: "Learning Series · Deep Learning",
+      title: "DL Models Portfolio",
+      desc: "A curated deep learning practice portfolio — TensorFlow/Keras models and computer-vision pipelines built while leveling up DL, including internship CNN work and vision experiments.",
+      highlights: [
+        "Curated DL models with TensorFlow and Keras",
+        "Computer vision and CNN pipelines from CodeAlpha ML work",
+        "Framed as learning depth — the foundation under product AI work"
+      ],
+      tech: ["Python","TensorFlow","Keras","Computer Vision"],
+      links: [
+        { label: "GitHub", href: "https://github.com/allen745/dl-models-portfolio" },
+        { label: "CodeAlpha work", href: "https://github.com/allen745/CodeAlpha_MachineLearning" }
+      ],
+      theme: { bg:"#140e22", panel:"#221836", text:"#f0eaf8", muted:"#b5a8cc", border:"rgba(255,255,255,0.14)", accent:"#b388ff", accent2:"#5eead4" },
+      images: ["images/projects/dlportfolio/1.jpg","images/projects/dlportfolio/2.jpg"],
+      stories: [
+        { title: "Vision Pipelines", sub: "CNNs and DL workflows practiced before shipping LLM products." }
       ]
     },
     trackbot: {
-      num: "06", tag: "SSIP-Funded Team Project · ADIT, CVM University",
+      num: "08", tag: "SSIP-Funded Team Project · ADIT, CVM University",
       title: "TrackBot 1 — Low-Cost Autonomous Warehouse AGV",
-      desc: "A single-MCU autonomous warehouse AGV designed around RFID-corrected odometry, A* pathfinding, and a non-invasive embedded AI advisory layer, built within a \u20b935,000 SSIP-funded budget. Currently in build phase; I led electrical power systems and electronics integration on a 4-person research team.",
+      desc: "A single-MCU autonomous warehouse AGV designed around RFID-corrected odometry, A* pathfinding, and an embedded AI advisory layer, built within a \u20b935,000 SSIP-funded budget. I led electrical power systems and electronics integration on a 4-person research team.",
       highlights: [
-        "Co-authored an IEEE-formatted paper documenting the architecture, 11 hardware-software conflict resolutions, and evaluation criteria",
-        "RFID-corrected encoder odometry + A* pathfinding for real-time replanning, entirely on a single ESP32-S3",
-        "4-module embedded AI advisory layer: offline-trained coefficients only, zero cloud dependency, zero impact on navigation firmware"
+        "Co-authored an IEEE-formatted architecture paper",
+        "RFID-corrected odometry + A* on a single ESP32-S3",
+        "Offline-trained AI advisory layer with zero cloud dependency"
       ],
       tech: ["ESP32-S3","A* Pathfinding","RFID Localization","scikit-learn"],
+      links: [],
       theme: { bg:"#0a1428", panel:"#0f1c38", text:"#e6edf7", muted:"#93a4c2", border:"rgba(255,255,255,0.14)", accent:"#4d9fff", accent2:"#38bdf8" },
       images: ["images/projects/trackbot/1.jpg","images/projects/trackbot/2.jpg","images/projects/trackbot/3.jpg"],
       stories: [
@@ -677,15 +731,16 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ]
     },
     autoseed: {
-      num: "07", tag: "IoT + Precision Agriculture · 2025",
+      num: "09", tag: "IoT + Precision Agriculture · 2025",
       title: "AutoSeed Bot — Autonomous Agricultural Robot",
-      desc: "An autonomous seed-planting robot automating planting operations for small-scale farms, using an Arduino-based control system with ultrasonic sensing, motor control, and precision seed dispersion.",
+      desc: "An autonomous seed-planting robot for small-scale farms using Arduino control, ultrasonic sensing, motor control, and precision seed dispersion.",
       highlights: [
-        "Sensor-based autonomous navigation across the field",
-        "Precision seed dispersion with continuous feedback, live seed count on an onboard LCD",
-        "Addresses labour inefficiency in small-scale farming"
+        "Sensor-based autonomous field navigation",
+        "Precision seed dispersion with live LCD seed count",
+        "Built to address labour inefficiency in small-scale farming"
       ],
       tech: ["Arduino","Ultrasonic Sensing","Motor Control","IoT"],
+      links: [],
       theme: { bg:"#1a1810", panel:"#2a2618", text:"#f3e9dd", muted:"#a89f88", border:"rgba(255,255,255,0.14)", accent:"#7c8f52", accent2:"#c4a574" },
       images: ["images/projects/autoseed/1.jpg","images/projects/autoseed/2.jpg"],
       stories: [
@@ -926,6 +981,15 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     track.innerHTML = ''; panels = [];
     var intro = document.createElement('div');
     intro.className = 'intro-panel';
+    var linksHtml = '';
+    if(data.links && data.links.length){
+      linksHtml =
+        '<div class="intro-links">' +
+          data.links.map(function(link){
+            return '<a class="intro-link" href="' + link.href + '" target="_blank" rel="noopener noreferrer">' + link.label + ' ↗</a>';
+          }).join('') +
+        '</div>';
+    }
     intro.innerHTML =
       '<div class="intro-text">' +
         '<div class="intro-num">PROJECT — ' + data.num + '</div>' +
@@ -933,6 +997,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         '<p class="intro-desc">' + data.desc + '</p>' +
         '<ul class="intro-highlights">' + data.highlights.map(function(h){return '<li>'+h+'</li>';}).join('') + '</ul>' +
         '<div class="intro-tech">' + data.tech.map(function(t){return '<span>'+t+'</span>';}).join('') + '</div>' +
+        linksHtml +
         '<button type="button" class="intro-back">&larr; Back to Projects</button>' +
       '</div>' +
       '<div class="intro-image-frame"><img src="' + data.images[0] + '" alt="' + data.title.replace(/"/g, '&quot;') + ' preview"></div>';
