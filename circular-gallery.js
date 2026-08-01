@@ -126,24 +126,23 @@ function Media(opts) {
 
 Media.prototype.createShader = function () {
   var self = this;
-  var texture = new Texture(this.gl, { generateMipmaps: true });
+  // No mipmaps — gallery cards are roughly screen-sized and mip gen spikes on boot.
+  var texture = new Texture(this.gl, { generateMipmaps: false });
   this.program = new Program(this.gl, {
     depthTest: false,
     depthWrite: false,
+    // Flat planes: bend is handled in JS position/rotation, so dense tessellation
+    // + per-vertex wave math was pure cost during scroll into Moments.
     vertex: [
       'precision highp float;',
       'attribute vec3 position;',
       'attribute vec2 uv;',
       'uniform mat4 modelViewMatrix;',
       'uniform mat4 projectionMatrix;',
-      'uniform float uTime;',
-      'uniform float uSpeed;',
       'varying vec2 vUv;',
       'void main(){',
       '  vUv = uv;',
-      '  vec3 p = position;',
-      '  p.z = (sin(p.x * 4.0 + uTime) * 1.5 + cos(p.y * 2.0 + uTime) * 1.5) * (0.08 + uSpeed * 0.45);',
-      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
       '}'
     ].join('\n'),
     fragment: [
@@ -176,8 +175,6 @@ Media.prototype.createShader = function () {
       tMap: { value: texture },
       uPlaneSizes: { value: [0, 0] },
       uImageSizes: { value: [1, 1] },
-      uSpeed: { value: 0 },
-      uTime: { value: 100 * Math.random() },
       uBorderRadius: { value: this.borderRadius }
     },
     transparent: true
@@ -186,8 +183,25 @@ Media.prototype.createShader = function () {
   img.decoding = 'async';
   img.src = this.image;
   img.onload = function () {
-    texture.image = img;
-    self.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+    // Downsample large FOL stills before GPU upload (source is ~1600px).
+    var maxEdge = 900;
+    var w = img.naturalWidth || 1;
+    var h = img.naturalHeight || 1;
+    if (w > maxEdge || h > maxEdge) {
+      var scale = maxEdge / Math.max(w, h);
+      var tw = Math.max(1, Math.round(w * scale));
+      var th = Math.max(1, Math.round(h * scale));
+      var canvas = document.createElement('canvas');
+      canvas.width = tw;
+      canvas.height = th;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, tw, th);
+      texture.image = canvas;
+      self.program.uniforms.uImageSizes.value = [tw, th];
+    } else {
+      texture.image = img;
+      self.program.uniforms.uImageSizes.value = [w, h];
+    }
   };
 };
 
@@ -229,8 +243,6 @@ Media.prototype.update = function (scroll, direction) {
   }
 
   this.speed = scroll.current - scroll.last;
-  this.program.uniforms.uTime.value += 0.04;
-  this.program.uniforms.uSpeed.value = this.speed;
 
   var planeOffset = this.plane.scale.x / 2;
   var viewportOffset = this.viewport.width / 2;
@@ -295,10 +307,14 @@ App.prototype.pauseAutoScroll = function () {
 };
 
 App.prototype.createRenderer = function () {
+  var coarse = window.matchMedia('(pointer: coarse)').matches;
+  var narrow = window.matchMedia('(max-width: 760px)').matches;
+  // Cap DPR hard — retina × antialias × 42 planes was the Moments scroll hitch.
+  var dprCap = (coarse || narrow) ? 1 : 1.25;
   this.renderer = new Renderer({
     alpha: true,
-    antialias: true,
-    dpr: Math.min(window.devicePixelRatio || 1, 2)
+    antialias: !(coarse || narrow),
+    dpr: Math.min(window.devicePixelRatio || 1, dprCap)
   });
   this.gl = this.renderer.gl;
   this.gl.clearColor(0, 0, 0, 0);
@@ -319,7 +335,8 @@ App.prototype.createScene = function () {
 };
 
 App.prototype.createGeometry = function () {
-  this.planeGeometry = new Plane(this.gl, { heightSegments: 40, widthSegments: 80 });
+  // Bend is positional — keep planes as simple quads.
+  this.planeGeometry = new Plane(this.gl, { heightSegments: 1, widthSegments: 1 });
 };
 
 App.prototype.createMedias = function (items, bend, textColor, borderRadius, font) {
@@ -414,24 +431,37 @@ App.prototype.onResize = function () {
 
 App.prototype.update = function () {
   var self = this;
-  if (this.visible) {
-    // Steady slow spin when the user isn't dragging / just finished interacting
-    if (!this.isDown && performance.now() >= this.autoPausedUntil) {
-      this.scroll.target += this.autoScrollSpeed;
-    }
-    this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
-    var direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
-    this.medias.forEach(function (media) {
-      media.update(self.scroll, direction);
-    });
-    this.renderer.render({ scene: this.scene, camera: this.camera });
-    this.scroll.last = this.scroll.current;
+  if (!this.visible) {
+    this.raf = 0;
+    return;
   }
+  // Steady slow spin when the user isn't dragging / just finished interacting
+  if (!this.isDown && performance.now() >= this.autoPausedUntil) {
+    this.scroll.target += this.autoScrollSpeed;
+  }
+  this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
+  var direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
+  this.medias.forEach(function (media) {
+    media.update(self.scroll, direction);
+  });
+  this.renderer.render({ scene: this.scene, camera: this.camera });
+  this.scroll.last = this.scroll.current;
   this.raf = requestAnimationFrame(function () { self.update(); });
 };
 
 App.prototype.setVisible = function (on) {
-  this.visible = !!on;
+  var next = !!on;
+  if (this.visible === next) return;
+  this.visible = next;
+  if (next) {
+    if (!this.raf) {
+      var self = this;
+      this.raf = requestAnimationFrame(function () { self.update(); });
+    }
+  } else if (this.raf) {
+    cancelAnimationFrame(this.raf);
+    this.raf = 0;
+  }
 };
 
 App.prototype.addEventListeners = function () {
@@ -512,6 +542,9 @@ function bootCircularGallery() {
   }
 
   var app = null;
+  var section = document.getElementById('gallery');
+  var bootScheduled = false;
+
   function start() {
     if (app) return;
     app = new App(stage, {
@@ -527,20 +560,42 @@ function bootCircularGallery() {
     });
   }
 
+  function scheduleStart(makeVisible) {
+    if (app) {
+      if (makeVisible) app.setVisible(true);
+      if (section) section.classList.add('is-live');
+      return;
+    }
+    if (bootScheduled) return;
+    bootScheduled = true;
+    var boot = function () {
+      start();
+      if (app && makeVisible) app.setVisible(true);
+      if (section) section.classList.add('is-live');
+      bootScheduled = false;
+    };
+    // Keep WebGL construction off the scroll frame that enters Moments.
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(boot, { timeout: 180 });
+    } else {
+      requestAnimationFrame(function () { requestAnimationFrame(boot); });
+    }
+  }
+
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          start();
-          if (app) app.setVisible(true);
+          scheduleStart(true);
         } else if (app) {
           app.setVisible(false);
+          if (section) section.classList.remove('is-live');
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.08, rootMargin: '0px 0px 12% 0px' });
     io.observe(stage);
   } else {
-    start();
+    scheduleStart(true);
   }
 }
 
