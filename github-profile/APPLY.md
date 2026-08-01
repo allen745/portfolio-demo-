@@ -35,3 +35,8 @@ git push origin main
 - Honest ML/DL as learning series
 - Correct live links (DevMind, portfolio, LinkedIn, email)
 - Less emoji / badge noise; kept terminal + HUD + snake
+
+## If you see `xmlParseEntityRef: no name` on camo.githubusercontent.com
+
+That was the hero banner: capsule-render put a bare `&` into the SVG from `AI & Data Science`.  
+This pack uses `AI + Data Science` and escapes `&` as `&amp;` in image URLs — re-paste `README.md` to clear it.
