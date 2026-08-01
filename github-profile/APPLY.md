@@ -1,42 +1,44 @@
-# Apply this GitHub profile README
+# Fix what you see on github.com/allen745
 
-This folder is a ready pack for your profile repo:  
-https://github.com/allen745/allen745
+## What is wrong right now
+1. **Broken top banner** — your live README still has `AI%20%26` (ampersand) in the capsule URL. That causes:
+   `xmlParseEntityRef: no name` on line 47.
+2. **Old HUD / terminal colors** — `assets/*.svg` on `allen745/allen745` were never updated (still red / gold / "BUILDING DEVMIND AI").
 
-The cloud agent **cannot push** to `allen745/allen745` (only `portfolio-demo-` is installed). Apply it once:
+## Fix in 2 steps
 
-## Option A — fastest (edit page)
+### 1) Replace README (this fixes the broken banner)
+Open: https://github.com/allen745/allen745/edit/main/README.md
 
-1. Open https://github.com/allen745/allen745/edit/main/README.md  
-2. Replace everything with the contents of [`README.md`](./README.md) in this folder  
-3. Commit on `main`
+**Delete everything**, paste the full file from:
+`github-profile/README.md` in this pack
+(or: https://raw.githubusercontent.com/allen745/portfolio-demo-/cursor/github-profile-readme-2744/github-profile/README.md )
 
-4. Then update the SVGs (so colors match the new look):
-   - Open each file under https://github.com/allen745/allen745/tree/main/assets  
-   - Replace with the matching file from [`assets/`](./assets/) here  
-   - Or drag-drop upload: `status-hud.svg`, `terminal.svg`, `about.svg`, `divider.svg`
+Commit.
 
-## Option B — local git
+Quick check: the hero `<img>` line must **NOT** contain `AI%20%26`.  
+Safe version has **no** `desc=` (title only: ALLEN CHRISTIAN).
 
-```bash
-git clone https://github.com/allen745/allen745.git
-cd allen745
-cp /path/to/portfolio-demo-/github-profile/README.md ./README.md
-cp /path/to/portfolio-demo-/github-profile/assets/* ./assets/
-git add README.md assets
-git commit -m "Align profile README with cinematic portfolio voice"
-git push origin main
-```
+### 2) Replace the 4 asset SVGs (this updates HUD + terminal look)
+Upload / overwrite these on `main` under `assets/`:
 
-## What changed (vs old README)
+| File | From this pack |
+|------|----------------|
+| `assets/status-hud.svg` | `github-profile/assets/status-hud.svg` |
+| `assets/terminal.svg` | `github-profile/assets/terminal.svg` |
+| `assets/about.svg` | `github-profile/assets/about.svg` |
+| `assets/divider.svg` | `github-profile/assets/divider.svg` |
 
-- Engineer-first copy (same voice as the portfolio)
-- Cinema palette: deep `#06080d`, ivory, brass `#d4b48a`, cool `#8eb8c4`
-- Honest ML/DL as learning series
-- Correct live links (DevMind, portfolio, LinkedIn, email)
-- Less emoji / badge noise; kept terminal + HUD + snake
+Raw links (download → upload to repo):
+- https://raw.githubusercontent.com/allen745/portfolio-demo-/cursor/github-profile-readme-2744/github-profile/assets/status-hud.svg
+- https://raw.githubusercontent.com/allen745/portfolio-demo-/cursor/github-profile-readme-2744/github-profile/assets/terminal.svg
+- https://raw.githubusercontent.com/allen745/portfolio-demo-/cursor/github-profile-readme-2744/github-profile/assets/about.svg
+- https://raw.githubusercontent.com/allen745/portfolio-demo-/cursor/github-profile-readme-2744/github-profile/assets/divider.svg
 
-## If you see `xmlParseEntityRef: no name` on camo.githubusercontent.com
+Hard-refresh the profile (`Ctrl+Shift+R`). Camo can cache the old broken banner for a few minutes.
 
-That was the hero banner: capsule-render put a bare `&` into the SVG from `AI & Data Science`.  
-This pack uses `AI + Data Science` and escapes `&` as `&amp;` in image URLs — re-paste `README.md` to clear it.
+## One-line emergency fix (banner only)
+If you only want the banner working now, edit line 4 of README and replace:
+
+`desc=AI%20%26%20Data%20Science...`  → delete the whole `&desc=...&descColor=d4b48a` part  
+or change `%26` → `%2B`.

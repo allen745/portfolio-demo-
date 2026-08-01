@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- ============ HERO ============ -->
-<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:06080d,45:1a2030,100:2a3344&amp;height=220&amp;section=header&amp;text=ALLEN%20CHRISTIAN&amp;fontSize=42&amp;fontColor=f2f0ea&amp;animation=fadeIn&amp;fontAlignY=36&amp;desc=AI%20%2B%20Data%20Science%20Engineer%20%C2%B7%20APIs%20%C2%B7%20Agents%20%C2%B7%20Products&amp;descAlignY=56&amp;descSize=16&amp;descColor=d4b48a" width="100%" alt="Allen Christian"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:06080d,45:1a2030,100:2a3344&amp;height=200&amp;section=header&amp;text=ALLEN%20CHRISTIAN&amp;fontSize=42&amp;fontColor=f2f0ea&amp;animation=fadeIn&amp;fontAlignY=40" width="100%" alt="Allen Christian"/>
 
 <img src="https://readme-typing-svg.demolab.com?font=DM+Sans&amp;weight=600&amp;size=22&amp;duration=3000&amp;pause=800&amp;color=D4B48A&amp;center=true&amp;vCenter=true&amp;width=720&amp;height=40&amp;lines=Built+to+ship%2C+not+just+to+show.;FastAPI+%C2%B7+Agents+%C2%B7+Real+workflows;Design+patent+%C2%B7+Live+products;Next%3A+Machine+Learning+Engineer" alt="Typing animation"/>
 
