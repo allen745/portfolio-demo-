@@ -1168,6 +1168,148 @@
     .skills-orb-a, .skills-orb-b { animation: none; }
   }
 
+  /* Skills — React Bits–style Logo Loop */
+  .skills-logo-band {
+    margin-top: clamp(48px, 7vh, 72px);
+    padding-top: clamp(28px, 4vh, 40px);
+    border-top: 1px solid var(--skills-line);
+  }
+  .skills-logo-band-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .skills-logo-kicker,
+  .skills-logo-note {
+    margin: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .skills-logo-kicker { color: var(--skills-accent); }
+  .skills-logo-note { color: rgba(210, 205, 195, 0.45); }
+
+  .logoloop {
+    position: relative;
+    overflow-x: hidden;
+    --logoloop-gap: 52px;
+    --logoloop-logoHeight: 36px;
+    --logoloop-fadeColorAuto: #06080d;
+  }
+  .logoloop--vertical {
+    overflow: hidden;
+    height: 100%;
+    display: inline-block;
+  }
+  .logoloop--scale-hover {
+    padding-top: calc(var(--logoloop-logoHeight) * 0.12);
+    padding-bottom: calc(var(--logoloop-logoHeight) * 0.12);
+  }
+  .logoloop__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    user-select: none;
+    position: relative;
+    z-index: 0;
+  }
+  .logoloop--vertical .logoloop__track {
+    flex-direction: column;
+    height: max-content;
+    width: 100%;
+  }
+  .logoloop__list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .logoloop--vertical .logoloop__list { flex-direction: column; }
+  .logoloop__item {
+    flex: 0 0 auto;
+    margin-right: var(--logoloop-gap);
+    font-size: var(--logoloop-logoHeight);
+    line-height: 1;
+  }
+  .logoloop--vertical .logoloop__item {
+    margin-right: 0;
+    margin-bottom: var(--logoloop-gap);
+  }
+  .logoloop__item:last-child { margin-right: var(--logoloop-gap); }
+  .logoloop--vertical .logoloop__item:last-child {
+    margin-right: 0;
+    margin-bottom: var(--logoloop-gap);
+  }
+  .logoloop__item img {
+    height: var(--logoloop-logoHeight);
+    width: auto;
+    display: block;
+    object-fit: contain;
+    -webkit-user-drag: none;
+    pointer-events: none;
+    opacity: 0.72;
+    /* Monochrome ivory — matches Skills ink on #06080d */
+    filter: brightness(0) invert(0.94);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+  }
+  .logoloop__item:hover img { opacity: 0.96; }
+  .logoloop--scale-hover .logoloop__item { overflow: visible; }
+  .logoloop--scale-hover .logoloop__item:hover img {
+    transform: scale(1.18);
+    transform-origin: center center;
+  }
+  .logoloop__link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  .logoloop__link:focus-visible {
+    outline: 2px solid var(--skills-accent, #d4b48a);
+    outline-offset: 4px;
+  }
+  .logoloop--fade::before,
+  .logoloop--fade::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(28px, 9%, 120px);
+    pointer-events: none;
+    z-index: 10;
+  }
+  .logoloop--fade::before {
+    left: 0;
+    background: linear-gradient(
+      to right,
+      var(--logoloop-fadeColor, var(--logoloop-fadeColorAuto)) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+  .logoloop--fade::after {
+    right: 0;
+    background: linear-gradient(
+      to left,
+      var(--logoloop-fadeColor, var(--logoloop-fadeColorAuto)) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logoloop__track { transform: translate3d(0, 0, 0) !important; }
+    .logoloop__item img { transition: none !important; }
+  }
+  @media (max-width: 560px) {
+    .skills-logo-band-head { flex-direction: column; gap: 6px; }
+    .logoloop {
+      --logoloop-logoHeight: 30px;
+      --logoloop-gap: 40px;
+    }
+  }
+
   /* PROJECTS — cinematic close-up rain on leaves (Pexels) */
   #projects {
     --proj-ink: #eef5f2;
