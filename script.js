@@ -673,8 +673,43 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         { title: "The Redesign", sub: "An alternate colorway built for the same exhibit." }
       ]
     },
+    trackbot: {
+      num: "06", tag: "SSIP-Funded Team Project · ADIT, CVM University",
+      title: "TrackBot 1 — Low-Cost Autonomous Warehouse AGV",
+      desc: "A single-MCU autonomous warehouse AGV designed around RFID-corrected odometry, A* pathfinding, and an embedded AI advisory layer, built within a \u20b935,000 SSIP-funded budget. I led electrical power systems and electronics integration on a 4-person research team.",
+      highlights: [
+        "Co-authored an IEEE-formatted architecture paper",
+        "RFID-corrected odometry + A* on a single ESP32-S3",
+        "Offline-trained AI advisory layer with zero cloud dependency"
+      ],
+      tech: ["ESP32-S3","A* Pathfinding","RFID Localization","scikit-learn"],
+      links: [],
+      theme: { bg:"#0a1428", panel:"#0f1c38", text:"#e6edf7", muted:"#93a4c2", border:"rgba(255,255,255,0.14)", accent:"#4d9fff", accent2:"#38bdf8" },
+      images: ["images/projects/trackbot/1.jpg","images/projects/trackbot/2.jpg","images/projects/trackbot/3.jpg"],
+      stories: [
+        { title: "The Architecture", sub: "Mecanum drive, RFID navigation, live telemetry, AI advisory, one ESP32-S3." },
+        { title: "Under the Hood", sub: "Dual-core split: real-time navigation on one core, I/O on the other." }
+      ]
+    },
+    autoseed: {
+      num: "07", tag: "IoT + Precision Agriculture · 2025",
+      title: "AutoSeed Bot — Autonomous Agricultural Robot",
+      desc: "An autonomous seed-planting robot for small-scale farms using Arduino control, ultrasonic sensing, motor control, and precision seed dispersion.",
+      highlights: [
+        "Sensor-based autonomous field navigation",
+        "Precision seed dispersion with live LCD seed count",
+        "Built to address labour inefficiency in small-scale farming"
+      ],
+      tech: ["Arduino","Ultrasonic Sensing","Motor Control","IoT"],
+      links: [],
+      theme: { bg:"#1a1810", panel:"#2a2618", text:"#f3e9dd", muted:"#a89f88", border:"rgba(255,255,255,0.14)", accent:"#7c8f52", accent2:"#c4a574" },
+      images: ["images/projects/autoseed/1.jpg","images/projects/autoseed/2.jpg"],
+      stories: [
+        { title: "Status: Running", sub: "12 seeds planted and counting, live on the onboard LCD." }
+      ]
+    },
     mlportfolio: {
-      num: "06", tag: "Learning Series · Classical ML",
+      num: "08", tag: "Learning Series · Classical ML",
       title: "ML Models Portfolio",
       desc: "A curated set of foundational machine learning projects built while learning classical ML — classification, regression, fraud detection, health prediction, and more. Practice work, grouped honestly, not oversold as production systems.",
       highlights: [
@@ -693,7 +728,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ]
     },
     dlportfolio: {
-      num: "07", tag: "Learning Series · Deep Learning",
+      num: "09", tag: "Learning Series · Deep Learning",
       title: "DL Models Portfolio",
       desc: "A curated deep learning practice portfolio — TensorFlow/Keras models and computer-vision pipelines built while leveling up DL, including internship CNN work and vision experiments.",
       highlights: [
@@ -711,41 +746,6 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       stories: [
         { title: "Vision Pipelines", sub: "CNNs and DL workflows practiced before shipping LLM products." }
       ]
-    },
-    trackbot: {
-      num: "08", tag: "SSIP-Funded Team Project · ADIT, CVM University",
-      title: "TrackBot 1 — Low-Cost Autonomous Warehouse AGV",
-      desc: "A single-MCU autonomous warehouse AGV designed around RFID-corrected odometry, A* pathfinding, and an embedded AI advisory layer, built within a \u20b935,000 SSIP-funded budget. I led electrical power systems and electronics integration on a 4-person research team.",
-      highlights: [
-        "Co-authored an IEEE-formatted architecture paper",
-        "RFID-corrected odometry + A* on a single ESP32-S3",
-        "Offline-trained AI advisory layer with zero cloud dependency"
-      ],
-      tech: ["ESP32-S3","A* Pathfinding","RFID Localization","scikit-learn"],
-      links: [],
-      theme: { bg:"#0a1428", panel:"#0f1c38", text:"#e6edf7", muted:"#93a4c2", border:"rgba(255,255,255,0.14)", accent:"#4d9fff", accent2:"#38bdf8" },
-      images: ["images/projects/trackbot/1.jpg","images/projects/trackbot/2.jpg","images/projects/trackbot/3.jpg"],
-      stories: [
-        { title: "The Architecture", sub: "Mecanum drive, RFID navigation, live telemetry, AI advisory, one ESP32-S3." },
-        { title: "Under the Hood", sub: "Dual-core split: real-time navigation on one core, I/O on the other." }
-      ]
-    },
-    autoseed: {
-      num: "09", tag: "IoT + Precision Agriculture · 2025",
-      title: "AutoSeed Bot — Autonomous Agricultural Robot",
-      desc: "An autonomous seed-planting robot for small-scale farms using Arduino control, ultrasonic sensing, motor control, and precision seed dispersion.",
-      highlights: [
-        "Sensor-based autonomous field navigation",
-        "Precision seed dispersion with live LCD seed count",
-        "Built to address labour inefficiency in small-scale farming"
-      ],
-      tech: ["Arduino","Ultrasonic Sensing","Motor Control","IoT"],
-      links: [],
-      theme: { bg:"#1a1810", panel:"#2a2618", text:"#f3e9dd", muted:"#a89f88", border:"rgba(255,255,255,0.14)", accent:"#7c8f52", accent2:"#c4a574" },
-      images: ["images/projects/autoseed/1.jpg","images/projects/autoseed/2.jpg"],
-      stories: [
-        { title: "Status: Running", sub: "12 seeds planted and counting, live on the onboard LCD." }
-      ]
     }
   };
 
@@ -754,7 +754,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   var detailEl = document.getElementById('project-detail');
   var chapterEl = document.getElementById('pdChapter');
   var chapterTimer = null;
-  var projectOrder = Array.prototype.map.call(document.querySelectorAll('.proj-card[data-project]'), function(card){ return card.dataset.project; });
+  // Include regular cards and duo-list rows (ML/DL share one grid slot).
+  var projectOrder = Array.prototype.map.call(document.querySelectorAll('[data-project]'), function(el){ return el.dataset.project; });
   var currentProjectId = null;
   var isChaining = false;
 
@@ -1071,19 +1072,26 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
     isChaining = false;
   }
 
-  document.querySelectorAll('.proj-card[data-project]').forEach(function(card){
-    card.setAttribute('role', 'button');
-    card.setAttribute('tabindex', '0');
-    var titleEl = card.querySelector('.proj-title');
-    if(titleEl) card.setAttribute('aria-label', 'Open project ' + titleEl.textContent.trim());
-    card.addEventListener('click', function(){ openProject(card.dataset.project); });
-    card.addEventListener('keydown', function(e){
+  function bindProjectTrigger(el){
+    var id = el.dataset.project;
+    if(!id) return;
+    var labelEl = el.querySelector('.proj-title, .proj-duo-name');
+    var label = labelEl ? labelEl.textContent.trim() : id;
+    if(el.tagName !== 'BUTTON'){
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+    }
+    el.setAttribute('aria-label', 'Open project ' + label);
+    el.addEventListener('click', function(){ openProject(id); });
+    el.addEventListener('keydown', function(e){
       if(e.key === 'Enter' || e.key === ' '){
         e.preventDefault();
-        openProject(card.dataset.project);
+        openProject(id);
       }
     });
-  });
+  }
+
+  document.querySelectorAll('.proj-card[data-project], .proj-duo-item[data-project]').forEach(bindProjectTrigger);
 
   var pdCloseBtn = document.getElementById('pdCloseBtn');
   if(pdCloseBtn){
