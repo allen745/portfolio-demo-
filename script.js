@@ -491,7 +491,8 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         if(entry.isIntersecting) playProjectsVideo();
         else if(!video.paused) video.pause();
       });
-    }, { threshold: 0.1 });
+    // Pause earlier when leaving Projects so Moments can take the GPU.
+    }, { threshold: 0.12, rootMargin: '0px 0px -18% 0px' });
     vio.observe(section);
   } else {
     playProjectsVideo();
@@ -499,15 +500,16 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
 
   if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
 
+  // Light parallax only — avoid large filtered-video scales across the
+  // Projects → Moments boundary (that handoff was the sticky lag).
   gsap.to(video, {
-    scale: 1.14,
-    yPercent: 5,
+    yPercent: 3,
     ease: 'none',
     scrollTrigger: {
       trigger: section,
       start: 'top bottom',
       end: 'bottom top',
-      scrub: 0.9
+      scrub: true
     }
   });
 })();
@@ -541,25 +543,14 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         if(entry.isIntersecting) playGalleryVideo();
         else if(!video.paused) video.pause();
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.18 });
     vio.observe(section);
   } else {
     playGalleryVideo();
   }
 
-  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
-
-  gsap.to(video, {
-    scale: 1.12,
-    yPercent: 4,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: section,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 0.95
-    }
-  });
+  // No scrubbed scale on this filtered video — it fought Lenis/WebGL on the
+  // Projects → Moments handoff and felt like a stuck scroll.
 })();
 
 // Project case-study system — click a card, scroll horizontally through the story

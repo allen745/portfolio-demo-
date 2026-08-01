@@ -1188,9 +1188,8 @@
     width: 108%; height: 108%;
     object-fit: cover;
     object-position: center 35%;
-    transform: scale(1.04);
+    transform: scale(1.02);
     filter: contrast(1.12) saturate(0.92) brightness(0.52);
-    will-change: transform;
   }
   .projects-video-fallback {
     background:
@@ -1674,14 +1673,13 @@
   .cg-video,
   .cg-video-fallback {
     position: absolute;
-    inset: -8%;
-    width: 116%;
-    height: 116%;
+    inset: -4%;
+    width: 108%;
+    height: 108%;
     object-fit: cover;
     object-position: center 42%;
-    transform: scale(1.04);
+    transform: scale(1.02);
     filter: contrast(1.1) saturate(0.48) brightness(0.28);
-    will-change: transform;
     opacity: 0;
   }
   .cg-video-fallback {
@@ -1704,9 +1702,9 @@
     position: absolute;
     inset: 0;
     z-index: 3;
-    opacity: 0.16;
-    mix-blend-mode: soft-light;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
   }
   .cg-atmosphere {
     position: absolute;
@@ -1718,8 +1716,8 @@
   .cg-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    will-change: transform, opacity;
+    filter: blur(64px);
+    contain: strict;
   }
   .cg-orb-a {
     width: min(46vw, 500px);
@@ -1728,6 +1726,11 @@
     right: -6%;
     background: rgba(90, 120, 150, 0.12);
     animation: cgOrbA 22s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  .cg-section.is-live .cg-orb-a,
+  .cg-section.is-live .cg-orb-b {
+    animation-play-state: running;
   }
   .cg-orb-b {
     width: min(38vw, 400px);
@@ -1736,6 +1739,7 @@
     bottom: -6%;
     background: rgba(180, 140, 90, 0.07);
     animation: cgOrbB 26s ease-in-out infinite;
+    animation-play-state: paused;
   }
   @keyframes cgOrbA {
     0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
@@ -1834,6 +1838,7 @@
     cursor: grab;
     touch-action: none;
     user-select: none;
+    contain: layout paint;
   }
   .cg-stage.is-dragging { cursor: grabbing; }
   .cg-stage-edge {
