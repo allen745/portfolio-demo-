@@ -1188,9 +1188,8 @@
     width: 108%; height: 108%;
     object-fit: cover;
     object-position: center 35%;
-    transform: scale(1.04);
+    transform: scale(1.02);
     filter: contrast(1.12) saturate(0.92) brightness(0.52);
-    will-change: transform;
   }
   .projects-video-fallback {
     background:
