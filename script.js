@@ -981,7 +981,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       linksHtml =
         '<div class="intro-links">' +
           data.links.map(function(link){
-            return '<a class="intro-link" href="' + link.href + '" target="_blank" rel="noopener noreferrer">' + link.label + ' ↗</a>';
+            var isLive = /live/i.test(link.label || '');
+            var cls = 'intro-link' + (isLive ? ' intro-link--live' : '');
+            return '<a class="' + cls + '" href="' + link.href + '" target="_blank" rel="noopener noreferrer">' + link.label + ' ↗</a>';
           }).join('') +
         '</div>';
     }
