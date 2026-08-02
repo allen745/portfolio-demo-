@@ -567,7 +567,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["FastAPI","Groq","React.js","Vercel"],
       links: [
-        { label: "Live demo", href: "https://dev-mind-ai-isguu.vercel.app/" },
+        { label: "Live demo", href: "https://devmind-ai-topaz.vercel.app/" },
         { label: "GitHub", href: "https://github.com/allen745/devmind-ai" }
       ],
       theme: { bg:"#14102a", panel:"#221a3d", text:"#f0f0f0", muted:"#b4a8d4", border:"rgba(255,255,255,0.14)", accent:"#c084fc", accent2:"#5eead4" },
@@ -591,6 +591,7 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
       ],
       tech: ["FastAPI","Groq/LLaMA-3.3-70b","Microsoft Foundry IQ","GitHub REST API"],
       links: [
+        { label: "Live demo", href: "https://devmind-agent.onrender.com/" },
         { label: "GitHub", href: "https://github.com/allen745/DEVMIND-AGENT" }
       ],
       theme: { bg:"#1a1442", panel:"#241b58", text:"#ece9ff", muted:"#b3a9e0", border:"rgba(255,255,255,0.14)", accent:"#8b7cf6", accent2:"#22d3ee" },
@@ -633,7 +634,9 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
         "Vertice AI reads progress before responding — no generic answers"
       ],
       tech: ["FastAPI","React.js","Azure OpenAI","Recharts","Microsoft Auth"],
-      links: [],
+      links: [
+        { label: "Live demo", href: "https://vertex-api-allen07.azurewebsites.net/" }
+      ],
       theme: { bg:"#1a120c", panel:"#2a1c14", text:"#f3e9dd", muted:"#c9b8a8", border:"rgba(255,255,255,0.14)", accent:"#e8a25c", accent2:"#60a5fa" },
       images: ["images/projects/vertex/1.jpg","images/projects/vertex/2.jpg","images/projects/vertex/3.jpg","images/projects/vertex/4.jpg","images/projects/vertex/5.jpg"],
       stories: [
