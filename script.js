@@ -100,7 +100,8 @@ if (hasLenis) {
   tl.fromTo('.hb-stack', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, '-=0.45');
   tl.fromTo('.hb-cta', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.35');
   tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.55, ease: 'power2.out' }, '-=0.3');
-  tl.fromTo('.hero-plate', { scale: 1.06 }, { scale: 1.02, duration: 2.2, ease: 'power1.out' }, '-=1.6');
+  tl.fromTo('.hero-eng-frame', { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' }, '-=1.4');
+  tl.fromTo('.hero-eng-hud', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.9');
 })();
 
 // Smooth in-page anchors with Lenis when available
@@ -2382,187 +2383,102 @@ gsap.utils.toArray('.fade-in').forEach(function(el){
   });
 })();
 
-// Hero opening — orbit plate + soft embers + atmospheric sparks + Ken Burns
+// Hero — engineering node field (pro developer aesthetic)
 (function(){
   var hero = document.getElementById('hero');
-  var plate = document.getElementById('heroPlate');
-  var ash = document.getElementById('heroAsh');
-  var magic = document.getElementById('heroMagic');
-  if(!hero || !plate) return;
+  var canvas = document.getElementById('heroEngNodes');
+  if(!hero || !canvas) return;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ashRaf = 0;
-  var magicRaf = 0;
+  if(reduceMotion) return;
 
-  function showPlate(){
-    plate.classList.add('is-ready');
+  var ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  var w = 0, h = 0, nodes = [], raf = 0, visible = true;
+
+  function resize(){
+    w = hero.clientWidth;
+    h = hero.clientHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    nodes = [];
+    var count = Math.min(48, Math.max(22, Math.floor((w * h) / 28000)));
+    for(var i = 0; i < count; i++){
+      nodes.push({
+        x: Math.random() * w,
+        y: Math.random() * h * 0.78,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: (Math.random() - 0.5) * 0.18,
+        r: 1 + Math.random() * 1.4
+      });
+    }
   }
 
-  if(plate.complete) showPlate();
-  else plate.addEventListener('load', showPlate);
-
-  // Soft ember dissolve under the title
-  function bootAsh(){
-    if(!ash || reduceMotion) return;
-    var ctx = ash.getContext('2d');
-    if(!ctx) return;
-    var particles = [];
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    function resize(){
-      var rect = ash.getBoundingClientRect();
-      var w = Math.max(320, Math.floor(rect.width));
-      var h = Math.max(100, Math.floor(rect.height));
-      ash.width = Math.floor(w * dpr);
-      ash.height = Math.floor(h * dpr);
-      ash.style.width = w + 'px';
-      ash.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      particles = [];
-      var count = Math.min(200, Math.floor(w * 0.26));
-      for(var i = 0; i < count; i++){
-        particles.push({
-          x: w * (0.08 + Math.random() * 0.84),
-          y: h * (0.05 + Math.random() * 0.35),
-          r: 0.4 + Math.random() * 1.7,
-          a: 0.2 + Math.random() * 0.55,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: 0.12 + Math.random() * 0.5,
-          life: Math.random(),
-          warm: Math.random() > 0.35
-        });
-      }
-      return { w: w, h: h };
+  function draw(){
+    if(!visible){ raf = 0; return; }
+    ctx.clearRect(0, 0, w, h);
+    var i, j, a, b, dx, dy, dist, max = 140;
+    for(i = 0; i < nodes.length; i++){
+      a = nodes[i];
+      a.x += a.vx;
+      a.y += a.vy;
+      if(a.x < 0 || a.x > w) a.vx *= -1;
+      if(a.y < 0 || a.y > h * 0.82) a.vy *= -1;
     }
-
-    var size = resize();
-    window.addEventListener('resize', function(){ size = resize(); });
-
-    function draw(){
-      var w = size.w;
-      var h = size.h;
-      ctx.clearRect(0, 0, w, h);
-      for(var i = 0; i < particles.length; i++){
-        var p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life += 0.004;
-        if(p.y > h * 0.95 || p.life > 1){
-          p.x = w * (0.1 + Math.random() * 0.8);
-          p.y = h * (0.02 + Math.random() * 0.2);
-          p.life = 0;
+    for(i = 0; i < nodes.length; i++){
+      a = nodes[i];
+      for(j = i + 1; j < nodes.length; j++){
+        b = nodes[j];
+        dx = a.x - b.x;
+        dy = a.y - b.y;
+        dist = Math.sqrt(dx * dx + dy * dy);
+        if(dist < max){
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(142,184,196,' + (0.16 * (1 - dist / max)) + ')';
+          ctx.lineWidth = 1;
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
         }
-        var fade = Math.max(0, 1 - p.life);
-        ctx.beginPath();
-        if(p.warm){
-          ctx.fillStyle = 'rgba(240,184,110,' + (p.a * fade) + ')';
-        } else {
-          ctx.fillStyle = 'rgba(245,230,190,' + (p.a * fade * 0.85) + ')';
-        }
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
       }
-      ashRaf = requestAnimationFrame(draw);
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(168,205,214,0.75)';
+      ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+      ctx.fill();
     }
-    ashRaf = requestAnimationFrame(draw);
+    raf = requestAnimationFrame(draw);
   }
 
-  // Floating atmospheric sparks across the orbit field
-  function bootMagic(){
-    if(!magic || reduceMotion) return;
-    var ctx = magic.getContext('2d');
-    if(!ctx) return;
-    var sparks = [];
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = 0;
-    var h = 0;
-
-    function resize(){
-      w = hero.clientWidth;
-      h = hero.clientHeight;
-      magic.width = Math.floor(w * dpr);
-      magic.height = Math.floor(h * dpr);
-      magic.style.width = w + 'px';
-      magic.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      sparks = [];
-      var count = Math.min(90, Math.floor((w * h) / 18000));
-      for(var i = 0; i < count; i++){
-        sparks.push({
-          x: Math.random() * w,
-          y: Math.random() * h * 0.72,
-          r: 0.6 + Math.random() * 1.8,
-          a: 0.15 + Math.random() * 0.55,
-          vx: (Math.random() - 0.5) * 0.22,
-          vy: -0.08 - Math.random() * 0.28,
-          tw: Math.random() * Math.PI * 2,
-          sp: 0.6 + Math.random() * 1.4,
-          gold: Math.random() > 0.4
-        });
-      }
-    }
-
-    resize();
-    window.addEventListener('resize', resize);
-
-    function draw(now){
-      var t = now * 0.001;
-      ctx.clearRect(0, 0, w, h);
-      for(var i = 0; i < sparks.length; i++){
-        var s = sparks[i];
-        s.x += s.vx;
-        s.y += s.vy;
-        if(s.y < -8 || s.x < -10 || s.x > w + 10){
-          s.x = Math.random() * w;
-          s.y = h * (0.35 + Math.random() * 0.4);
-        }
-        var twinkle = 0.45 + 0.55 * Math.sin(t * s.sp + s.tw);
-        var glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4);
-        if(s.gold){
-          glow.addColorStop(0, 'rgba(255,220,140,' + (0.55 * twinkle * s.a) + ')');
-          glow.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = 'rgba(240,184,110,' + (s.a * twinkle) + ')';
-        } else {
-          glow.addColorStop(0, 'rgba(180,230,200,' + (0.4 * twinkle * s.a) + ')');
-          glow.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = 'rgba(170,220,190,' + (s.a * twinkle * 0.8) + ')';
-        }
-        ctx.beginPath();
-        ctx.fillStyle = glow;
-        ctx.arc(s.x, s.y, s.r * 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.fillStyle = s.gold
-          ? 'rgba(255,230,170,' + (s.a * twinkle) + ')'
-          : 'rgba(200,235,215,' + (s.a * twinkle * 0.85) + ')';
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      magicRaf = requestAnimationFrame(draw);
-    }
-    magicRaf = requestAnimationFrame(draw);
+  function start(){
+    if(!raf) raf = requestAnimationFrame(draw);
+  }
+  function stop(){
+    if(raf) cancelAnimationFrame(raf);
+    raf = 0;
   }
 
-  bootAsh();
-  bootMagic();
+  resize();
+  window.addEventListener('resize', resize);
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        visible = entry.isIntersecting;
+        if(visible) start();
+        else stop();
+      });
+    }, { threshold: 0.05 });
+    io.observe(hero);
+  }
+  start();
 
-  if(reduceMotion || !window.gsap || !window.ScrollTrigger) return;
-
-  gsap.to(plate, {
-    scale: 1.08,
-    yPercent: 2,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: hero,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 0.9
-    }
-  });
-
-  gsap.to('.hero-mist', {
-    opacity: 0.7,
-    yPercent: -4,
+  if(!window.gsap || !window.ScrollTrigger) return;
+  gsap.to('.hero-eng-grid', {
+    yPercent: 4,
     ease: 'none',
     scrollTrigger: {
       trigger: hero,

@@ -31,7 +31,7 @@
 <link rel="apple-touch-icon" href="favicon.png">
 <link rel="manifest" href="site.webmanifest">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=engineer-hero-1">
+<link rel="stylesheet" href="styles.css?v=eng-aesthetic-1">
 </head>
 <body>
 
@@ -118,24 +118,30 @@
   </nav>
 </div>
 
-<!-- HERO — engineer-first landing over cinematic orbit plate -->
-<section id="hero" class="hero--orbit hero--engineer">
+<!-- HERO — pro engineer aesthetic: blueprint field + technical HUD -->
+<section id="hero" class="hero--engineer">
   <div class="hero-stage" aria-hidden="true">
-    <img
-      class="hero-plate"
-      id="heroPlate"
-      src="videos/about-orbit-poster.jpg"
-      alt=""
-      decoding="async"
-      fetchpriority="high"
-    >
-    <div class="hero-plate-fallback"></div>
-    <canvas class="hero-magic" id="heroMagic" aria-hidden="true"></canvas>
-    <div class="hero-aurora"></div>
-    <div class="hero-mist"></div>
-    <div class="hero-grade"></div>
-    <div class="hero-grain"></div>
-    <div class="hero-vignette"></div>
+    <div class="hero-eng-base"></div>
+    <div class="hero-eng-grid"></div>
+    <div class="hero-eng-perspective"></div>
+    <div class="hero-eng-glow hero-eng-glow-a"></div>
+    <div class="hero-eng-glow hero-eng-glow-b"></div>
+    <canvas class="hero-eng-nodes" id="heroEngNodes" aria-hidden="true"></canvas>
+    <div class="hero-eng-frame">
+      <span class="hero-eng-corner hero-eng-corner--tl"></span>
+      <span class="hero-eng-corner hero-eng-corner--tr"></span>
+      <span class="hero-eng-corner hero-eng-corner--bl"></span>
+      <span class="hero-eng-corner hero-eng-corner--br"></span>
+      <span class="hero-eng-tick hero-eng-tick--top"></span>
+      <span class="hero-eng-tick hero-eng-tick--left"></span>
+    </div>
+    <div class="hero-eng-hud">
+      <span class="hero-eng-hud-item"><i></i>SYS.ONLINE</span>
+      <span class="hero-eng-hud-item">ASC_PORTFOLIO // ENGINEER</span>
+      <span class="hero-eng-hud-item">BUILD · SHIP · ITERATE</span>
+    </div>
+    <div class="hero-eng-scan"></div>
+    <div class="hero-eng-vignette"></div>
   </div>
 
   <div class="hero-banner">
@@ -143,8 +149,6 @@
     <span class="hb-rule" aria-hidden="true"></span>
     <h1 class="hb-title" aria-label="Allen Christian">
       <span class="hb-title-text">Allen Christian</span>
-      <span class="hb-dissolve" aria-hidden="true"></span>
-      <canvas class="hb-ash" id="heroAsh" width="1200" height="160" aria-hidden="true"></canvas>
     </h1>
     <p class="hb-role">
       I ship FastAPI backends, LLM agents, and production tools &mdash;
@@ -1046,7 +1050,7 @@
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 
 
-<script src="script.js?v=engineer-hero-1"></script>
+<script src="script.js?v=eng-aesthetic-1"></script>
 <script src="logo-loop.js" defer></script>
 <script type="module" src="circular-gallery.js"></script>
 </body>
