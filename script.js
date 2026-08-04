@@ -83,20 +83,23 @@ if (hasLenis) {
     tl.to(pre, { opacity: 0, duration: 0.7, ease: 'power2.inOut' }, '-=0.45');
   }
 
-  // Hero type reveal after the title card dissolves
-  tl.fromTo('.hb-kicker', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.35');
-  tl.fromTo('.hb-rule', { opacity: 0, scaleX: 0.35 }, { opacity: 1, scaleX: 1, duration: 1.0, ease: 'power2.out' }, '-=0.45');
+  // Hero type reveal after the title card dissolves — engineer-first stack
+  var narrowHero = window.matchMedia('(max-width: 700px)').matches;
+  tl.fromTo('.hb-kicker', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, '-=0.35');
+  tl.fromTo('.hb-rule', { opacity: 0, scaleX: 0.35 }, { opacity: 1, scaleX: 1, duration: 0.9, ease: 'power2.out' }, '-=0.4');
   tl.fromTo('.hb-title-text', {
     opacity: 0,
-    letterSpacing: window.matchMedia('(max-width: 700px)').matches ? '0.36em' : '0.62em'
+    letterSpacing: narrowHero ? '0.28em' : '0.42em'
   }, {
     opacity: 1,
-    letterSpacing: window.matchMedia('(max-width: 700px)').matches ? '0.22em' : '0.42em',
-    duration: 1.4,
+    letterSpacing: narrowHero ? '0.12em' : '0.22em',
+    duration: 1.25,
     ease: 'power2.out'
-  }, '-=0.55');
-  tl.fromTo('.hb-role', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.7');
-  tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.35');
+  }, '-=0.5');
+  tl.fromTo('.hb-role', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, '-=0.65');
+  tl.fromTo('.hb-stack', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, '-=0.45');
+  tl.fromTo('.hb-cta', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.35');
+  tl.fromTo('.hb-scroll', { opacity: 0 }, { opacity: 1, duration: 0.55, ease: 'power2.out' }, '-=0.3');
   tl.fromTo('.hero-plate', { scale: 1.06 }, { scale: 1.02, duration: 2.2, ease: 'power1.out' }, '-=1.6');
 })();
 
