@@ -55,8 +55,10 @@ if (hasLenis) {
   }
 
   gsap.ticker.lagSmoothing(500, 33);
+  // Do not put force3D in timeline defaults — empty dummy tweens
+  // (tl.to({}, …)) inherit it and GSAP warns "Invalid property force3D".
   var tl = gsap.timeline({
-    defaults: { force3D: true, ease: 'power2.out' },
+    defaults: { ease: 'power2.out' },
     onComplete: function(){
       finishIntro();
     }

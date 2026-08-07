@@ -47,7 +47,13 @@ function createTextTexture(gl, text, font, color) {
   ctx.textAlign = 'center';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-  var texture = new Texture(gl, { generateMipmaps: false });
+  // flipY/premultiply off — Firefox warns when those unpack flags stay on
+  // for non-DOM uploads OGL may issue during texture init.
+  var texture = new Texture(gl, {
+    generateMipmaps: false,
+    flipY: false,
+    premultiplyAlpha: false
+  });
   texture.image = canvas;
   return { texture: texture, width: canvas.width, height: canvas.height };
 }
@@ -82,7 +88,8 @@ Title.prototype.createMesh = function () {
       'uniform sampler2D tMap;',
       'varying vec2 vUv;',
       'void main(){',
-      '  vec4 color = texture2D(tMap, vUv);',
+      // Manual Y flip (texture uploaded with flipY: false)
+      '  vec4 color = texture2D(tMap, vec2(vUv.x, 1.0 - vUv.y));',
       '  if (color.a < 0.1) discard;',
       '  gl_FragColor = color;',
       '}'
@@ -127,7 +134,13 @@ function Media(opts) {
 Media.prototype.createShader = function () {
   var self = this;
   // No mipmaps — gallery cards are roughly screen-sized and mip gen spikes on boot.
-  var texture = new Texture(this.gl, { generateMipmaps: false });
+  // flipY/premultiply off to avoid Firefox "Alpha-premult and y-flip" spam;
+  // image orientation is corrected in the fragment shader instead.
+  var texture = new Texture(this.gl, {
+    generateMipmaps: false,
+    flipY: false,
+    premultiplyAlpha: false
+  });
   this.program = new Program(this.gl, {
     depthTest: false,
     depthWrite: false,
@@ -161,9 +174,11 @@ Media.prototype.createShader = function () {
       '    min((uPlaneSizes.x / uPlaneSizes.y) / (uImageSizes.x / uImageSizes.y), 1.0),',
       '    min((uPlaneSizes.y / uPlaneSizes.x) / (uImageSizes.y / uImageSizes.x), 1.0)',
       '  );',
+      // Manual Y flip (texture uploaded with flipY: false)
+      '  vec2 flipped = vec2(vUv.x, 1.0 - vUv.y);',
       '  vec2 uv = vec2(',
-      '    vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,',
-      '    vUv.y * ratio.y + (1.0 - ratio.y) * 0.5',
+      '    flipped.x * ratio.x + (1.0 - ratio.x) * 0.5,',
+      '    flipped.y * ratio.y + (1.0 - ratio.y) * 0.5',
       '  );',
       '  vec4 color = texture2D(tMap, uv);',
       '  float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);',
