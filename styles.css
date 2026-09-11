@@ -3093,7 +3093,7 @@
     --ec-gold: #f0b86e;
     --ec-cyan: #7ec8d4;
     position: relative;
-    background: #02040a;
+    background: #16070c;
     color: var(--ec-ink);
     overflow: hidden;
     height: 100vh;
@@ -3131,9 +3131,10 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 50% 40% at 50% 20%, rgba(70,110,160,0.14) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 35% at 50% 80%, rgba(240,184,110,0.06) 0%, transparent 55%),
-      linear-gradient(180deg, #02040a 0%, #05070f 50%, #02040a 100%);
+      radial-gradient(ellipse 58% 46% at 50% 18%, rgba(125, 24, 48, 0.34) 0%, transparent 66%),
+      radial-gradient(ellipse 48% 40% at 50% 84%, rgba(92, 13, 32, 0.28) 0%, transparent 62%),
+      radial-gradient(ellipse 70% 52% at 8% 52%, rgba(72, 8, 24, 0.22) 0%, transparent 68%),
+      linear-gradient(180deg, #16070c 0%, #350b18 48%, #120509 100%);
   }
   .end-credits-grain {
     position: absolute;
@@ -3157,11 +3158,11 @@
   }
   .end-credits-mask--top {
     top: 0;
-    background: linear-gradient(180deg, #02040a 0%, rgba(2,4,10,0.85) 40%, transparent 100%);
+    background: linear-gradient(180deg, #16070c 0%, rgba(22,7,12,0.88) 40%, transparent 100%);
   }
   .end-credits-mask--bottom {
     bottom: 0;
-    background: linear-gradient(0deg, #02040a 0%, rgba(2,4,10,0.85) 40%, transparent 100%);
+    background: linear-gradient(0deg, #16070c 0%, rgba(22,7,12,0.88) 40%, transparent 100%);
   }
 
   .end-credits-pin {
